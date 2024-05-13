@@ -1,15 +1,29 @@
 name: flutter_bunny
-description: A sample command-line application.
+description: A CLI Tools Command-Line application for generating flutter project.
 version: 1.0.0
 # repository: https://github.com/my_org/my_repo
-
 environment:
   sdk: ^3.3.4
 
 # Add regular dependencies here.
 dependencies:
-  # path: ^1.8.0
+  args: ^2.5.0
+
+  cli_completion: ^0.5.0
+  equatable: ^2.0.5
+  glob: ^2.1.2
+  mason: ^0.1.0-dev.53
+  mason_logger: ^0.2.15
+  meta: ^1.14.0
+  package_config: ^2.1.0
+  pub_updater: ^0.4.0
+  sprintf: ^7.0.0
+  universal_io: ^2.2.2
 
 dev_dependencies:
+  build_verify: ^3.1.0
+  build_version: ^2.1.1
+  build_runner: ^2.4.9
   lints: ^3.0.0
+  mocktail: ^1.0.3
   test: ^1.24.0
