@@ -1,5 +1,6 @@
 import 'package:args/args.dart';
 import 'package:cli_completion/cli_completion.dart';
+import 'package:flutter_bunny/src/commands/create_app_commad.dart';
 import 'package:flutter_bunny/src/common/package_info.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
@@ -25,6 +26,8 @@ class FlutterBunnyCommandRunner extends CompletionCommandRunner<int> {
         'verbose',
         help: 'Noisy logging, including all shell commands executed.',
       );
+       addCommand(CreateAppCommand(logger: _logger));
+      //  addCommand(UpdateCommand(logger: _logger));
   }
 
   /// Standard timeout duration for the CLI.
