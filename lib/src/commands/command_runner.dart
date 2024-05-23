@@ -26,12 +26,12 @@ class FlutterBunnyCommandRunner extends CompletionCommandRunner<int> {
         'verbose',
         help: 'Noisy logging, including all shell commands executed.',
       );
-       addCommand(CreateAppCommand(logger: _logger));
-      //  addCommand(UpdateCommand(logger: _logger));
+    addCommand(CreateAppCommand(logger: _logger));
+    //  addCommand(UpdateCommand(logger: _logger));
   }
 
   /// Standard timeout duration for the CLI.
-  static const timeout = Duration(milliseconds: 500);
+  static const timeout = Duration(milliseconds: 1000);
 
   final Logger _logger;
   final PubUpdater _pubUpdater;
@@ -70,6 +70,29 @@ class FlutterBunnyCommandRunner extends CompletionCommandRunner<int> {
     return ExitCode.usage.code;
   }
 
+  // check for update
+  // if update available, print update message
+  // if update not available, print that you are up to date
+  checkForUpdate() async {
+    // check if cli is up to date
+    final isUpToDate = await _pubUpdater.isUpToDate(
+      packageName: packageName,
+      currentVersion: cliVersion,
+    );
+
+    if (!isUpToDate) {
+      // get latest version
+      final latestVersion = await _pubUpdater.getLatestVersion(packageName);
+
+      _logger
+        ..info('')
+        ..info('''
+      ${lightBlue.wrap('update available')} ${lightBlue.wrap(cliVersion)}  \u2192 ${lightCyan.wrap(latestVersion)}
+      ${lightBlue.wrap('flutter_bunny update')} to update the newest version
+      ''');
+    }
+  }
+
   @override
   Future<int?> runCommand(ArgResults topLevelResults) async {
     super.runCommand(topLevelResults);
@@ -91,17 +114,17 @@ class FlutterBunnyCommandRunner extends CompletionCommandRunner<int> {
     if (topLevelResults.command != null) {
       final commandResult = topLevelResults.command!;
       _logger
-        ..detail('  Command: ${commandResult.name}')
-        ..detail('    Command options:');
+        ..detail('Command: ${commandResult.name}')
+        ..detail('Command options:');
       for (final option in commandResult.options) {
         if (commandResult.wasParsed(option)) {
-          _logger.detail('    - $option: ${commandResult[option]}');
+          _logger.detail('- $option: ${commandResult[option]}');
         }
       }
 
       if (commandResult.command != null) {
         final subCommandResult = commandResult.command!;
-        _logger.detail('    Command sub command: ${subCommandResult.name}');
+        _logger.detail('Command sub command: ${subCommandResult.name}');
       }
       int? exitCode = ExitCode.unavailable.code;
       if (topLevelResults['version'] == true) {
@@ -111,33 +134,10 @@ class FlutterBunnyCommandRunner extends CompletionCommandRunner<int> {
         exitCode = await super.runCommand(topLevelResults);
       }
       // if (topLevelResults.command?.name != UpdateCommand.commandName) {
-      //   await checkForUpdate();
+      await checkForUpdate();
       // }
 
       return exitCode;
-    }
-
-    // check for update
-    // if update available, print update message
-    // if update not available, print that you are up to date
-    checkForUpdate() async {
-      // check if cli is up to date
-      final isUpToDate = await _pubUpdater.isUpToDate(
-        packageName: packageName,
-        currentVersion: cliVersion,
-      );
-
-      if (!isUpToDate) {
-        // get latest version
-        final latestVersion = await _pubUpdater.getLatestVersion(packageName);
-
-        _logger
-          ..info('')
-          ..info('''
-      ${lightBlue.wrap('update available')} ${lightBlue.wrap(cliVersion)}  \u2192 ${lightCyan.wrap(latestVersion)}
-      ${lightBlue.wrap('flutter_bunny update')} to update the newest version
-      ''');
-      }
     }
 
     return null;

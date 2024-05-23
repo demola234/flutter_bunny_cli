@@ -24,12 +24,12 @@ class CreateAppCommand extends Command<int> {
 
   @override
   String get description =>
-      'Creates a new very good project in the specified directory.';
+      'Creates a new flutter bunny project in the specified directory.';
 
   @override
   String get name => 'create';
 
   @override
   String get invocation =>
-      'very_good create <subcommand> <project-name> [arguments]';
+      'bunny_cli create <subcommand> <project-name> [arguments]';
 }

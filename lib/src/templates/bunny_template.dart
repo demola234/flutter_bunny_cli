@@ -1,20 +1,19 @@
 import 'package:flutter_bunny/src/common/logger_extension.dart';
 import 'package:flutter_bunny/src/common/template.dart';
-import 'package:flutter_bunny/src/templates/bunny_binary_template.dart';
+import 'package:flutter_bunny/src/templates/bunny_template_bundle.dart';
 import 'package:flutter_bunny/src/templates/post_generate_actions.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as path;
 import 'package:universal_io/io.dart';
 
-/// {@template very_good_core_template}
+/// {@template bunny_cli}
 /// A core Flutter app template.
 /// {@endtemplate}
-class VeryGoodCoreTemplate extends Template {
-  /// {@macro very_good_core_template}
-  VeryGoodCoreTemplate()
+class FlutterBunnyFlutterApp extends Template {
+  FlutterBunnyFlutterApp()
       : super(
           name: 'core',
-          bundle: veryGoodCoreBundle,
+          bundle: bunnyTemplateBundle,
           help: 'Generate a Very Good Flutter application.',
         );
 
@@ -47,19 +46,12 @@ class VeryGoodCoreTemplate extends Template {
 
     logger
       ..info('\n')
-      ..create('Created a Very Good App! 🦄')
+      ..create('Created a Flutter App!')
       ..info(details)
       ..info(
         lightGray.wrap(
           '''
-+----------------------------------------------------+
-| Looking for more features?                         |
-| We have an enterprise-grade solution for companies |
-| called Very Good Start.                            |
-|                                                    |
-| For more info visit:                               |
-| https://verygood.ventures/solution/very-good-start |
-+----------------------------------------------------+''',
+          Flutter App Successfully Generated!!!''',
         ),
       );
   }

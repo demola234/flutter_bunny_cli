@@ -2,7 +2,7 @@ import 'package:flutter_bunny/src/commands/base.dart';
 import 'package:flutter_bunny/src/common/template.dart';
 import 'package:flutter_bunny/src/templates/bunny_template.dart';
 
-class CreateFlutterApp extends FlutterBunnyCommand with OrgName, MultiTemplates {
+class CreateFlutterApp extends FlutterBunnyCommand with OrgName {
   CreateFlutterApp({
     required super.logger,
     required super.generatorFromBundle,
@@ -14,14 +14,14 @@ class CreateFlutterApp extends FlutterBunnyCommand with OrgName, MultiTemplates 
           '(defaults to <org-name>.<project-name>)',
     );
   }
-  
-@override
+
+  @override
   String get name => 'flutter_app';
 
   @override
-  String get description => 'Generate a Very Good Flutter application.';
+  String get description => 'Generate a Bunny Flutter application.';
 
-    @override
+  @override
   Map<String, dynamic> getTemplateVars() {
     final vars = super.getTemplateVars();
 
@@ -34,7 +34,5 @@ class CreateFlutterApp extends FlutterBunnyCommand with OrgName, MultiTemplates 
   }
 
   @override
-  final List<Template> templates = [
-  VeryGoodCoreTemplate(),
-  ];
+  Template get template => FlutterBunnyFlutterApp();
 }

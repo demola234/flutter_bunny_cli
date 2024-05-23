@@ -4,13 +4,11 @@ import 'package:glob/glob.dart';
 import 'package:lcov_parser/lcov_parser.dart';
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
-
 import 'package:path/path.dart' as p;
 import 'package:universal_io/io.dart';
 
-part 'flutter_cli.dart';
-
 part 'dart_cli.dart';
+part 'flutter_cli.dart';
 
 const _asyncRunZoned = runZoned;
 
