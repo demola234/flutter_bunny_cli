@@ -56,7 +56,7 @@ abstract class FlutterBunnyCommand extends Command<int> {
   Template get template;
 
   @override
-  String get invocation => 'very_good create $name <project-name> [arguments]';
+  String get invocation => 'bunny_cli create $name <project-name> [arguments]';
 
   @override
   Future<int> run() async {
@@ -67,7 +67,7 @@ abstract class FlutterBunnyCommand extends Command<int> {
 
   Future<int> runCreate(MasonGenerator generator, Template template) async {
     var vars = getTemplateVars();
-    final generateProgress = logger.progress('Bootstrapping');
+    final generateProgress = logger.progress('Generating Bunny Project');
     final target = DirectoryGeneratorTarget(outputDirectory);
 
     await generator.hooks.preGen(vars: vars, onVarsChanged: (v) => vars = v);
@@ -89,8 +89,10 @@ abstract class FlutterBunnyCommand extends Command<int> {
       'description': projectDescription,
     };
     if (this is OrgName) vars['org_name'] = (this as OrgName).orgName;
-    if (this is Publishable)
+
+    if (this is Publishable) {
       vars['publishable'] = (this as Publishable).publishable;
+    }
     return vars;
   }
 
@@ -100,12 +102,6 @@ abstract class FlutterBunnyCommand extends Command<int> {
         'output-directory',
         abbr: 'o',
         help: 'The desired output directory when creating a new project.',
-      )
-      ..addOption(
-        'host-url',
-        help: 'Set the host url for the Flutter Bunny Cli.',
-        defaultsTo: _hostUrl,
-        allowed: [_hostUrl],
       )
       ..addOption(
         'description',
@@ -120,6 +116,15 @@ abstract class FlutterBunnyCommand extends Command<int> {
         help: 'The organization for this new project.',
         defaultsTo: _defaultOrgName,
         aliases: ['org'],
+      );
+    }
+
+    if (this is HostUrl) {
+      argParser.addOption(
+        'host-url',
+        help: 'Set the host url for the Flutter Bunny Cli.',
+        defaultsTo: _hostUrl,
+        allowed: [_hostUrl],
       );
     }
 
@@ -171,30 +176,59 @@ abstract class FlutterBunnyCommand extends Command<int> {
   }
 }
 
+class OrgNameValidator {
+  static String validateOrgName(String name, Logger logger) {
+    logger.detail('Validating org name; $name');
+    if (!_isValidOrgName(name)) {
+      throw UsageException(
+          '"$name" is not a valid org name.\n\n'
+              'A valid org name has at least 2 parts separated by "."\n'
+              'Each part must start with a letter and only include '
+              'alphanumeric characters (A-Z, a-z, 0-9), underscores (_),'
+              '',
+          '');
+    }
+    return name;
+  }
+
+  static bool _isValidOrgName(String name) => _orgNameRegExp.hasMatch(name);
+}
+
+class HostUrlValidator {
+  static String validateHostUrl(String url, Logger logger) {
+    logger.detail('Validating host url; $url');
+    if (!_isValidHostUrl(url)) {
+      throw UsageException(
+          '"$url" is not a valid host url.\n\n'
+              'The host url must be $url',
+          '');
+    }
+    return url;
+  }
+
+  static bool _isValidHostUrl(String url) => url == _hostUrl;
+}
+
 mixin OrgName on FlutterBunnyCommand {
   String get orgName {
     final orgName = argResults['org-name'] as String? ?? _defaultOrgName;
-    _validateOrgName(orgName);
-    return orgName;
+    return OrgNameValidator.validateOrgName(orgName, logger);
   }
+}
 
-  void _validateOrgName(String name) {
-    logger.detail('Validating org name; $name');
-    if (!_isValidOrgName(name)) {
-      usageException(
-        '"$name" is not a valid org name.\n\n'
-        'A valid org name has at least 2 parts separated by "."\n'
-        'Each part must start with a letter and only include '
-        'alphanumeric characters (A-Z, a-z, 0-9), underscores (_), '
-        'and hyphens (-)\n'
-        '(ex. very.good.org)',
-      );
-    }
+mixin HostUrl on FlutterBunnyCommand {
+  String get hostUrl {
+    argResults['host-url'] as String? ?? _hostUrl;
+    return HostUrlValidator.validateHostUrl(hostUrl, logger);
   }
+}
 
-  bool _isValidOrgName(String name) => _orgNameRegExp.hasMatch(name);
+class PublishableValidator {
+  static bool isPublishable(ArgResults argResults) {
+    return argResults['publishable'] as bool? ?? false;
+  }
 }
 
 mixin Publishable on FlutterBunnyCommand {
-  bool get publishable => argResults['publishable'] as bool? ?? false;
+  bool get publishable => PublishableValidator.isPublishable(argResults);
 }

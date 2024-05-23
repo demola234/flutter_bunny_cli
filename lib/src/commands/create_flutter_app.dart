@@ -16,7 +16,7 @@ class CreateFlutterApp extends FlutterBunnyCommand with OrgName {
   }
 
   @override
-  String get name => 'flutter_app';
+  String get name => 'app';
 
   @override
   String get description => 'Generate a Bunny Flutter application.';

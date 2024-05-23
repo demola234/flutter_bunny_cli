@@ -20,6 +20,9 @@ typedef RunProcess = Future<ProcessResult> Function(
   bool runInShell,
 });
 
+
+class PubspecNotFound implements Exception {}
+
 /// This class facilitates overriding [Process.run].
 /// It should be extended by another class in client code with overrides
 /// that construct a custom implementation.
