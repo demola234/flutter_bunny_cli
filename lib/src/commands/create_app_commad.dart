@@ -1,5 +1,5 @@
 import 'package:args/command_runner.dart';
-import 'package:flutter_bunny/src/commands/base.dart';
+import 'package:flutter_bunny/src/commands/base_commands.dart';
 import 'package:flutter_bunny/src/commands/create_flutter_app.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:meta/meta.dart';

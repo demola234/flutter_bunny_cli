@@ -1,4 +1,3 @@
-import 'package:flutter_bunny/src/common/logger_extension.dart';
 import 'package:flutter_bunny/src/common/template.dart';
 import 'package:flutter_bunny/src/templates/bunny_template_bundle.dart';
 import 'package:flutter_bunny/src/templates/post_generate_actions.dart';
@@ -9,12 +8,12 @@ import 'package:universal_io/io.dart';
 /// {@template bunny_cli}
 /// A core Flutter app template.
 /// {@endtemplate}
-class FlutterBunnyFlutterApp extends Template {
+class FlutterBunnyFlutterApp extends MasonTemplate {
   FlutterBunnyFlutterApp()
       : super(
           name: 'core',
           bundle: bunnyTemplateBundle,
-          help: 'Generate a Very Good Flutter application.',
+          help: 'Generate a Bunny Flutter application.',
         );
 
   @override
@@ -46,7 +45,7 @@ class FlutterBunnyFlutterApp extends Template {
 
     logger
       ..info('\n')
-      ..create('Created a Flutter App!')
+      // ..create('Created a Flutter App!')
       ..info(details)
       ..info(
         lightGray.wrap(

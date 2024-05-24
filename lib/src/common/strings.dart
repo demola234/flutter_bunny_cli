@@ -4,3 +4,4 @@ String logPromptNewCliVersionAvailable(
 ) =>
     'There is a new version of $packageName available ($latestVersion). '
     'Would you like to update?';
+

@@ -1,0 +1,2 @@
+
+class PubException implements Exception {}

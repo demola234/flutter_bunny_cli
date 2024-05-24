@@ -1,4 +1,4 @@
-import 'package:flutter_bunny/src/cli/cli.dart';
+import 'package:flutter_bunny/src/cli/cli_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:universal_io/io.dart';
 
@@ -10,9 +10,9 @@ Future<bool> installFlutterPackages(
   Directory outputDir, {
   bool recursive = false,
 }) async {
-  final isFlutterInstalled = await Flutter.installed(logger: logger);
+  final isFlutterInstalled = await PackageRunner.isFlutterInstalled(logger: logger);
   if (isFlutterInstalled) {
-    return Flutter.pubGet(
+    return PackageRunner.installDependencies(
       cwd: outputDir.path,
       recursive: recursive,
       logger: logger,
@@ -27,12 +27,12 @@ Future<void> applyDartFixes(
   Directory outputDir, {
   bool recursive = false,
 }) async {
-  final isFlutterInstalled = await Flutter.installed(logger: logger);
+  final isFlutterInstalled = await PackageRunner.isFlutterInstalled(logger: logger);
   if (isFlutterInstalled) {
     final applyFixesProgress = logger.progress(
       'Running "dart fix --apply" in ${outputDir.path}',
     );
-    await Dart.applyFixes(
+    await PackageRunner.applyFixes(
       cwd: outputDir.path,
       recursive: recursive,
       logger: logger,

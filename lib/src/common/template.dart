@@ -1,14 +1,8 @@
 import 'package:mason/mason.dart';
 import 'package:universal_io/io.dart';
 
-/// {@template template}
-/// Dart class that represents a VeryGoodCLI supported template.
-/// Each template consists of a [MasonBundle], name,
-/// and help text describing the template.
-/// {@endtemplate}
-abstract class Template {
-  /// {@macro template}
-  const Template({
+abstract class MasonTemplate {
+  const MasonTemplate({
     required this.name,
     required this.bundle,
     required this.help,

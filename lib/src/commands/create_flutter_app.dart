@@ -1,4 +1,4 @@
-import 'package:flutter_bunny/src/commands/base.dart';
+import 'package:flutter_bunny/src/commands/base_commands.dart';
 import 'package:flutter_bunny/src/common/template.dart';
 import 'package:flutter_bunny/src/templates/bunny_template.dart';
 
@@ -22,17 +22,18 @@ class CreateFlutterApp extends FlutterBunnyCommand with OrgName {
   String get description => 'Generate a Bunny Flutter application.';
 
   @override
-  Map<String, dynamic> getTemplateVars() {
-    final vars = super.getTemplateVars();
+  Map<String, dynamic> getMasonTemplateVars() {
+    final vars = super.getMasonTemplateVars();
 
     final applicationId = argResults['application-id'] as String?;
     if (applicationId != null) {
       vars['application_id'] = applicationId;
     }
 
-    return vars;
+    return vars; final generateProgress =
+        logger.progress('BunnyCli: Generating $projectName');
   }
 
   @override
-  Template get template => FlutterBunnyFlutterApp();
+  MasonTemplate get template => FlutterBunnyFlutterApp();
 }

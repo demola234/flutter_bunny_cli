@@ -1,5 +1,6 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
+import 'package:flutter_bunny/src/commands/config_flags.dart';
 import 'package:flutter_bunny/src/common/template.dart';
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
@@ -20,14 +21,20 @@ const _defaultDescription =
 const _defaultOrgName = 'com.example.flutter_bunny';
 const _hostUrl = 'https://bunnycli.com';
 
-abstract class FlutterBunnyCommand extends Command<int> {
+abstract class FlutterBunnyCommand extends Command<int>
+    with ArgParserConfigurator {
   FlutterBunnyCommand({
     required this.logger,
     @visibleForTesting MasonGeneratorFromBundle? generatorFromBundle,
     @visibleForTesting MasonGeneratorFromBrick? generatorFromBrick,
   })  : _generatorFromBundle = generatorFromBundle ?? MasonGenerator.fromBundle,
         _generatorFromBrick = generatorFromBrick ?? MasonGenerator.fromBrick {
-    _configureArgParser();
+    configureArgParser(
+      argParser,
+      includeOrgName: this is OrgName,
+      includeHostUrl: this is HostUrl,
+      includePublishable: this is Publishable,
+    );
   }
 
   final Logger logger;
@@ -53,7 +60,7 @@ abstract class FlutterBunnyCommand extends Command<int> {
 
   String get projectDescription => argResults['description'] as String? ?? '';
 
-  Template get template;
+  MasonTemplate get template;
 
   @override
   String get invocation => 'bunny_cli create $name <project-name> [arguments]';
@@ -61,13 +68,17 @@ abstract class FlutterBunnyCommand extends Command<int> {
   @override
   Future<int> run() async {
     final template = this.template;
-    final generator = await _getGeneratorForTemplate();
+    final generator = await _getGeneratorForMasonTemplate();
     return await runCreate(generator, template);
   }
 
-  Future<int> runCreate(MasonGenerator generator, Template template) async {
-    var vars = getTemplateVars();
-    final generateProgress = logger.progress('Generating Bunny Project');
+  Future<int> runCreate(
+      MasonGenerator generator, MasonTemplate template) async {
+    var vars = getMasonTemplateVars();
+    final generateProgress =
+        logger.progress('BunnyCli: Generating $projectName');
+
+   
     final target = DirectoryGeneratorTarget(outputDirectory);
 
     await generator.hooks.preGen(vars: vars, onVarsChanged: (v) => vars = v);
@@ -83,58 +94,20 @@ abstract class FlutterBunnyCommand extends Command<int> {
   }
 
   @mustCallSuper
-  Map<String, dynamic> getTemplateVars() {
+  Map<String, dynamic> getMasonTemplateVars() {
     final vars = <String, dynamic>{
       'project_name': projectName,
       'description': projectDescription,
     };
     if (this is OrgName) vars['org_name'] = (this as OrgName).orgName;
 
+    if (this is HostUrl) vars['host_url'] = (this as HostUrl).hostUrl;
+
     if (this is Publishable) {
       vars['publishable'] = (this as Publishable).publishable;
     }
+
     return vars;
-  }
-
-  void _configureArgParser() {
-    argParser
-      ..addOption(
-        'output-directory',
-        abbr: 'o',
-        help: 'The desired output directory when creating a new project.',
-      )
-      ..addOption(
-        'description',
-        help: 'The description for this new project.',
-        aliases: ['desc'],
-        defaultsTo: _defaultDescription,
-      );
-
-    if (this is OrgName) {
-      argParser.addOption(
-        'org-name',
-        help: 'The organization for this new project.',
-        defaultsTo: _defaultOrgName,
-        aliases: ['org'],
-      );
-    }
-
-    if (this is HostUrl) {
-      argParser.addOption(
-        'host-url',
-        help: 'Set the host url for the Flutter Bunny Cli.',
-        defaultsTo: _hostUrl,
-        allowed: [_hostUrl],
-      );
-    }
-
-    if (this is Publishable) {
-      argParser.addFlag(
-        'publishable',
-        negatable: false,
-        help: 'Whether the generated project is intended to be published.',
-      );
-    }
   }
 
   void _validateProjectName(List<String> args) {
@@ -160,7 +133,7 @@ abstract class FlutterBunnyCommand extends Command<int> {
   bool _isValidPackageName(String name) =>
       _identifierRegExp.matchAsPrefix(name)?.end == name.length;
 
-  Future<MasonGenerator> _getGeneratorForTemplate() async {
+  Future<MasonGenerator> _getGeneratorForMasonTemplate() async {
     try {
       final brick = Brick.version(
           name: template.bundle.name, version: '^${template.bundle.version}');
@@ -184,8 +157,7 @@ class OrgNameValidator {
           '"$name" is not a valid org name.\n\n'
               'A valid org name has at least 2 parts separated by "."\n'
               'Each part must start with a letter and only include '
-              'alphanumeric characters (A-Z, a-z, 0-9), underscores (_),'
-              '',
+              'alphanumeric characters (A-Z, a-z, 0-9), underscores (_),',
           '');
     }
     return name;

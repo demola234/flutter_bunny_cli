@@ -45,8 +45,8 @@ class FlutterBunnyBase {
   }
 
   void handleError(String message, StackTrace stackTrace) {
-     final usage = 'Usage: flutter_bunny <command> [arguments]';
-     
+    final usage = 'Usage: flutter_bunny <command> [arguments]';
+
     _logger
       ..err(message)
       ..err('$stackTrace')
@@ -57,7 +57,7 @@ class FlutterBunnyBase {
   void logArguments(ArgResults topLevelResults) {
     _logger
       ..detail('Argument information:')
-      ..detail('  Top level options:');
+      ..detail('Top level options:');
     for (final option in topLevelResults.options) {
       if (topLevelResults.wasParsed(option)) {
         _logger.detail('  - $option: ${topLevelResults[option]}');
