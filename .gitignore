@@ -9,7 +9,6 @@ mason-lock.json
 .mason
 *.DS_Store
 *.iml
-*.log
-*.swp
-*.swo
-*.swn
+.DS_Store
+.DS_Store?
+**/.DS_Store
