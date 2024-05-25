@@ -30,8 +30,7 @@ class CreateFlutterApp extends FlutterBunnyCommand with OrgName {
       vars['application_id'] = applicationId;
     }
 
-    return vars; final generateProgress =
-        logger.progress('BunnyCli: Generating $projectName');
+    return vars;
   }
 
   @override

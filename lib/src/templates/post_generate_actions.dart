@@ -10,10 +10,11 @@ Future<bool> installFlutterPackages(
   Directory outputDir, {
   bool recursive = false,
 }) async {
-  final isFlutterInstalled = await PackageRunner.isFlutterInstalled(logger: logger);
+  final isFlutterInstalled = await PackageRunner.isFlutterInstalled(logger: logger,  cliRunner: CliRunner(),);
   if (isFlutterInstalled) {
     return PackageRunner.installDependencies(
       cwd: outputDir.path,
+      cliRunner: CliRunner(),
       recursive: recursive,
       logger: logger,
     );
@@ -27,13 +28,14 @@ Future<void> applyDartFixes(
   Directory outputDir, {
   bool recursive = false,
 }) async {
-  final isFlutterInstalled = await PackageRunner.isFlutterInstalled(logger: logger);
+  final isFlutterInstalled = await PackageRunner.isFlutterInstalled(logger: logger,  cliRunner: CliRunner(),);
   if (isFlutterInstalled) {
     final applyFixesProgress = logger.progress(
       'Running "dart fix --apply" in ${outputDir.path}',
     );
     await PackageRunner.applyFixes(
       cwd: outputDir.path,
+       cliRunner: CliRunner(),
       recursive: recursive,
       logger: logger,
     );

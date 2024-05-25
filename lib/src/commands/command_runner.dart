@@ -3,6 +3,7 @@ import 'package:cli_completion/cli_completion.dart';
 import 'package:flutter_bunny/src/commands/create_app_commad.dart';
 import 'package:flutter_bunny/src/commands/flutter_bunny_base.dart';
 import 'package:flutter_bunny/src/common/package_info.dart';
+import 'package:mason/mason.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
 
@@ -60,7 +61,8 @@ class FlutterBunnyCommandRunner extends CompletionCommandRunner<int> {
     }
 
     if (argResults['version'] == true) {
-      return _base.printVersion();
+      _base.logger.info(packageVersion); // Ensure this matches your tests
+      return ExitCode.success.code;
     }
 
     return await super.runCommand(argResults) ?? ExitCode.success.code;
@@ -100,7 +102,7 @@ class FlutterBunnyCommandRunner extends CompletionCommandRunner<int> {
   /// Otherwise, runs the specified subcommand and checks for updates.
   Future<int?> _runSubCommand(ArgResults topLevelResults) async {
     if (topLevelResults['version'] == true) {
-      _base.logger.info(cliVersion);
+      _base.logger.info(packageVersion); // Ensure this matches your tests
       return ExitCode.success.code;
     }
     final exitCode = await super.runCommand(topLevelResults);
