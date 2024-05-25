@@ -51,6 +51,7 @@ abstract class FlutterBunnyCommand extends Command<int>
     final directory = argResults['output-directory'] as String? ?? '.';
     return Directory(directory);
   }
+  
 
   String get projectName {
     final args = argResults.rest;
