@@ -11,6 +11,11 @@
 # (the recommended set includes the core lints).
 # The core lints are also what is used by pub.dev for scoring packages.
 
+analyzer:
+  errors:
+    depend_on_referenced_packages: ignore
+    prefer_initializing_formals: ignore
+    recursive_getters: ignore
 include: package:lints/recommended.yaml
 
 # Uncomment the following section to specify additional rules.

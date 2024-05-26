@@ -10,16 +10,13 @@ import 'package:universal_io/io.dart';
 class MockLogger extends Mock implements Logger {}
 
 class MockProcessResult extends Mock {
-  @override
   int get exitCode =>
       super.noSuchMethod(Invocation.getter(#exitCode), returnValue: 0) as int;
 
-  @override
   dynamic get stdout =>
       super.noSuchMethod(Invocation.getter(#stdout), returnValue: '')
           as dynamic;
 
-  @override
   dynamic get stderr =>
       super.noSuchMethod(Invocation.getter(#stderr), returnValue: '')
           as dynamic;

@@ -25,13 +25,6 @@ void main() {
     '',
   );
 
-  final softwareErrorProcessResult = ProcessResult(
-    42,
-    ExitCode.software.code,
-    '',
-    'Some error',
-  );
-
   late MockCliRunner mockCliRunner;
   late MockLogger mockLogger;
   late MockFile mockFile;
