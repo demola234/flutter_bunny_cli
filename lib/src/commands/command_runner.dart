@@ -5,7 +5,10 @@ import 'package:flutter_bunny/src/commands/flutter_bunny_base.dart';
 import 'package:flutter_bunny/src/commands/update_command.dart';
 import 'package:flutter_bunny/src/common/package_info.dart';
 import 'package:mason/mason.dart';
+import 'package:meta/meta.dart';
+import 'package:path/path.dart' as path;
 import 'package:pub_updater/pub_updater.dart';
+import 'package:universal_io/io.dart';
 
 /// The command runner for the Flutter Bunny CLI tool.
 ///
@@ -20,6 +23,8 @@ class FlutterBunnyCommandRunner extends CompletionCommandRunner<int> {
   /// [logger] is used for logging messages.
   /// [pubUpdater] is used to check for updates to the CLI tool.
   /// [environment] is a map of environment variables.
+  ///
+  ///
   FlutterBunnyCommandRunner({
     Logger? logger,
     PubUpdater? pubUpdater,
@@ -49,6 +54,12 @@ class FlutterBunnyCommandRunner extends CompletionCommandRunner<int> {
   @override
   void printUsage() => _base.logger.info(usage);
 
+  /// Boolean for checking if windows, which can be overridden for
+  /// testing purposes.
+  @visibleForTesting
+  bool? isWindowsOverride;
+  bool get _isWindows => isWindowsOverride ?? Platform.isWindows;
+
   /// Runs the command with the given [args].
   ///
   /// Parses the arguments, sets up logging, and handles the 'version' flag.
@@ -62,7 +73,7 @@ class FlutterBunnyCommandRunner extends CompletionCommandRunner<int> {
     }
 
     if (argResults['version'] == true) {
-      _base.logger.info(packageVersion); // Ensure this matches your tests
+      _base.logger.info(cliVersion);
       return ExitCode.success.code;
     }
 
@@ -109,5 +120,21 @@ class FlutterBunnyCommandRunner extends CompletionCommandRunner<int> {
     final exitCode = await super.runCommand(topLevelResults);
     await _base.checkForUpdate();
     return exitCode;
+  }
+
+  Directory get _configDir {
+    if (_isWindows) {
+      // Use localappdata on windows
+      final localAppData = _base.environment['LOCALAPPDATA']!;
+      return Directory(path.join(localAppData, 'FlutterBunny'));
+    } else {
+      // Try using XDG config folder
+      var dirPath = _base.environment['XDG_CONFIG_HOME'];
+      // Fallback to $HOME if not following XDG specification
+      if (dirPath == null || dirPath.isEmpty) {
+        dirPath = _base.environment['HOME'];
+      }
+      return Directory(path.join(dirPath!, '.flutter_bunny'));
+    }
   }
 }
