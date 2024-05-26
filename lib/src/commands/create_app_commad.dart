@@ -31,5 +31,5 @@ class CreateAppCommand extends Command<int> {
 
   @override
   String get invocation =>
-      'bunny_cli create <subcommand> <project-name> [arguments]';
+      'flutter_bunny create <subcommand> <project-name> [arguments]';
 }

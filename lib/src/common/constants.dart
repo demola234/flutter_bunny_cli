@@ -12,11 +12,11 @@ class Constants {
   |   Current Version:  X.X.X                                       | 
   |   Latest Version:   Y.Y.Y                                       |
   |                                                                 |
-  |   Checkout for more info: https://pub.dev/packages/bunny_cli    |
+  |   Checkout for more info: https://pub.dev/packages/flutter_bunny|
   |                                                                 |
   |   Run following command to update to the latest version:        |
   |                                                                 |
-  |   pub global activate bunny_cli                                 |
+  |   pub global activate flutter_bunny                             |
   |                                                                 |
   ===================================================================
 ''';

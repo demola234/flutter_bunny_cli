@@ -64,7 +64,7 @@ abstract class FlutterBunnyCommand extends Command<int>
   MasonTemplate get template;
 
   @override
-  String get invocation => 'bunny_cli create $name <project-name> [arguments]';
+  String get invocation => 'flutter_bunny create $name <project-name> [arguments]';
 
   @override
   Future<int> run() async {

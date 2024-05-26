@@ -5,9 +5,6 @@ import 'package:mason/mason.dart';
 import 'package:path/path.dart' as path;
 import 'package:universal_io/io.dart';
 
-/// {@template bunny_cli}
-/// A core Flutter app template.
-/// {@endtemplate}
 class FlutterBunnyFlutterApp extends MasonTemplate {
   FlutterBunnyFlutterApp()
       : super(
@@ -45,16 +42,12 @@ class FlutterBunnyFlutterApp extends MasonTemplate {
 
     logger
       ..info('\n')
-      // ..create('Created a Flutter App!')
-      ..info(lightCyan.wrap(styleBold.wrap("Generating Bunny...")))
+      ..info(lightCyan.wrap(styleBold.wrap("🐰 Generating Bunny...")))
       ..info(details)
       ..info('''
         ${lightBlue.wrap(
         '''
-          ((      
-          ( -.-)     
-          o_(")(")
-          Flutter App Successfully Generated!!!''',
+         🐰 Flutter Bunny Application Successfully Generated🔥''',
       )}
          ''');
   }
