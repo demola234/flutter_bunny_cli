@@ -1,7 +1,7 @@
 name: flutter_bunny
 description: A CLI Tools Command-Line application for generating flutter project.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/demola234/bunny_cli
 environment:
   sdk: ^3.3.4
 
@@ -13,12 +13,13 @@ dependencies:
   collection: ^1.18.0
   equatable: ^2.0.5
   glob: ^2.1.2
-  lcov_parser: ^0.1.2
+
   mason: ^0.1.0-dev.53
   mason_logger: ^0.2.15
   meta: ^1.14.0
   mockito: ^5.4.4
   package_config: ^2.1.0
+  path: ^1.9.0
   pub_updater: ^0.4.0
   sprintf: ^7.0.0
   universal_io: ^2.2.2

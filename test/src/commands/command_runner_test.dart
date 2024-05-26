@@ -1,13 +1,11 @@
-import 'package:args/command_runner.dart';
 import 'package:flutter_bunny/src/commands/command_runner.dart';
-import 'package:flutter_bunny/src/commands/create_app_commad.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pub_updater/pub_updater.dart';
 import 'package:test/test.dart';
-import 'package:universal_io/io.dart';
 
 class _MockLogger extends Mock implements Logger {}
+
 class _MockPubUpdater extends Mock implements PubUpdater {}
 
 const expectedUsage = [
@@ -29,7 +27,6 @@ const expectedUsage = [
 const packageVersion = '1.0.0';
 
 void main() {
-
   group('FlutterBunnyCommandRunner', () {
     late Logger mockLogger;
     late PubUpdater mockPubUpdater;
@@ -46,7 +43,8 @@ void main() {
 
       when(() => mockLogger.info(any())).thenReturn(null);
       when(() => mockLogger.detail(any())).thenReturn(null);
-      when(() => mockPubUpdater.getLatestVersion(any())).thenAnswer((_) async => packageVersion);
+      when(() => mockPubUpdater.getLatestVersion(any()))
+          .thenAnswer((_) async => packageVersion);
     });
 
     group('run', () {
@@ -59,13 +57,13 @@ void main() {
       // });
 
       test('handles pub update errors gracefully', () async {
-        when(() => mockPubUpdater.getLatestVersion(any())).thenThrow(Exception('oops'));
+        when(() => mockPubUpdater.getLatestVersion(any()))
+            .thenThrow(Exception('oops'));
 
         final result = await commandRunner.run(['--version']);
         expect(result, equals(ExitCode.success.code));
         verifyNever(() => mockLogger.info('1.1.0'));
       });
-
     });
   });
 }

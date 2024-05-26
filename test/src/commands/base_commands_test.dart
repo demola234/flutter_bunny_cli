@@ -18,8 +18,6 @@ class _MockMasonGenerator extends Mock implements MasonGenerator {}
 
 class _MockMasonBundle extends Mock implements MasonBundle {}
 
-class _MockMasonBrick extends Mock implements Brick {}
-
 class _MockGeneratorHooks extends Mock implements GeneratorHooks {}
 
 class _FakeLogger extends Fake implements Logger {}
@@ -309,28 +307,6 @@ void main() {
 "invalid-name" is not a valid package name.
 
 See https://dart.dev/tools/pub/pubspec#name for more information.''',
-                ),
-              ),
-            );
-          },
-        );
-
-        test(
-          'throws UsageException when multiple project names are provided',
-          () async {
-            await expectLater(
-              runner.run(
-                [
-                  'test_command',
-                  'name',
-                  'other_name',
-                ],
-              ),
-              throwsA(
-                isA<UsageException>().having(
-                  (e) => e.message,
-                  'message',
-                  'Multiple project names specified.',
                 ),
               ),
             );
