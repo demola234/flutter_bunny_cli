@@ -46,12 +46,16 @@ class FlutterBunnyFlutterApp extends MasonTemplate {
     logger
       ..info('\n')
       // ..create('Created a Flutter App!')
+      ..info(lightCyan.wrap(styleBold.wrap("Generating Bunny...")))
       ..info(details)
-      ..info(
-        lightGray.wrap(
-          '''
+      ..info('''
+        ${lightBlue.wrap(
+        '''
+          ((      
+          ( -.-)     
+          o_(")(")
           Flutter App Successfully Generated!!!''',
-        ),
-      );
+      )}
+         ''');
   }
 }

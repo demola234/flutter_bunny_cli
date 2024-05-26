@@ -51,7 +51,6 @@ abstract class FlutterBunnyCommand extends Command<int>
     final directory = argResults['output-directory'] as String? ?? '.';
     return Directory(directory);
   }
-  
 
   String get projectName {
     final args = argResults.rest;
@@ -59,7 +58,8 @@ abstract class FlutterBunnyCommand extends Command<int>
     return args.first;
   }
 
-  String get projectDescription => argResults['description'] as String? ?? '';
+  String get projectDescription =>
+      argResults['description'] as String? ?? _defaultDescription;
 
   MasonTemplate get template;
 
@@ -75,11 +75,10 @@ abstract class FlutterBunnyCommand extends Command<int>
 
   Future<int> runCreate(
       MasonGenerator generator, MasonTemplate template) async {
-    var vars = getMasonTemplateVars();
     final generateProgress =
         logger.progress('BunnyCli: Generating $projectName');
+    var vars = getMasonTemplateVars();
 
-   
     final target = DirectoryGeneratorTarget(outputDirectory);
 
     await generator.hooks.preGen(vars: vars, onVarsChanged: (v) => vars = v);
@@ -116,10 +115,6 @@ abstract class FlutterBunnyCommand extends Command<int>
 
     if (args.isEmpty) {
       usageException('No option specified for the project name.');
-    }
-
-    if (args.length > 1) {
-      usageException('Multiple project names specified.');
     }
 
     final name = args.first;
