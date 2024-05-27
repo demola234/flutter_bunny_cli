@@ -1,6 +1,6 @@
 name: flutter_bunny
-description: A CLI Tools Command-Line application for generating flutter project.
-version: 1.0.3
+description: Flutter Bunny is a command-line interface (CLI) tool designed to simplify the process of generating Flutter templates. Whether you are creating a new Flutter project or adding a new feature, Flutter Bunny provides a quick and easy way to scaffold your application with best practices and predefined structures.
+version: 1.0.4
 repository: https://github.com/demola234/bunny_cli
 environment:
   sdk: ^3.3.4

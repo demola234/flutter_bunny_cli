@@ -6,7 +6,6 @@ import 'package:flutter_bunny/src/commands/update_command.dart';
 import 'package:flutter_bunny/src/common/package_info.dart';
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
-import 'package:path/path.dart' as path;
 import 'package:pub_updater/pub_updater.dart';
 import 'package:universal_io/io.dart';
 
@@ -121,20 +120,4 @@ class FlutterBunnyCommandRunner extends CompletionCommandRunner<int> {
     await _base.checkForUpdate();
     return exitCode;
   }
-
-  Directory get _configDir {
-    if (_isWindows) {
-      // Use localappdata on windows
-      final localAppData = _base.environment['LOCALAPPDATA']!;
-      return Directory(path.join(localAppData, 'FlutterBunny'));
-    } else {
-      // Try using XDG config folder
-      var dirPath = _base.environment['XDG_CONFIG_HOME'];
-      // Fallback to $HOME if not following XDG specification
-      if (dirPath == null || dirPath.isEmpty) {
-        dirPath = _base.environment['HOME'];
-      }
-      return Directory(path.join(dirPath!, '.flutter_bunny'));
-    }
-  }
-}
+ }

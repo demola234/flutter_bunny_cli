@@ -1,6 +1,5 @@
 /// Holds all the constants
 class Constants {
-
   static const String newVersionMessage = '''
 
   ===================================================================
@@ -21,7 +20,6 @@ class Constants {
   ===================================================================
 ''';
 
-
   static const String newAppCreated = '''
 
   ===================================================================
@@ -31,7 +29,7 @@ class Constants {
   |                 New Bunny Application was created.              |
   |                                                                 |
   |   Generated X.X.X file(s).                                      | 
-  |   cd   Y.Y.Y                                                    |
+  |   cd to  Y.Y.Y  get started                                     |
   |                                                                 |                               
   |                                                                 |
   ===================================================================

@@ -1,2 +1,2 @@
-const cliVersion = '1.0.3';
+const cliVersion = '1.0.4';
 const packageName = 'flutter_bunny';
