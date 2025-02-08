@@ -93,7 +93,7 @@ class ConsoleLogger extends BaseLogger {
     IOSink? output,
     IOSink? errorSink,
     Logger? logger,
-  })  : logger = logger ?? Logger('spider-console'),
+  })  : logger = logger ?? Logger('bunny-console'),
         super(output: output ?? stdout, errorSink: errorSink ?? stderr) {
     setupLogging();
   }
