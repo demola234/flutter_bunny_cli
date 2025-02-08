@@ -2,22 +2,22 @@
 class Constants {
   static const String newVersionMessage = '''
 
-  ===================================================================
-  |                      New Version Available                      |
-  |=================================================================|
-  |                                                                 |
-  |   New Version Available with more stability and improvements.   |
-  |                                                                 |
-  |   Current Version:  X.X.X                                       | 
-  |   Latest Version:   Y.Y.Y                                       |
-  |                                                                 |
-  |   Checkout for more info: https://pub.dev/packages/flutter_bunny|
-  |                                                                 |
-  |   Run following command to update to the latest version:        |
-  |                                                                 |
-  |   pub global activate flutter_bunny                             |
-  |                                                                 |
-  ===================================================================
+  ====================================================================
+  |                      New Version Available                       |
+  |==================================================================|
+  |                                                                  |
+  |   New Version Available with more stability and improvements.    |
+  |                                                                  |
+  |   Current Version:  X.X.X                                        | 
+  |   Latest Version:   Y.Y.Y                                        |
+  |                                                                  |
+  |   Checkout for more info: https://pub.dev/packages/flutter_bunny |
+  |                                                                  |
+  |   Run following command to update to the latest version:         |
+  |                                                                  |
+  |   pub global activate flutter_bunny                              |
+  |                                                                  |
+  ====================================================================
 ''';
 
   static const String newAppCreated = '''
