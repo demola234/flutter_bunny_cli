@@ -18,6 +18,15 @@ class CreateFlutterApp extends BaseCommand {
   @override
   String get name => 'app';
 
+  @override
+  Future<int> run() async {
+    logger.info('''
+🐰 Welcome to Flutter Bunny CLI!
+Let's create an awesome Flutter project together.
+    ''');
+    return super.run();
+  }
+
   String _generateOrgName(String projectName) {
     // Handle various input formats (camelCase, snake_case, etc.)
     String normalized = projectName.replaceAllMapped(
