@@ -1,4 +1,3 @@
-
 part of 'cli_runner.dart';
 
 class PackageRunner {
@@ -6,7 +5,8 @@ class PackageRunner {
 
   PackageRunner({required this.cliRunner});
 
-  static Future<bool> isFlutterInstalled({required Logger logger, required CliRunner cliRunner}) async {
+  static Future<bool> isFlutterInstalled(
+      {required Logger logger, required CliRunner cliRunner}) async {
     try {
       await cliRunner.runCommand('flutter', ['--version'], log: logger);
       return true;
@@ -15,7 +15,8 @@ class PackageRunner {
     }
   }
 
-  static Future<bool> isDartInstalled({required Logger logger, required CliRunner cliRunner}) async {
+  static Future<bool> isDartInstalled(
+      {required Logger logger, required CliRunner cliRunner}) async {
     try {
       await cliRunner.runCommand('dart', ['--version'], log: logger);
       return true;
@@ -36,12 +37,15 @@ class PackageRunner {
     final result = await _runCommand(
       cmd: (cwd) async {
         final relativePath = p.relative(cwd, from: initialCwd);
-        final path = relativePath == '.' ? '.' : '.${p.context.separator}$relativePath';
+        final path =
+            relativePath == '.' ? '.' : '.${p.context.separator}$relativePath';
 
-        final installProgress = logger.progress('Running "flutter pub get" in $path');
+        final installProgress =
+            logger.progress('Running "flutter pub get" in $path');
 
         try {
-          return await cliRunner.runCommand('flutter', ['pub', 'get'], dir: cwd, log: logger);
+          return await cliRunner.runCommand('flutter', ['pub', 'get'],
+              dir: cwd, log: logger);
         } finally {
           installProgress.complete();
         }
@@ -68,26 +72,31 @@ class PackageRunner {
     final directoriesToFix = _findDirectoriesWithPubspec(cwd, ignore);
 
     if (directoriesToFix.isEmpty) {
-      throw PubException();
+      throw CliException('No directories with pubspec.yaml found.');
     }
 
-    await Future.wait(directoriesToFix.map((dir) => _applyFixToDirectory(dir, logger, cliRunner)));
+    await Future.wait(directoriesToFix
+        .map((dir) => _applyFixToDirectory(dir, logger, cliRunner)));
   }
 
-  static Future<void> _applyFixToDirectory(String directory, Logger logger, CliRunner cliRunner) async {
+  static Future<void> _applyFixToDirectory(
+      String directory, Logger logger, CliRunner cliRunner) async {
     final pubspec = File(p.join(directory, 'pubspec.yaml'));
     if (!pubspec.existsSync()) {
-      throw PubException();
+      throw CliException('pubspec.yaml not found in $directory');
     }
 
-    await cliRunner.runCommand('dart', ['fix', '--apply'], dir: directory, log: logger);
+    await cliRunner.runCommand('dart', ['fix', '--apply'],
+        dir: directory, log: logger);
   }
 
-  static List<String> _findDirectoriesWithPubspec(String cwd, Set<String> ignore) {
+  static List<String> _findDirectoriesWithPubspec(
+      String cwd, Set<String> ignore) {
     return Directory(cwd)
         .listSync(recursive: true)
         .whereType<File>()
-        .where((file) => file.path.endsWith('pubspec.yaml') && !_shouldIgnore(file, ignore))
+        .where((file) =>
+            file.path.endsWith('pubspec.yaml') && !_shouldIgnore(file, ignore))
         .map((file) => file.parent.path)
         .toList();
   }
@@ -104,7 +113,9 @@ class PackageRunner {
   }) async {
     if (!recursive) {
       final pubspec = File(p.join(cwd, 'pubspec.yaml'));
-      if (!pubspec.existsSync()) throw PubException();
+      if (!pubspec.existsSync()) {
+        throw CliException(('pubspec.yaml not found in $cwd'));
+      }
 
       return [await cmd(cwd)];
     }
@@ -115,7 +126,9 @@ class PackageRunner {
       cwd: cwd,
     );
 
-    if (processes.isEmpty) throw PubException();
+    if (processes.isEmpty) {
+      throw CliException('No pubspec.yaml files found in $cwd');
+    }
 
     final results = <T>[];
     for (final process in processes) {

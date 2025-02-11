@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_bunny/src/common/exceptions.dart';
+import 'package:flutter_bunny/src/common/cli_exception.dart';
 import 'package:glob/glob.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:meta/meta.dart';
