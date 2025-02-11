@@ -84,6 +84,7 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     required List<String> modules,
   }) async {
     final generateProgress = logger.progress('Creating $projectName...');
+    
     var vars = await getMasonTemplateVars(
       projectName: projectName,
       architecture: architecture,
@@ -100,7 +101,7 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     generateProgress.complete('Project created successfully! 🎉');
     generateProgress.complete('Generated ${files.length} file(s)');
 
-    _displayNextSteps(
+    displayNextSteps(
       projectName,
       target.dir.path.camelCase,
       template,
@@ -312,7 +313,8 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     return true;
   }
 
-  void _displayNextSteps(
+  @mustCallSuper
+  void displayNextSteps(
     String projectName,
     String projectPath,
     MasonTemplate template,
