@@ -31,7 +31,7 @@ void main(List<String> arguments) async {
       logger.info('Verbose mode enabled');
     }
 
-    Check if no command is provided and start SetupWizard by default
+    // Check if no command is provided and start SetupWizard by default
     if (argResults.command == null) {
       logger.info('No command provided. Starting interactive setup...');
       final wizard = SetupWizard(logger: logger);

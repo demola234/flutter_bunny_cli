@@ -1,4 +1,4 @@
-import 'package:flutter_bunny/src/commands/command_runner.dart';
+import '../../../v1.lib/src/commands/command_runner.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pub_updater/pub_updater.dart';

@@ -1,123 +1,133 @@
 import 'package:args/args.dart';
 import 'package:cli_completion/cli_completion.dart';
-import 'package:flutter_bunny/src/commands/create_app_commad.dart';
-import 'package:flutter_bunny/src/commands/flutter_bunny_base.dart';
-import 'package:flutter_bunny/src/commands/update_command.dart';
+import 'package:flutter_bunny/src/commands/create_app_command.dart';
+import 'package:flutter_bunny/src/common/base.dart';
+import 'package:flutter_bunny/src/common/cli_exception.dart';
 import 'package:flutter_bunny/src/common/package_info.dart';
-import 'package:mason/mason.dart';
-import 'package:meta/meta.dart';
+import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
-import 'package:universal_io/io.dart';
 
-/// The command runner for the Flutter Bunny CLI tool.
-///
-/// This class is responsible for handling command-line arguments,
-/// executing the appropriate commands, and providing version information
-/// and verbose logging options.
-class FlutterBunnyCommandRunner extends CompletionCommandRunner<int> {
-  final FlutterBunnyBase _base;
+class FlutterBunnyRunner extends CompletionCommandRunner<int> {
+  final Base _base;
 
-  /// Creates a new instance of [FlutterBunnyCommandRunner].
-  ///
-  /// [logger] is used for logging messages.
-  /// [pubUpdater] is used to check for updates to the CLI tool.
-  /// [environment] is a map of environment variables.
-  ///
-  ///
-  FlutterBunnyCommandRunner({
+  FlutterBunnyRunner({
     Logger? logger,
     PubUpdater? pubUpdater,
     Map<String, String>? environment,
-  })  : _base = FlutterBunnyBase(
+  })  : _base = Base(
           logger: logger,
           pubUpdater: pubUpdater,
           environment: environment,
         ),
         super(
-            'flutter_bunny', 'A CLI tool that helps to generate Flutter Code') {
+          'flutter_bunny',
+          'Flutter Bunny CLI 🐰 - Let\'s set up your Flutter project 🚀',
+        ) {
+    _setupArgParser();
+    addCommand(CreateAppCommand(logger: _base.logger));
+  }
+
+  void _setupArgParser() {
     argParser
       ..addFlag(
         'version',
-        negatable: false,
-        help: 'Print the current version.',
+        abbr: 'v',
+        negatable: true,
+        help: 'Prints out the current version.',
       )
       ..addFlag(
         'verbose',
         help: 'Enable verbose logging, including all shell commands executed.',
       );
-    addCommand(CreateAppCommand(logger: _base.logger));
-    addCommand(UpdateCommand(logger: _base.logger));
   }
 
-  /// Prints the usage information for the CLI tool.
   @override
   void printUsage() => _base.logger.info(usage);
 
-  /// Boolean for checking if windows, which can be overridden for
-  /// testing purposes.
-  @visibleForTesting
-  bool? isWindowsOverride;
-  bool get _isWindows => isWindowsOverride ?? Platform.isWindows;
-
-  /// Runs the command with the given [args].
-  ///
-  /// Parses the arguments, sets up logging, and handles the 'version' flag.
   @override
   Future<int> run(Iterable<String> args) async {
-    final argResults = _parseArgs(args);
-    if (argResults == null) return ExitCode.usage.code;
+    try {
+      final argResults = await _safeParseArgs(args);
+      if (argResults == null) return ExitCode.usage.code;
 
-    if (argResults['verbose'] == true) {
-      _base.logger.level = Level.verbose;
+      _configureLogging(argResults);
+
+      if (argResults['version'] == true) {
+        return await _handleVersionFlag();
+      }
+
+      return await super.runCommand(argResults) ?? ExitCode.success.code;
+    } on CliException catch (e) {
+      _base.logger.err(e.toString());
+      if (e.stackTrace != null) {
+        _base.logger.detail(e.stackTrace.toString());
+      }
+      return ExitCode.software.code;
+    } catch (e, stackTrace) {
+      final wrappedException = CliException('Unexpected error occurred', e);
+      wrappedException.setStackTrace(stackTrace);
+      _base.handleError(wrappedException.toString(), stackTrace);
+      return ExitCode.software.code;
     }
-
-    if (argResults['version'] == true) {
-      _base.logger.info(cliVersion);
-      return ExitCode.success.code;
-    }
-
-    return await super.runCommand(argResults) ?? ExitCode.success.code;
   }
 
-  /// Parses the command line arguments.
-  ///
-  /// Returns an [ArgResults] object if the arguments are valid, otherwise
-  /// handles the error and returns null.
-  ArgResults? _parseArgs(Iterable<String> args) {
+  Future<ArgResults?> _safeParseArgs(Iterable<String> args) async {
     try {
       return parse(args);
     } on FormatException catch (e, stackTrace) {
-      _base.handleError(e.message, stackTrace);
+      final exception =
+          CliException('Invalid argument format: ${e.message}', e);
+      exception.setStackTrace(stackTrace);
+      throw exception;
     } on ArgumentError catch (e, stackTrace) {
-      _base.handleError(e.message, stackTrace);
+      final exception = CliException('Invalid argument: ${e.message}', e);
+      exception.setStackTrace(stackTrace);
+      throw exception;
     }
-    return null;
   }
 
-  /// Runs the command specified by [topLevelResults].
-  ///
-  /// Logs the arguments and executes the appropriate subcommand if specified.
+  void _configureLogging(ArgResults results) {
+    if (results['verbose'] == true) {
+      _base.logger.level = Level.verbose;
+    }
+  }
+
+  Future<int> _handleVersionFlag() async {
+    _base.logger.info(cliVersion);
+    return ExitCode.success.code;
+  }
+
   @override
   Future<int?> runCommand(ArgResults topLevelResults) async {
-    _base.logArguments(topLevelResults);
-    if (topLevelResults.command != null) {
-      return await _runSubCommand(topLevelResults);
-    }
+    try {
+      _base.logArguments(topLevelResults);
 
-    return await super.runCommand(topLevelResults);
+      if (topLevelResults.command == null) {
+        return await super.runCommand(topLevelResults);
+      }
+
+      return await _executeSubCommand(topLevelResults);
+    } on CommandException catch (e) {
+      _base.logger.err(e.toString());
+      return ExitCode.software.code;
+    }
   }
 
-  /// Runs the subcommand specified in the [topLevelResults].
-  ///
-  /// Checks for the 'version' flag and prints the version if set.
-  /// Otherwise, runs the specified subcommand and checks for updates.
-  Future<int?> _runSubCommand(ArgResults topLevelResults) async {
+  Future<int?> _executeSubCommand(ArgResults topLevelResults) async {
     if (topLevelResults['version'] == true) {
-      _base.logger.info(cliVersion); // Ensure this matches your tests
-      return ExitCode.success.code;
+      return await _handleVersionFlag();
     }
+
     final exitCode = await super.runCommand(topLevelResults);
-    await _base.checkForUpdate();
+    await _checkForUpdates();
     return exitCode;
   }
- }
+
+  Future<void> _checkForUpdates() async {
+    try {
+      await _base.checkForUpdate();
+    } catch (e) {
+      _base.logger.detail('Failed to check for updates: $e');
+    }
+  }
+}

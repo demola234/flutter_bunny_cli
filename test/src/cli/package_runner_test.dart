@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter_bunny/src/cli/cli_runner.dart';
+import '../../../v1.lib/src/cli/cli_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;

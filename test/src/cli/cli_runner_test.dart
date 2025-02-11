@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_bunny/src/cli/cli_runner.dart';
+import '../../../v1.lib/src/cli/cli_runner.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';

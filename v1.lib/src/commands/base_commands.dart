@@ -1,7 +1,7 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
-import 'package:flutter_bunny/src/commands/config_flags.dart';
-import 'package:flutter_bunny/src/common/template.dart';
+import 'config_flags.dart';
+import '../common/template.dart';
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as path;

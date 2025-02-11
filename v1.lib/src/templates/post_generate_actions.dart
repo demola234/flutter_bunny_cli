@@ -1,4 +1,4 @@
-import 'package:flutter_bunny/src/cli/cli_runner.dart';
+import '../cli/cli_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:universal_io/io.dart';
 

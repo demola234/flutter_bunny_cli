@@ -1,6 +1,6 @@
-import 'package:flutter_bunny/src/common/template.dart';
-import 'package:flutter_bunny/src/templates/bunny_template_bundle.dart';
-import 'package:flutter_bunny/src/templates/post_generate_actions.dart';
+import '../common/template.dart';
+import 'bunny_template_bundle.dart';
+import 'post_generate_actions.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as path;
 import 'package:universal_io/io.dart';

@@ -1,7 +1,7 @@
 // flutter_bunny_base.dart
 
 import 'package:args/args.dart';
-import 'package:flutter_bunny/src/common/package_info.dart';
+import '../common/package_info.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
 import 'package:universal_io/io.dart';

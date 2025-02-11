@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
-import 'package:flutter_bunny/src/commands/base_commands.dart';
-import 'package:flutter_bunny/src/common/template.dart';
+import '../../../v1.lib/src/commands/base_commands.dart';
+import '../../../v1.lib/src/common/template.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as path;
