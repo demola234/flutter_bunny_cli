@@ -17,6 +17,7 @@ class CreateAppCommand extends Command<int> {
         generatorFromBrick: generatorFromBrick,
       ),
     );
+    
   }
 
   @override
