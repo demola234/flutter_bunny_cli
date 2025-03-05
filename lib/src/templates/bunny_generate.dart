@@ -13,7 +13,7 @@ class BunnyGenerate extends MasonTemplate {
   BunnyGenerate()
       : super(
           name: 'core',
-          bundle: bunnyTemplateBundle,
+          bundle: bunnyCliTemplateBundle,
           help:
               'Generate a Bunny Flutter application with best practices and common features.',
         );

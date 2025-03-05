@@ -103,14 +103,12 @@ Let's create an awesome Flutter project together.
     );
 
     final orgName = _generateOrgName(projectName ?? '');
-    final dependencies = await _promptDependencies();
-    final setupFirebase = await _promptFirebaseSetup(dependencies);
+    // final dependencies = await _promptDependencies();
+    // final setupFirebase = await _promptFirebaseSetup(dependencies);
 
     _templateVars = {
       ...vars,
       'org_name': orgName,
-      'dependencies': dependencies,
-      'setup_firebase': setupFirebase,
     };
 
     return _templateVars!;

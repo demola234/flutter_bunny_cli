@@ -7,7 +7,7 @@ description: Flutter Bunny is a command-line interface (CLI) tool designed to
 version: 1.0.4
 repository: https://github.com/demola234/bunny_cli
 environment:
-  sdk: ^3.3.4
+  sdk: ^3.6.0
 
 dependencies:
   ansicolor: ^2.0.2
