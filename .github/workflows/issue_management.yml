@@ -1,0 +1,140 @@
+name: "Issue Management"
+
+on:
+  issues:
+    types: [opened, labeled, unlabeled, edited]
+
+jobs:
+  apply_issue_template:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Label Issues
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const body = issue.body || '';
+
+            // Extract issue type from the template checkboxes
+            let type = null;
+
+            if (body.includes('- [x] Bug')) {
+              type = 'bug';
+            } else if (body.includes('- [x] Feature Request')) {
+              type = 'feature';
+            } else if (body.includes('- [x] Documentation')) {
+              type = 'documentation';
+            } else if (body.includes('- [x] Maintenance')) {
+              type = 'maintenance';
+            } else if (body.includes('- [x] Question')) {
+              type = 'question';
+            }
+
+            // Create array of labels to apply
+            const labelsToAdd = [];
+
+            if (type) {
+              labelsToAdd.push(type);
+            }
+
+            // Add appropriate labels based on title/body content
+            if (body.toLowerCase().includes('help') || 
+                issue.title.toLowerCase().includes('help needed')) {
+              labelsToAdd.push('help wanted');
+            }
+
+            if ((body.toLowerCase().includes('first contribution') || 
+                body.toLowerCase().includes('first time contributor') ||
+                body.toLowerCase().includes('newcomer')) &&
+                !body.includes('breaking change')) {
+              labelsToAdd.push('good first issue');
+            }
+
+            // Check if needs more info
+            if (!body.includes('## Steps to Reproduce') || 
+                body.includes('## Steps to Reproduce') && body.includes('## Steps to Reproduce\n\n1. ') === false) {
+              if (type === 'bug') {
+                labelsToAdd.push('needs: reproduction');
+              }
+            }
+
+            // Add priority label if none exists
+            const currentLabels = issue.labels.map(label => label.name);
+            const hasPriorityLabel = currentLabels.some(label => 
+              label.startsWith('priority:')
+            );
+
+            if (!hasPriorityLabel) {
+              // Default to medium priority
+              labelsToAdd.push('priority: medium');
+            }
+
+            // Apply labels if we have any to add
+            if (labelsToAdd.length > 0) {
+              console.log(`Adding labels: ${labelsToAdd.join(', ')}`);
+              github.rest.issues.addLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: labelsToAdd
+              });
+            }
+
+            // Comment on issues missing required information
+            if (type === 'bug' && !body.includes('## Steps to Reproduce') || 
+                body.includes('## Steps to Reproduce') && body.includes('## Steps to Reproduce\n\n1. ') === false) {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: 'Thanks for reporting this issue! To help us resolve it faster, could you please provide steps to reproduce the bug? This will help our team understand and fix the issue more quickly.'
+              });
+            }
+
+      - name: Check for Template Usage
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = context.payload.issue;
+            const body = issue.body || '';
+
+            // Check if issue is using our template
+            const isUsingTemplate = body.includes('## Type') || 
+                                    body.includes('## Description') ||
+                                    body.includes('## Expected');
+
+            if (!isUsingTemplate && context.payload.action === 'opened') {
+              const templateReminder = `
+            Thank you for creating an issue! To help us address it effectively, please consider using one of our issue templates which provide the necessary structure for our team to understand your report.
+
+            You can create a new issue using a template by:
+            1. Closing this issue
+            2. Going to the Issues tab
+            3. Clicking "New Issue"
+            4. Selecting the appropriate template
+
+            This helps us gather the information we need to assist you better!
+            `;
+              
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: templateReminder
+              });
+              
+              // Add label for issues not using the template
+              github.rest.issues.addLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['needs: template']
+              });
+            }
