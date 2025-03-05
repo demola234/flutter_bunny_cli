@@ -152,7 +152,6 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
       'Clean Architecture',
       'MVVM',
       'MVC',
-      'Feature-Driven',
     ];
 
     return logger.chooseOne(
@@ -185,8 +184,6 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
       'User Profile',
       'Settings',
       'Dashboard',
-      'Products',
-      'Shopping Cart',
     ];
 
     final selectedFeatures = logger.chooseAny(
