@@ -112,8 +112,7 @@ class SetupWizard {
     final architectures = [
       'Clean Architecture',
       'MVVM',
-      'MVC',
-      'Feature-Driven',
+      'MVC'
     ];
 
     return _logger.chooseOne(
@@ -146,8 +145,6 @@ class SetupWizard {
       'User Profile',
       'Settings',
       'Dashboard',
-      'Products',
-      'Shopping Cart',
     ];
 
     final selectedFeatures = _logger.chooseAny(
