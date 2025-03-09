@@ -49,42 +49,42 @@ Let's create an awesome Flutter project together.
     return 'com.example.$appName';
   }
 
-  Future<Map<String, bool>> _promptDependencies() async {
-    final dependencies = [
-      'dio',
-      'shared_preferences',
-      'hive',
-      'get_it',
-      'flutter_secure_storage',
-      'firebase_core',
-      'firebase_analytics',
-    ];
+  // Future<Map<String, bool>> _promptDependencies() async {
+  //   final dependencies = [
+  //     'dio',
+  //     'shared_preferences',
+  //     'hive',
+  //     'get_it',
+  //     'flutter_secure_storage',
+  //     'firebase_core',
+  //     'firebase_analytics',
+  //   ];
 
-    final selectedDeps = logger.chooseAny(
-      'Select dependencies to include:',
-      choices: dependencies,
-    );
+  //   final selectedDeps = logger.chooseAny(
+  //     'Select dependencies to include:',
+  //     choices: dependencies,
+  //   );
 
-    return {
-      for (var dep in dependencies) dep.toString(): selectedDeps.contains(dep)
-    };
-  }
+  //   return {
+  //     for (var dep in dependencies) dep.toString(): selectedDeps.contains(dep)
+  //   };
+  // }
 
-  Future<bool> _promptFirebaseSetup(Map<String, bool> dependencies) async {
-    // Only prompt for Firebase setup if any Firebase-related dependencies are selected
-    final hasFirebaseDeps = dependencies.entries
-        .where((entry) => entry.key.startsWith('firebase_') && entry.value)
-        .isNotEmpty;
+  // Future<bool> _promptFirebaseSetup(Map<String, bool> dependencies) async {
+  //   // Only prompt for Firebase setup if any Firebase-related dependencies are selected
+  //   final hasFirebaseDeps = dependencies.entries
+  //       .where((entry) => entry.key.startsWith('firebase_') && entry.value)
+  //       .isNotEmpty;
 
-    if (!hasFirebaseDeps) {
-      return false;
-    }
+  //   if (!hasFirebaseDeps) {
+  //     return false;
+  //   }
 
-    return logger.confirm(
-      'Would you like to set up Firebase in your project?',
-      defaultValue: false,
-    );
-  }
+  //   return logger.confirm(
+  //     'Would you like to set up Firebase in your project?',
+  //     defaultValue: false,
+  //   );
+  // }
 
   @override
   Future<Map<String, dynamic>> getMasonTemplateVars({

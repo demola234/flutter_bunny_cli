@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import '../v1.lib/src/commands/command_runner.dart';
 import 'package:flutter_bunny/src/commands/command_runner.dart';
 import 'package:flutter_bunny/src/common/cli_exception.dart';
 import 'package:mason_logger/mason_logger.dart';
