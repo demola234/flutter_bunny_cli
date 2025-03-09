@@ -1,12 +1,21 @@
 part of 'cli_runner.dart';
 
+/// Manages package-related operations for Flutter and Dart projects.
+///
+/// This class handles tasks like dependency installation, Dart fixes,
+/// and environment validation.
 class PackageRunner {
+  /// The CLI runner to use for command execution.
   final CliRunner cliRunner;
 
+  /// Creates a new PackageRunner.
   PackageRunner({required this.cliRunner});
 
-  static Future<bool> isFlutterInstalled(
-      {required Logger logger, required CliRunner cliRunner}) async {
+  /// Checks if Flutter is installed and available.
+  static Future<bool> isFlutterInstalled({
+    required Logger logger,
+    required CliRunner cliRunner,
+  }) async {
     try {
       await cliRunner.runCommand('flutter', ['--version'], log: logger);
       return true;
@@ -15,8 +24,11 @@ class PackageRunner {
     }
   }
 
-  static Future<bool> isDartInstalled(
-      {required Logger logger, required CliRunner cliRunner}) async {
+  /// Checks if Dart is installed and available.
+  static Future<bool> isDartInstalled({
+    required Logger logger,
+    required CliRunner cliRunner,
+  }) async {
     try {
       await cliRunner.runCommand('dart', ['--version'], log: logger);
       return true;
@@ -25,6 +37,13 @@ class PackageRunner {
     }
   }
 
+  /// Installs dependencies in the specified directory.
+  ///
+  /// [logger] is the logger to use for output.
+  /// [cliRunner] is the CLI runner to use for command execution.
+  /// [cwd] is the working directory to run in.
+  /// [recursive] determines whether to run recursively.
+  /// [ignore] is a set of patterns to ignore.
   static Future<bool> installDependencies({
     required Logger logger,
     required CliRunner cliRunner,
@@ -34,7 +53,7 @@ class PackageRunner {
   }) async {
     final initialCwd = cwd;
 
-    final result = await _runCommand(
+    final results = await _runCommand(
       cmd: (cwd) async {
         final relativePath = p.relative(cwd, from: initialCwd);
         final path =
@@ -44,8 +63,13 @@ class PackageRunner {
             logger.progress('Running "flutter pub get" in $path');
 
         try {
-          return await cliRunner.runCommand('flutter', ['pub', 'get'],
-              dir: cwd, log: logger);
+          final result = await cliRunner.runCommand(
+            'flutter',
+            ['pub', 'get'],
+            dir: cwd,
+            log: logger,
+          );
+          return result;
         } finally {
           installProgress.complete();
         }
@@ -54,9 +78,17 @@ class PackageRunner {
       recursive: recursive,
       ignore: ignore,
     );
-    return result.every((e) => e.exitCode == 0);
+    
+    return results.every((result) => result.exitCode == 0);
   }
 
+  /// Applies Dart fixes to the code.
+  ///
+  /// [logger] is the logger to use for output.
+  /// [cliRunner] is the CLI runner to use for command execution.
+  /// [cwd] is the working directory to run in.
+  /// [recursive] determines whether to run recursively.
+  /// [ignore] is a set of patterns to ignore.
   static Future<void> applyFixes({
     required Logger logger,
     required CliRunner cliRunner,
@@ -79,19 +111,30 @@ class PackageRunner {
         .map((dir) => _applyFixToDirectory(dir, logger, cliRunner)));
   }
 
+  /// Applies Dart fixes to a specific directory.
   static Future<void> _applyFixToDirectory(
-      String directory, Logger logger, CliRunner cliRunner) async {
+    String directory,
+    Logger logger,
+    CliRunner cliRunner,
+  ) async {
     final pubspec = File(p.join(directory, 'pubspec.yaml'));
     if (!pubspec.existsSync()) {
       throw CliException('pubspec.yaml not found in $directory');
     }
 
-    await cliRunner.runCommand('dart', ['fix', '--apply'],
-        dir: directory, log: logger);
+    await cliRunner.runCommand(
+      'dart',
+      ['fix', '--apply'],
+      dir: directory,
+      log: logger,
+    );
   }
 
+  /// Finds directories containing pubspec.yaml files.
   static List<String> _findDirectoriesWithPubspec(
-      String cwd, Set<String> ignore) {
+    String cwd,
+    Set<String> ignore,
+  ) {
     return Directory(cwd)
         .listSync(recursive: true)
         .whereType<File>()
@@ -101,10 +144,12 @@ class PackageRunner {
         .toList();
   }
 
+  /// Checks if a file should be ignored.
   static bool _shouldIgnore(File file, Set<String> ignore) {
     return ignore.any((pattern) => file.path.contains(pattern));
   }
 
+  /// Runs a command in specified directories.
   static Future<List<T>> _runCommand<T>({
     required Future<T> Function(String cwd) cmd,
     required String cwd,

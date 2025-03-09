@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:cli_completion/cli_completion.dart';
 import 'package:flutter_bunny/src/commands/create_app_command.dart';
+import 'package:flutter_bunny/src/commands/update_app_command.dart';
 import 'package:flutter_bunny/src/common/base.dart';
 import 'package:flutter_bunny/src/common/cli_exception.dart';
 import 'package:flutter_bunny/src/common/package_info.dart';
@@ -25,7 +26,7 @@ class FlutterBunnyRunner extends CompletionCommandRunner<int> {
         ) {
     _setupArgParser();
     addCommand(CreateAppCommand(logger: _base.logger));
-    // addCommand(UpdateCommand(logger: _base.logger));
+    addCommand(UpdateCommand(logger: _base.logger));
   }
 
   void _setupArgParser() {
