@@ -230,11 +230,5 @@ Flutter Bunny is available under the MIT license. See the [LICENSE](LICENSE) fil
 ## 📞 Support
 
 If you encounter any issues or have questions:
-- Open an [issue](https://github.com/example/flutter_bunny/issues)
-- Check [documentation](https://github.com/example/flutter_bunny/docs)
-
----
-
-<p align="center">
-  Made with ❤️ by Your Team
-</p>
+- Open an [issue](https://github.com/demola234/flutter_bunny/issues)
+- Check [documentation](https://bunny.demola.dev/flutterbunnycli)

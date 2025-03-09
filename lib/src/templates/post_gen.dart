@@ -59,7 +59,7 @@ Future<void> applyDartFixes(
     }
 
     final fixProgress = logger.progress('Applying Dart fixes...');
-    
+
     try {
       await PackageRunner.applyFixes(
         cwd: outputDir.path,
@@ -108,10 +108,10 @@ Future<bool> runPubGetInDir(
 /// Utility function to verify Flutter tooling existence and versions
 Future<bool> verifyFlutterTooling(Logger logger) async {
   final progress = logger.progress('Verifying Flutter tooling...');
-  
+
   try {
     final cliRunner = CliRunner();
-    
+
     // Check Flutter version
     final flutterVersion = await cliRunner.runCommand(
       'flutter',

@@ -84,7 +84,7 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     required List<String> modules,
   }) async {
     final generateProgress = logger.progress('Creating $projectName...');
-    
+
     var vars = await getMasonTemplateVars(
       projectName: projectName,
       architecture: architecture,

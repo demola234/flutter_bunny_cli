@@ -78,7 +78,7 @@ class PackageRunner {
       recursive: recursive,
       ignore: ignore,
     );
-    
+
     return results.every((result) => result.exitCode == 0);
   }
 

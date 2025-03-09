@@ -1,35 +1,26 @@
-# This file configures the static analysis results for your project (errors,
-# warnings, and lints).
-#
-# This enables the 'recommended' set of lints from `package:lints`.
-# This set helps identify many issues that may lead to problems when running
-# or consuming Dart code, and enforces writing Dart using a single, idiomatic
-# style and format.
-#
-# If you want a smaller set of lints you can change this to specify
-# 'package:lints/core.yaml'. These are just the most critical lints
-# (the recommended set includes the core lints).
-# The core lints are also what is used by pub.dev for scoring packages.
+include: package:lints/recommended.yaml
+
+linter:
+  rules:
+    - public_member_api_docs  # Enforce documentation for public API members
+    - prefer_relative_imports
+    - prefer_single_quotes
+    - sort_child_properties_last
+    - sort_constructors_first
+    - always_declare_return_types
+    - avoid_empty_else
+    - avoid_redundant_argument_values
+    - directives_ordering
+    - avoid_print
+    - parameter_assignments
+    - prefer_const_constructors
+    - prefer_final_fields
+    - require_trailing_commas
 
 analyzer:
   errors:
-    depend_on_referenced_packages: ignore
-    prefer_initializing_formals: ignore
-    recursive_getters: ignore
-include: package:lints/recommended.yaml
-
-# Uncomment the following section to specify additional rules.
-
-# linter:
-#   rules:
-#     - camel_case_types
-
-# analyzer:
-#   exclude:
-#     - path/to/excluded/files/**
-
-# For more information about the core and recommended set of lints, see
-# https://dart.dev/go/core-lints
-
-# For additional information about configuring this file, see
-# https://dart.dev/guides/language/analysis-options
+    todo: ignore
+  exclude:
+    - "build/**"
+    - "**/*.g.dart"
+    - "**/*.gr.dart"
