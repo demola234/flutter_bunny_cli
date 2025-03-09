@@ -2,7 +2,7 @@ include: package:lints/recommended.yaml
 
 linter:
   rules:
-    - public_member_api_docs  # Enforce documentation for public API members
+    - public_member_api_docs # Enforce documentation for public API members
     - prefer_relative_imports
     - prefer_single_quotes
     - sort_child_properties_last
