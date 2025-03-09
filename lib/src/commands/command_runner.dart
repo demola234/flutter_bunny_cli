@@ -26,7 +26,7 @@ class FlutterBunnyRunner extends CompletionCommandRunner<int> {
         ) {
     _setupArgParser();
     addCommand(CreateAppCommand(logger: _base.logger));
-    addCommand(UpdateCommand(logger: _base.logger));
+    addCommand(UpdateCommand(_base.logger));
   }
 
   void _setupArgParser() {

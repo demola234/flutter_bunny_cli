@@ -1,24 +1,24 @@
-import 'package:flutter_bunny/src/common/base_command.dart';
+import 'package:args/command_runner.dart';
 import 'package:flutter_bunny/src/common/cli_exception.dart';
 import 'package:flutter_bunny/src/common/package_info.dart';
 import 'package:flutter_bunny/src/common/pub_updater_fix.dart';
-import 'package:flutter_bunny/src/templates/template.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
 
 /// Command to update the Flutter Bunny CLI.
 ///
 /// This command checks for updates to the CLI and installs them if available.
-class UpdateCommand extends BaseCommand {
+class UpdateCommand extends Command<int> {
   /// The pub updater used to check for and install updates.
   final PubUpdater _pubUpdater;
+  final Logger logger;
 
   /// Creates a new UpdateCommand.
   ///
   /// [logger] is used for console output.
   /// [pubUpdater] is used to check for updates.
-  UpdateCommand({
-    required super.logger,
+  UpdateCommand(
+    this.logger, {
     PubUpdater? pubUpdater,
   }) : _pubUpdater = pubUpdater ?? PubUpdater() {
     argParser.addFlag(
@@ -37,7 +37,7 @@ class UpdateCommand extends BaseCommand {
 
   @override
   Future<int> run() async {
-    final forceUpdate = argResults['force'] as bool? ?? false;
+    final forceUpdate = argResults?['force'] as bool? ?? false;
 
     // Check if we're already up to date
     if (!forceUpdate) {
@@ -87,10 +87,4 @@ class UpdateCommand extends BaseCommand {
       rethrow;
     }
   }
-
-  // This is required by the BaseCommand class but isn't used by UpdateCommand
-  @override
-  MasonTemplate get template => throw UnimplementedError(
-        'UpdateCommand does not use a template',
-      );
 }
