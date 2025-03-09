@@ -16,8 +16,9 @@ Flutter Bunny is an opinionated CLI tool that helps you create, manage, and main
 - **Project maintenance** - Tools to keep your project organized and up-to-date
 
 ## Beta Installation
+
 ```bash
-dart pub global activate flutter_bunny 1.0.5-beta.3
+dart pub global activate flutter_bunny 1.0.5-beta.4
 
 # Verify installation
 flutter_bunny --version
@@ -38,6 +39,7 @@ flutter_bunny create app --name my_awesome_app --architecture clean_architecture
 ```
 
 During creation, you'll be guided through selecting:
+
 - Project name and organization
 - Architecture pattern (Clean Architecture, MVVM, MVC)
 - State management solution (Provider, Riverpod, Bloc, GetX, etc.)
@@ -59,6 +61,7 @@ flutter_bunny generate model --name User --fields "id:int,name:String,email:Stri
 ```
 
 The generate command supports the following component types:
+
 - `screen` - Application screens/pages
 - `widget` - Reusable UI components
 - `model` - Data models with optional JSON serialization
@@ -161,6 +164,7 @@ Flutter Bunny supports multiple architecture patterns:
 ### Clean Architecture
 
 Separates your application into layers with clear responsibilities:
+
 - **Presentation Layer** - UI components, pages and state management
 - **Domain Layer** - Business logic, entities and use cases
 - **Data Layer** - Data sources, repositories and models
@@ -168,6 +172,7 @@ Separates your application into layers with clear responsibilities:
 ### MVVM (Model-View-ViewModel)
 
 Separates UI logic from business logic:
+
 - **Model** - Data and business logic
 - **View** - UI components with minimal logic
 - **ViewModel** - Mediator between Model and View
@@ -175,6 +180,7 @@ Separates UI logic from business logic:
 ### MVC (Model-View-Controller)
 
 Classic pattern for separating concerns:
+
 - **Model** - Data and business logic
 - **View** - UI components
 - **Controller** - Handles user input and updates models/views
@@ -230,5 +236,6 @@ Flutter Bunny is available under the MIT license. See the [LICENSE](LICENSE) fil
 ## 📞 Support
 
 If you encounter any issues or have questions:
+
 - Open an [issue](https://github.com/demola234/flutter_bunny/issues)
 - Check [documentation](https://bunny.demola.dev/flutterbunnycli)
