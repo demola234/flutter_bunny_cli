@@ -8,6 +8,8 @@ import 'package:flutter_bunny/src/common/package_info.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
 
+import 'build_command.dart';
+
 class FlutterBunnyRunner extends CompletionCommandRunner<int> {
   final Base _base;
 
@@ -27,6 +29,7 @@ class FlutterBunnyRunner extends CompletionCommandRunner<int> {
     _setupArgParser();
     addCommand(CreateAppCommand(logger: _base.logger));
     addCommand(UpdateCommand(_base.logger));
+    addCommand(BuildCommand(logger: _base.logger));
   }
 
   void _setupArgParser() {

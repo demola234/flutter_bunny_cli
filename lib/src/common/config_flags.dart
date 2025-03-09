@@ -72,7 +72,7 @@ mixin ArgParserConfiguration {
         allowed: [
           'network_layer',
           'local_storage',
-          'analytics',
+          'Localization',
           'push_notifications',
           'theme_manager',
         ],

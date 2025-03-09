@@ -81,6 +81,61 @@ class PackageRunner {
 
     return results.every((result) => result.exitCode == 0);
   }
+  
+  /// Runs the build_runner to generate code.
+  ///
+  /// [logger] is the logger to use for output.
+  /// [cliRunner] is the CLI runner to use for command execution.
+  /// [cwd] is the working directory to run in.
+  /// [deleteConflicting] determines whether to delete conflicting outputs.
+  /// [watch] determines whether to watch for changes continuously.
+  static Future<bool> runBuildRunner({
+    required Logger logger,
+    required CliRunner cliRunner,
+    String cwd = '.',
+    bool deleteConflicting = true,
+    bool watch = false,
+  }) async {
+    final command = watch ? 'watch' : 'build';
+    final arguments = ['pub', 'run', 'build_runner', command];
+    
+    if (deleteConflicting) {
+      arguments.add('--delete-conflicting-outputs');
+    }
+    
+    final buildProgress = logger.progress(
+      'Running build_runner ${watch ? 'watch' : 'build'}...',
+    );
+    
+    try {
+      final result = await cliRunner.runCommand(
+        'flutter',
+        arguments,
+        dir: cwd,
+        log: logger,
+        shouldThrowOnError: false,
+      );
+      
+      if (result.exitCode != 0) {
+        buildProgress.fail('Build runner failed: ${result.stderr}');
+        return false;
+      }
+      
+      if (watch) {
+        buildProgress.complete('Build runner watch started');
+        logger.info(
+          'Watching for changes. Press Ctrl+C to stop.',
+        );
+      } else {
+        buildProgress.complete('Code generation completed successfully');
+      }
+      
+      return true;
+    } catch (e) {
+      buildProgress.fail('Build runner failed: $e');
+      return false;
+    }
+  }
 
   /// Applies Dart fixes to the code.
   ///

@@ -1,7 +1,7 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
-import 'package:flutter_bunny/src/common/config_flags.dart';
-import 'package:flutter_bunny/src/templates/template.dart';
+import 'config_flags.dart';
+import '../templates/template.dart';
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as path;
@@ -11,10 +11,6 @@ typedef MasonGeneratorFromBundle = Future<MasonGenerator> Function(MasonBundle);
 typedef MasonGeneratorFromBrick = Future<MasonGenerator> Function(Brick);
 
 abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
-  final Logger logger;
-  final MasonGeneratorFromBundle _generatorFromBundle;
-  final MasonGeneratorFromBrick _generatorFromBrick;
-
   BaseCommand({
     required this.logger,
     @visibleForTesting MasonGeneratorFromBundle? generatorFromBundle,
@@ -23,6 +19,9 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
         _generatorFromBrick = generatorFromBrick ?? MasonGenerator.fromBrick {
     configureArgParser(argParser);
   }
+  final Logger logger;
+  final MasonGeneratorFromBundle _generatorFromBundle;
+  final MasonGeneratorFromBrick _generatorFromBrick;
 
   @visibleForTesting
   ArgResults? argResultOverrides;
@@ -203,7 +202,7 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     final modules = [
       'Network Layer',
       'Local Storage',
-      'Analytics',
+      'Localization',
       'Push Notifications',
       'Theme Manager',
     ];

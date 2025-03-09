@@ -21,7 +21,7 @@ class BunnyGenerate extends MasonTemplate {
   /// Tracked files that should be generated
   static const _requiredFiles = {
     'pubspec.yaml',
-    'lib/main_development.dart',
+    'lib/main.dart',
     'README.md',
     'analysis_options.yaml',
   };

@@ -1,16 +1,15 @@
-import 'package:flutter_bunny/src/common/base_command.dart';
-import 'package:flutter_bunny/src/templates/bunny_generate.dart';
-import 'package:flutter_bunny/src/templates/template.dart';
+import '../common/base_command.dart';
+import '../templates/bunny_generate.dart';
+import '../templates/template.dart';
 
 class CreateFlutterApp extends BaseCommand {
-  // Store the template vars for later use
-  Map<String, dynamic>? _templateVars;
-
   CreateFlutterApp({
     required super.logger,
     super.generatorFromBundle,
     super.generatorFromBrick,
   });
+  // Store the template vars for later use
+  Map<String, dynamic>? _templateVars;
 
   @override
   String get description => 'Creates a new Flutter application.';
@@ -27,7 +26,7 @@ Let's create an awesome Flutter project together.
     return super.run();
   }
 
-  String _generateOrgName(String projectName) {
+  String _generateBundleIdentifier(String projectName) {
     // Handle various input formats (camelCase, snake_case, etc.)
     String normalized = projectName.replaceAllMapped(
       RegExp(r'[A-Z]'),
@@ -57,7 +56,7 @@ Let's create an awesome Flutter project together.
   //     'get_it',
   //     'flutter_secure_storage',
   //     'firebase_core',
-  //     'firebase_analytics',
+  //     'firebase_Localization',
   //   ];
 
   //   final selectedDeps = logger.chooseAny(
@@ -102,13 +101,13 @@ Let's create an awesome Flutter project together.
       modules: modules ?? [],
     );
 
-    final orgName = _generateOrgName(projectName ?? '');
+    final bundleIdentifier = _generateBundleIdentifier(projectName ?? '');
     // final dependencies = await _promptDependencies();
     // final setupFirebase = await _promptFirebaseSetup(dependencies);
 
     _templateVars = {
       ...vars,
-      'org_name': orgName,
+      'bundle_identifier': bundleIdentifier,
     };
 
     return _templateVars!;

@@ -164,7 +164,7 @@ class SetupWizard {
     final modules = [
       'Network Layer',
       'Local Storage',
-      'Analytics',
+      'Localization',
       'Push Notifications',
       'Theme Manager',
     ];
