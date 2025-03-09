@@ -4,12 +4,25 @@ import 'package:flutter_bunny/src/commands/command_runner.dart';
 import 'package:flutter_bunny/src/common/cli_exception.dart';
 import 'package:mason_logger/mason_logger.dart';
 
-// The main entry point for the Flutter Bunny CLI tool.
-/// This function is the entry point for the Flutter Bunny CLI tool.
-/// It creates an instance of [FlutterBunnyCommandRunner] and runs it with
-/// the provided arguments.
-/// [args] is a list of command-line arguments passed to the tool.
-/// The function returns a Future that completes when the runner has finished running.
+/// Flutter Bunny CLI - A command-line tool to help set up and manage Flutter projects.
+/// 
+/// This tool provides commands for creating new Flutter projects with best practices,
+/// generating components like screens, widgets, and models, and maintaining projects
+/// over time. The CLI offers options for different architectures and state management
+/// approaches to suit various development preferences.
+/// 
+/// Usage:
+/// ```
+/// # Create a new Flutter application interactively
+/// flutter_bunny create app
+///
+/// # Generate a screen
+/// flutter_bunny generate screen --name HomeScreen
+///
+/// # Update the CLI to the latest version
+/// flutter_bunny update
+/// ```
+
 Future<void> main(List<String> args) async {
   final runner = FlutterBunnyRunner();
 
