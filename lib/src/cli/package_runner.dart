@@ -81,7 +81,7 @@ class PackageRunner {
 
     return results.every((result) => result.exitCode == 0);
   }
-  
+
   /// Runs the build_runner to generate code.
   ///
   /// [logger] is the logger to use for output.
@@ -98,15 +98,15 @@ class PackageRunner {
   }) async {
     final command = watch ? 'watch' : 'build';
     final arguments = ['pub', 'run', 'build_runner', command];
-    
+
     if (deleteConflicting) {
       arguments.add('--delete-conflicting-outputs');
     }
-    
+
     final buildProgress = logger.progress(
       'Running build_runner ${watch ? 'watch' : 'build'}...',
     );
-    
+
     try {
       final result = await cliRunner.runCommand(
         'flutter',
@@ -115,12 +115,12 @@ class PackageRunner {
         log: logger,
         shouldThrowOnError: false,
       );
-      
+
       if (result.exitCode != 0) {
         buildProgress.fail('Build runner failed: ${result.stderr}');
         return false;
       }
-      
+
       if (watch) {
         buildProgress.complete('Build runner watch started');
         logger.info(
@@ -129,7 +129,7 @@ class PackageRunner {
       } else {
         buildProgress.complete('Code generation completed successfully');
       }
-      
+
       return true;
     } catch (e) {
       buildProgress.fail('Build runner failed: $e');

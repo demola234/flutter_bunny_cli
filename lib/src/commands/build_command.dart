@@ -54,7 +54,8 @@ class BuildCommand extends Command<int> {
     final deleteConflicting = argResults?['delete-conflicting-outputs'] as bool;
     final directory = argResults?['directory'] as String;
 
-    _logger.info('${watch ? 'Starting' : 'Running'} code generation${watch ? ' in watch mode' : ''}...');
+    _logger.info(
+        '${watch ? 'Starting' : 'Running'} code generation${watch ? ' in watch mode' : ''}...');
 
     try {
       final success = await PackageRunner.runBuildRunner(
@@ -68,11 +69,11 @@ class BuildCommand extends Command<int> {
       if (!success) {
         return ExitCode.software.code;
       }
-      
+
       if (!watch) {
         _logger.success('Code generation completed successfully!');
       }
-      
+
       return ExitCode.success.code;
     } catch (e) {
       _logger.err('Failed to run build_runner: $e');
