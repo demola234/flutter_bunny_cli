@@ -10,7 +10,7 @@ A powerful CLI tool for creating and managing Flutter applications with best pra
 Flutter Bunny is an opinionated CLI tool that helps you create, manage, and maintain Flutter applications with a focus on:
 
 - **Best practices** - Follow Flutter community best practices for code organization and patterns
-- **Consistent architecture** - Choose from popular architecture patterns (Clean, MVVM, MVC)
+- **Consistent architecture** - Choose from popular architecture patterns (Clean Architecture, MVVM, MVC)
 - **Rapid development** - Generate common components with a single command
 - **Testing** - Built-in testing templates and utilities
 - **Project maintenance** - Tools to keep your project organized and up-to-date
@@ -197,13 +197,6 @@ Flutter Bunny supports multiple state management solutions:
 - **Redux** - Predictable state container
 
 ## 🔧 Common Tasks
-
-### Adding Dependencies
-
-```bash
-# Add common dependencies
-flutter_bunny add package http dio shared_preferences
-```
 
 ### Analyzing Code
 
