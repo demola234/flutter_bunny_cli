@@ -5,11 +5,11 @@ part of 'cli_runner.dart';
 /// This class handles tasks like dependency installation, Dart fixes,
 /// and environment validation.
 class PackageRunner {
-  /// The CLI runner to use for command execution.
-  final CliRunner cliRunner;
-
   /// Creates a new PackageRunner.
   PackageRunner({required this.cliRunner});
+
+  /// The CLI runner to use for command execution.
+  final CliRunner cliRunner;
 
   /// Checks if Flutter is installed and available.
   static Future<bool> isFlutterInstalled({
@@ -162,8 +162,10 @@ class PackageRunner {
       throw CliException('No directories with pubspec.yaml found.');
     }
 
-    await Future.wait(directoriesToFix
-        .map((dir) => _applyFixToDirectory(dir, logger, cliRunner)));
+    await Future.wait(
+      directoriesToFix
+          .map((dir) => _applyFixToDirectory(dir, logger, cliRunner)),
+    );
   }
 
   /// Applies Dart fixes to a specific directory.
@@ -193,8 +195,11 @@ class PackageRunner {
     return Directory(cwd)
         .listSync(recursive: true)
         .whereType<File>()
-        .where((file) =>
-            file.path.endsWith('pubspec.yaml') && !_shouldIgnore(file, ignore))
+        .where(
+          (file) =>
+              file.path.endsWith('pubspec.yaml') &&
+              !_shouldIgnore(file, ignore),
+        )
         .map((file) => file.parent.path)
         .toList();
   }

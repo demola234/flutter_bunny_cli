@@ -6,8 +6,13 @@ import 'package:pub_updater/pub_updater.dart';
 import '../common/base.dart';
 import '../common/cli_exception.dart';
 import '../common/package_info.dart';
+import 'add_command.dart';
+import 'analyze_command.dart';
 import 'build_command.dart';
+import 'config_command.dart';
 import 'create_app_command.dart';
+import 'doctor_command.dart';
+import 'generate_command.dart';
 import 'update_app_command.dart';
 
 class FlutterBunnyRunner extends CompletionCommandRunner<int> {
@@ -28,6 +33,11 @@ class FlutterBunnyRunner extends CompletionCommandRunner<int> {
     addCommand(CreateAppCommand(logger: _base.logger));
     addCommand(UpdateCommand(_base.logger));
     addCommand(BuildCommand(logger: _base.logger));
+    addCommand(GenerateCommand(logger: _base.logger));
+    addCommand(ConfigCommand(logger: _base.logger));
+    // addCommand(AddCommand(logger: _base.logger));
+    addCommand(AnalyzeCommand(logger: _base.logger));
+    addCommand(DoctorCommand(logger: _base.logger));
   }
   final Base _base;
 
