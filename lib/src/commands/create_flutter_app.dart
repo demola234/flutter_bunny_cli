@@ -1,16 +1,15 @@
-import 'package:flutter_bunny/src/common/base_command.dart';
-import 'package:flutter_bunny/src/templates/bunny_generate.dart';
-import 'package:flutter_bunny/src/templates/template.dart';
+import '../common/base_command.dart';
+import '../templates/bunny_generate.dart';
+import '../templates/template.dart';
 
 class CreateFlutterApp extends BaseCommand {
-  // Store the template vars for later use
-  Map<String, dynamic>? _templateVars;
-
   CreateFlutterApp({
     required super.logger,
     super.generatorFromBundle,
     super.generatorFromBrick,
   });
+  // Store the template vars for later use
+  Map<String, dynamic>? _templateVars;
 
   @override
   String get description => 'Creates a new Flutter application.';
@@ -27,7 +26,7 @@ Let's create an awesome Flutter project together.
     return super.run();
   }
 
-  String _generateOrgName(String projectName) {
+  String _generateBundleIdentifier(String projectName) {
     // Handle various input formats (camelCase, snake_case, etc.)
     String normalized = projectName.replaceAllMapped(
       RegExp(r'[A-Z]'),
@@ -49,42 +48,42 @@ Let's create an awesome Flutter project together.
     return 'com.example.$appName';
   }
 
-  Future<Map<String, bool>> _promptDependencies() async {
-    final dependencies = [
-      'dio',
-      'shared_preferences',
-      'hive',
-      'get_it',
-      'flutter_secure_storage',
-      'firebase_core',
-      'firebase_analytics',
-    ];
+  // Future<Map<String, bool>> _promptDependencies() async {
+  //   final dependencies = [
+  //     'dio',
+  //     'shared_preferences',
+  //     'hive',
+  //     'get_it',
+  //     'flutter_secure_storage',
+  //     'firebase_core',
+  //     'firebase_Localization',
+  //   ];
 
-    final selectedDeps = logger.chooseAny(
-      'Select dependencies to include:',
-      choices: dependencies,
-    );
+  //   final selectedDeps = logger.chooseAny(
+  //     'Select dependencies to include:',
+  //     choices: dependencies,
+  //   );
 
-    return {
-      for (var dep in dependencies) dep.toString(): selectedDeps.contains(dep)
-    };
-  }
+  //   return {
+  //     for (var dep in dependencies) dep.toString(): selectedDeps.contains(dep)
+  //   };
+  // }
 
-  Future<bool> _promptFirebaseSetup(Map<String, bool> dependencies) async {
-    // Only prompt for Firebase setup if any Firebase-related dependencies are selected
-    final hasFirebaseDeps = dependencies.entries
-        .where((entry) => entry.key.startsWith('firebase_') && entry.value)
-        .isNotEmpty;
+  // Future<bool> _promptFirebaseSetup(Map<String, bool> dependencies) async {
+  //   // Only prompt for Firebase setup if any Firebase-related dependencies are selected
+  //   final hasFirebaseDeps = dependencies.entries
+  //       .where((entry) => entry.key.startsWith('firebase_') && entry.value)
+  //       .isNotEmpty;
 
-    if (!hasFirebaseDeps) {
-      return false;
-    }
+  //   if (!hasFirebaseDeps) {
+  //     return false;
+  //   }
 
-    return logger.confirm(
-      'Would you like to set up Firebase in your project?',
-      defaultValue: false,
-    );
-  }
+  //   return logger.confirm(
+  //     'Would you like to set up Firebase in your project?',
+  //     defaultValue: false,
+  //   );
+  // }
 
   @override
   Future<Map<String, dynamic>> getMasonTemplateVars({
@@ -102,13 +101,13 @@ Let's create an awesome Flutter project together.
       modules: modules ?? [],
     );
 
-    final orgName = _generateOrgName(projectName ?? '');
+    final bundleIdentifier = _generateBundleIdentifier(projectName ?? '');
     // final dependencies = await _promptDependencies();
     // final setupFirebase = await _promptFirebaseSetup(dependencies);
 
     _templateVars = {
       ...vars,
-      'org_name': orgName,
+      'bundle_identifier': bundleIdentifier,
     };
 
     return _templateVars!;

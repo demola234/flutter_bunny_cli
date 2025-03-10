@@ -1,16 +1,20 @@
 import 'package:args/args.dart';
 import 'package:cli_completion/cli_completion.dart';
-import 'package:flutter_bunny/src/commands/create_app_command.dart';
-import 'package:flutter_bunny/src/commands/update_app_command.dart';
-import 'package:flutter_bunny/src/common/base.dart';
-import 'package:flutter_bunny/src/common/cli_exception.dart';
-import 'package:flutter_bunny/src/common/package_info.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
 
-class FlutterBunnyRunner extends CompletionCommandRunner<int> {
-  final Base _base;
+import '../common/base.dart';
+import '../common/cli_exception.dart';
+import '../common/package_info.dart';
+import 'analyze_command.dart';
+import 'build_command.dart';
+import 'config_command.dart';
+import 'create_app_command.dart';
+import 'doctor_command.dart';
+import 'generate_command.dart';
+import 'update_app_command.dart';
 
+class FlutterBunnyRunner extends CompletionCommandRunner<int> {
   FlutterBunnyRunner({
     Logger? logger,
     PubUpdater? pubUpdater,
@@ -27,14 +31,20 @@ class FlutterBunnyRunner extends CompletionCommandRunner<int> {
     _setupArgParser();
     addCommand(CreateAppCommand(logger: _base.logger));
     addCommand(UpdateCommand(_base.logger));
+    addCommand(BuildCommand(logger: _base.logger));
+    addCommand(GenerateCommand(logger: _base.logger));
+    addCommand(ConfigCommand(logger: _base.logger));
+    // addCommand(AddCommand(logger: _base.logger));
+    addCommand(AnalyzeCommand(logger: _base.logger));
+    addCommand(DoctorCommand(logger: _base.logger));
   }
+  final Base _base;
 
   void _setupArgParser() {
     argParser
       ..addFlag(
         'version',
         abbr: 'v',
-        negatable: true,
         help: 'Prints out the current version.',
       )
       ..addFlag(

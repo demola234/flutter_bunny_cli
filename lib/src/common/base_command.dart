@@ -1,40 +1,74 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
-import 'package:flutter_bunny/src/common/config_flags.dart';
-import 'package:flutter_bunny/src/templates/template.dart';
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as path;
 import 'package:universal_io/io.dart';
 
+import '../templates/template.dart';
+import '../templates/template_manager.dart';
+import 'config_flags.dart';
+import 'config_manager.dart';
+
+/// Type definition for creating a Mason generator from a bundle.
 typedef MasonGeneratorFromBundle = Future<MasonGenerator> Function(MasonBundle);
+
+/// Type definition for creating a Mason generator from a brick.
 typedef MasonGeneratorFromBrick = Future<MasonGenerator> Function(Brick);
 
+/// Base class for all Flutter Bunny commands.
+///
+/// Provides shared functionality for project creation, template management,
+/// and user interaction.
 abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
-  final Logger logger;
-  final MasonGeneratorFromBundle _generatorFromBundle;
-  final MasonGeneratorFromBrick _generatorFromBrick;
-
+  /// Creates a new base command.
+  ///
+  /// [logger] is used for console output.
+  /// [generatorFromBundle] and [generatorFromBrick] are used for testing.
   BaseCommand({
     required this.logger,
     @visibleForTesting MasonGeneratorFromBundle? generatorFromBundle,
     @visibleForTesting MasonGeneratorFromBrick? generatorFromBrick,
+    ConfigManager? configManager,
   })  : _generatorFromBundle = generatorFromBundle ?? MasonGenerator.fromBundle,
-        _generatorFromBrick = generatorFromBrick ?? MasonGenerator.fromBrick {
+        _generatorFromBrick = generatorFromBrick ?? MasonGenerator.fromBrick,
+        _templateManager = TemplateManager(
+          logger: logger,
+          configManager: configManager ?? ConfigManager(logger: logger),
+        ) {
     configureArgParser(argParser);
+
+    // Add template selection option
+    argParser.addOption(
+      'template',
+      abbr: 't',
+      help: 'Template to use for generation',
+    );
   }
 
+  /// Logger for console output.
+  final Logger logger;
+
+  /// Template manager for handling templates.
+  final TemplateManager _templateManager;
+
+  final MasonGeneratorFromBundle _generatorFromBundle;
+  final MasonGeneratorFromBrick _generatorFromBrick;
+
+  /// Allows overriding arg results for testing.
   @visibleForTesting
   ArgResults? argResultOverrides;
 
   @override
   ArgResults get argResults => argResultOverrides ?? super.argResults!;
 
+  /// Gets the output directory for the command.
   Directory get outputDirectory {
     final directory = argResults['output-directory'] as String? ?? '.';
     return Directory(directory);
   }
 
+  /// The template to use for generation.
   MasonTemplate get template;
 
   @override
@@ -42,12 +76,14 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
 
   @override
   Future<int> run() async {
+    // Interactive project setup flow
     final projectName = await _promptProjectName();
     final architecture = await _promptArchitecture();
     final stateManagement = await _promptStateManagement();
     final features = await _promptFeatures();
     final modules = await _promptModules();
 
+    // Display summary and confirm
     _displaySummary(
       projectName: projectName,
       architecture: architecture,
@@ -61,8 +97,10 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
       return ExitCode.success.code;
     }
 
+    // Generate the project
     final template = this.template;
-    final generator = await _getGeneratorForMasonTemplate();
+    final generator = await _getGeneratorForTemplate();
+
     return await runCreate(
       generator,
       template,
@@ -74,6 +112,15 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     );
   }
 
+  /// Executes the project creation with the specified parameters.
+  ///
+  /// [generator] is the Mason generator to use.
+  /// [template] is the template to generate.
+  /// [projectName] is the name of the project.
+  /// [architecture] is the architecture to use.
+  /// [stateManagement] is the state management solution to use.
+  /// [features] are the features to include.
+  /// [modules] are the modules to include.
   Future<int> runCreate(
     MasonGenerator generator,
     MasonTemplate template, {
@@ -84,7 +131,7 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     required List<String> modules,
   }) async {
     final generateProgress = logger.progress('Creating $projectName...');
-    
+
     var vars = await getMasonTemplateVars(
       projectName: projectName,
       architecture: architecture,
@@ -95,18 +142,23 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
 
     final target = DirectoryGeneratorTarget(outputDirectory);
 
+    // Run pre-generation hooks
     await generator.hooks.preGen(vars: vars, onVarsChanged: (v) => vars = v);
+
+    // Generate the files
     final files = await generator.generate(target, vars: vars, logger: logger);
 
     generateProgress.complete('Project created successfully! 🎉');
     generateProgress.complete('Generated ${files.length} file(s)');
 
+    // Display next steps
     displayNextSteps(
       projectName,
-      target.dir.path.camelCase,
+      path.basename(target.dir.path),
       template,
     );
 
+    // Run post-generation hooks
     await template.onGenerateComplete(
       logger,
       Directory(path.join(target.dir.path, projectName)),
@@ -115,6 +167,7 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     return ExitCode.success.code;
   }
 
+  /// Gets the variables for the Mason template.
   @mustCallSuper
   Future<Map<String, dynamic>> getMasonTemplateVars({
     required String projectName,
@@ -133,6 +186,7 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     };
   }
 
+  /// Prompts the user for a project name.
   Future<String> _promptProjectName() async {
     final name = logger.prompt(
       'What is your project name?',
@@ -147,6 +201,7 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     return name;
   }
 
+  /// Prompts the user for an architecture.
   Future<String> _promptArchitecture() async {
     final architectures = [
       'Clean Architecture',
@@ -161,6 +216,7 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     );
   }
 
+  /// Prompts the user for a state management solution.
   Future<String> _promptStateManagement() async {
     final stateManagements = [
       'Provider',
@@ -178,6 +234,7 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     );
   }
 
+  /// Prompts the user for features to include.
   Future<List<String>> _promptFeatures() async {
     final features = [
       'Authentication',
@@ -199,12 +256,12 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     return selectedFeatures;
   }
 
+  /// Prompts the user for modules to include.
   Future<List<String>> _promptModules() async {
     final modules = [
       'Network Layer',
-      'Local Storage',
-      'Analytics',
-      'Push Notifications',
+      'Localization',
+      'Push Notification',
       'Theme Manager',
     ];
 
@@ -221,6 +278,7 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     return selectedModules;
   }
 
+  /// Displays a summary of the project configuration.
   void _displaySummary({
     required String projectName,
     required String architecture,
@@ -236,10 +294,12 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     logger.info('   Additional Modules: ${modules.join(", ")}\n');
   }
 
+  /// Confirms the setup with the user.
   Future<bool> _confirmSetup() async {
     return logger.confirm('Would you like to proceed with this setup?');
   }
 
+  /// Validates a project name.
   bool _isValidProjectName(String name) {
     if (name.isEmpty) return false;
 
@@ -310,6 +370,7 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     return true;
   }
 
+  /// Displays next steps after project creation.
   @mustCallSuper
   void displayNextSteps(
     String projectName,
@@ -332,22 +393,56 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     ''');
   }
 
-  Future<MasonGenerator> _getGeneratorForMasonTemplate() async {
+  /// Gets a Mason generator for the specified template.
+  Future<MasonGenerator> _getGeneratorForTemplate() async {
+    final templateName = argResults['template'] as String? ?? template.name;
+
     try {
-      final brick = Brick.version(
-        name: template.bundle.name,
-        version: '^${template.bundle.version}',
-      );
+      // Try to get the template from the template manager
+      final selectedTemplate = await _templateManager.getTemplate(templateName);
+
+      // Check if it's a custom brick template
+      if (selectedTemplate is CustomBrickTemplate) {
+        return await selectedTemplate.getGenerator();
+      }
+
+      // Otherwise, use the regular method
+      try {
+        final brick = Brick.version(
+          name: selectedTemplate.bundle.name,
+          version: '^${selectedTemplate.bundle.version}',
+        );
+        logger.detail(
+          'Building generator from brick: ${brick.name} ${brick.location.version}',
+        );
+        return await _generatorFromBrick(brick);
+      } catch (e) {
+        logger.detail('Building generator from brick failed: $e');
+      }
       logger.detail(
-        'Building generator from brick: ${brick.name} ${brick.location.version}',
+        'Building generator from bundle ${selectedTemplate.bundle.name} ${selectedTemplate.bundle.version}',
       );
-      return await _generatorFromBrick(brick);
+      return _generatorFromBundle(selectedTemplate.bundle);
     } catch (e) {
-      logger.detail('Building generator from brick failed: $e');
+      // If we couldn't get the template, fall back to the default one
+      logger.detail('Using default template: ${template.name}');
+
+      try {
+        final brick = Brick.version(
+          name: template.bundle.name,
+          version: '^${template.bundle.version}',
+        );
+        logger.detail(
+          'Building generator from brick: ${brick.name} ${brick.location.version}',
+        );
+        return await _generatorFromBrick(brick);
+      } catch (e) {
+        logger.detail('Building generator from brick failed: $e');
+      }
+      logger.detail(
+        'Building generator from bundle ${template.bundle.name} ${template.bundle.version}',
+      );
+      return _generatorFromBundle(template.bundle);
     }
-    logger.detail(
-      'Building generator from bundle ${template.bundle.name} ${template.bundle.version}',
-    );
-    return _generatorFromBundle(template.bundle);
   }
 }

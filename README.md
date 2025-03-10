@@ -1,4 +1,4 @@
-# 🐰 Flutter Bunny CLI
+# 🐰 Flutter Bunny CLI (Beta)
 
 A powerful CLI tool for creating and managing Flutter applications with best practices and consistent architecture.
 
@@ -10,16 +10,15 @@ A powerful CLI tool for creating and managing Flutter applications with best pra
 Flutter Bunny is an opinionated CLI tool that helps you create, manage, and maintain Flutter applications with a focus on:
 
 - **Best practices** - Follow Flutter community best practices for code organization and patterns
-- **Consistent architecture** - Choose from popular architecture patterns (Clean, MVVM, MVC)
+- **Consistent architecture** - Choose from popular architecture patterns (Clean Architecture, MVVM, MVC)
 - **Rapid development** - Generate common components with a single command
 - **Testing** - Built-in testing templates and utilities
 - **Project maintenance** - Tools to keep your project organized and up-to-date
 
-## 🚀 Installation
+## Beta Installation
 
 ```bash
-# Install from pub.dev
-dart pub global activate flutter_bunny
+dart pub global activate flutter_bunny 1.0.6-beta.5
 
 # Verify installation
 flutter_bunny --version
@@ -40,6 +39,7 @@ flutter_bunny create app --name my_awesome_app --architecture clean_architecture
 ```
 
 During creation, you'll be guided through selecting:
+
 - Project name and organization
 - Architecture pattern (Clean Architecture, MVVM, MVC)
 - State management solution (Provider, Riverpod, Bloc, GetX, etc.)
@@ -61,6 +61,7 @@ flutter_bunny generate model --name User --fields "id:int,name:String,email:Stri
 ```
 
 The generate command supports the following component types:
+
 - `screen` - Application screens/pages
 - `widget` - Reusable UI components
 - `model` - Data models with optional JSON serialization
@@ -110,6 +111,19 @@ lib/
 ├── views/
 │   ├── screens/
 │   └── widgets/
+└── main.dart
+```
+
+### MVC Architecture Structure
+
+```
+lib/
+├── models/
+├── services/
+├── views/
+│   ├── controllers/
+│   ├── models/
+│   └── views/
 └── main.dart
 ```
 
@@ -163,6 +177,7 @@ Flutter Bunny supports multiple architecture patterns:
 ### Clean Architecture
 
 Separates your application into layers with clear responsibilities:
+
 - **Presentation Layer** - UI components, pages and state management
 - **Domain Layer** - Business logic, entities and use cases
 - **Data Layer** - Data sources, repositories and models
@@ -170,6 +185,7 @@ Separates your application into layers with clear responsibilities:
 ### MVVM (Model-View-ViewModel)
 
 Separates UI logic from business logic:
+
 - **Model** - Data and business logic
 - **View** - UI components with minimal logic
 - **ViewModel** - Mediator between Model and View
@@ -177,6 +193,7 @@ Separates UI logic from business logic:
 ### MVC (Model-View-Controller)
 
 Classic pattern for separating concerns:
+
 - **Model** - Data and business logic
 - **View** - UI components
 - **Controller** - Handles user input and updates models/views
@@ -193,13 +210,6 @@ Flutter Bunny supports multiple state management solutions:
 - **Redux** - Predictable state container
 
 ## 🔧 Common Tasks
-
-### Adding Dependencies
-
-```bash
-# Add common dependencies
-flutter_bunny add package http dio shared_preferences
-```
 
 ### Analyzing Code
 
@@ -232,11 +242,6 @@ Flutter Bunny is available under the MIT license. See the [LICENSE](LICENSE) fil
 ## 📞 Support
 
 If you encounter any issues or have questions:
-- Open an [issue](https://github.com/example/flutter_bunny/issues)
-- Check [documentation](https://github.com/example/flutter_bunny/docs)
 
----
-
-<p align="center">
-  Made with ❤️ by Your Team
-</p>
+- Open an [issue](https://github.com/demola234/flutter_bunny/issues)
+- Check [documentation](https://bunny.demola.dev/flutterbunnycli)

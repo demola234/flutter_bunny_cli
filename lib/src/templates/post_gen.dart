@@ -28,8 +28,20 @@ Future<bool> installFlutterPackages(
       logger: logger,
     );
 
+    final successBuilder = await PackageRunner.runBuildRunner(
+      cwd: outputDir.path,
+      cliRunner: CliRunner(),
+      logger: logger,
+    );
+
     if (!success) {
       logger.err('Package installation failed');
+      return false;
+    }
+
+    if (!successBuilder) {
+      logger.err('Unable to run package runner for the project');
+      logger.info('flutter_bunny build');
       return false;
     }
 
@@ -59,7 +71,7 @@ Future<void> applyDartFixes(
     }
 
     final fixProgress = logger.progress('Applying Dart fixes...');
-    
+
     try {
       await PackageRunner.applyFixes(
         cwd: outputDir.path,
@@ -108,10 +120,10 @@ Future<bool> runPubGetInDir(
 /// Utility function to verify Flutter tooling existence and versions
 Future<bool> verifyFlutterTooling(Logger logger) async {
   final progress = logger.progress('Verifying Flutter tooling...');
-  
+
   try {
     final cliRunner = CliRunner();
-    
+
     // Check Flutter version
     final flutterVersion = await cliRunner.runCommand(
       'flutter',

@@ -1,13 +1,11 @@
 name: flutter_bunny
-description: Flutter Bunny is a command-line interface (CLI) tool designed to
-  simplify the process of generating Flutter templates. Whether you are creating
-  a new Flutter project or adding a new feature, Flutter Bunny provides a quick
-  and easy way to scaffold your application with best practices and predefined
-  structures.
-version: 1.0.4
+description: A CLI tool for creating and managing Flutter applications with best practices
+version: 1.0.6-beta.5
 repository: https://github.com/demola234/bunny_cli
+homepage: https://bunny.demola.dev/flutterbunnycli
+issue_tracker: https://github.com/demola234/bunny_cli/issues
 environment:
-  sdk: ^3.6.0
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   ansicolor: ^2.0.2
@@ -15,17 +13,14 @@ dependencies:
   cli_completion: ^0.5.0
   collection: ^1.18.0
   crypto: ^3.0.6
-  equatable: ^2.0.5
-  flutter_bloc: ^9.0.0
   glob: ^2.1.2
   logging: ^1.0.0
   mason: ^0.1.0-dev.53
-  mason_logger: ^0.2.15
+  mason_logger: ^0.3.3
   meta: ^1.14.0
-  mockito: ^5.4.4
   package_config: ^2.1.0
   path: ^1.9.0
-  pub_updater: ^0.4.0
+  pub_updater: ^0.5.0
   sprintf: ^7.0.0
   universal_io: ^2.2.2
   win32: ^5.6.0
@@ -34,9 +29,22 @@ dev_dependencies:
   build_runner: ^2.4.9
   build_verify: ^3.1.0
   build_version: ^2.1.1
-  lints: ^3.0.0
+  lints: ^5.1.1
   mocktail: ^1.0.3
   test: ^1.24.0
 
+# Enable platform detection to demonstrate platform support
+platforms:
+  linux:
+  macos:
+  windows:
+
+# Add additional information for pub.dev package page
+topics:
+  - cli
+  - flutter
+  - code-generation
+  - templates
+
 executables:
-  ? flutter_bunny
+  flutter_bunny:

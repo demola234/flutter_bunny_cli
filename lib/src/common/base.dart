@@ -12,7 +12,7 @@ class Base {
   final Logger _logger;
   final PubUpdater _pubUpdater;
   final Map<String, String> _environment;
-  
+
   /// Timeout for update checks.
   static const timeout = Duration(milliseconds: 1000);
 
@@ -31,7 +31,7 @@ class Base {
 
   /// Gets the environment variables.
   Map<String, String> get environment => _environment;
-  
+
   /// Gets the logger.
   Logger get logger => _logger;
 
@@ -106,32 +106,28 @@ class Base {
     _logger.info(usage);
     exit(1);
   }
-  
+
   /// Updates the CLI to the latest version.
   ///
   /// Returns true if the update was successful, false otherwise.
   Future<bool> updateCli() async {
     final updateProgress = _logger.progress('Checking for updates');
-    
+
     try {
       final isUpToDate = await _pubUpdater.isUpToDate(
         packageName: packageName,
         currentVersion: cliVersion,
       );
-      
+
       if (isUpToDate) {
         updateProgress.complete('Already up to date');
         return true;
       }
-      
+
       final latestVersion = await _pubUpdater.getLatestVersion(packageName);
       updateProgress.update('Updating to $latestVersion');
-      
-      final result = await _pubUpdater.update(
-        packageName: packageName,
-      );
-      
-      if (result == true) {
+
+      if (isUpToDate) {
         updateProgress.complete('Updated to $latestVersion');
         return true;
       } else {

@@ -5,11 +5,11 @@ part of 'cli_runner.dart';
 /// This class handles tasks like dependency installation, Dart fixes,
 /// and environment validation.
 class PackageRunner {
-  /// The CLI runner to use for command execution.
-  final CliRunner cliRunner;
-
   /// Creates a new PackageRunner.
   PackageRunner({required this.cliRunner});
+
+  /// The CLI runner to use for command execution.
+  final CliRunner cliRunner;
 
   /// Checks if Flutter is installed and available.
   static Future<bool> isFlutterInstalled({
@@ -78,8 +78,63 @@ class PackageRunner {
       recursive: recursive,
       ignore: ignore,
     );
-    
+
     return results.every((result) => result.exitCode == 0);
+  }
+
+  /// Runs the build_runner to generate code.
+  ///
+  /// [logger] is the logger to use for output.
+  /// [cliRunner] is the CLI runner to use for command execution.
+  /// [cwd] is the working directory to run in.
+  /// [deleteConflicting] determines whether to delete conflicting outputs.
+  /// [watch] determines whether to watch for changes continuously.
+  static Future<bool> runBuildRunner({
+    required Logger logger,
+    required CliRunner cliRunner,
+    String cwd = '.',
+    bool deleteConflicting = true,
+    bool watch = false,
+  }) async {
+    final command = watch ? 'watch' : 'build';
+    final arguments = ['pub', 'run', 'build_runner', command];
+
+    if (deleteConflicting) {
+      arguments.add('--delete-conflicting-outputs');
+    }
+
+    final buildProgress = logger.progress(
+      'Running build_runner ${watch ? 'watch' : 'build'}...',
+    );
+
+    try {
+      final result = await cliRunner.runCommand(
+        'flutter',
+        arguments,
+        dir: cwd,
+        log: logger,
+        shouldThrowOnError: false,
+      );
+
+      if (result.exitCode != 0) {
+        buildProgress.fail('Build runner failed: ${result.stderr}');
+        return false;
+      }
+
+      if (watch) {
+        buildProgress.complete('Build runner watch started');
+        logger.info(
+          'Watching for changes. Press Ctrl+C to stop.',
+        );
+      } else {
+        buildProgress.complete('Code generation completed successfully');
+      }
+
+      return true;
+    } catch (e) {
+      buildProgress.fail('Build runner failed: $e');
+      return false;
+    }
   }
 
   /// Applies Dart fixes to the code.
@@ -107,8 +162,10 @@ class PackageRunner {
       throw CliException('No directories with pubspec.yaml found.');
     }
 
-    await Future.wait(directoriesToFix
-        .map((dir) => _applyFixToDirectory(dir, logger, cliRunner)));
+    await Future.wait(
+      directoriesToFix
+          .map((dir) => _applyFixToDirectory(dir, logger, cliRunner)),
+    );
   }
 
   /// Applies Dart fixes to a specific directory.
@@ -138,8 +195,11 @@ class PackageRunner {
     return Directory(cwd)
         .listSync(recursive: true)
         .whereType<File>()
-        .where((file) =>
-            file.path.endsWith('pubspec.yaml') && !_shouldIgnore(file, ignore))
+        .where(
+          (file) =>
+              file.path.endsWith('pubspec.yaml') &&
+              !_shouldIgnore(file, ignore),
+        )
         .map((file) => file.parent.path)
         .toList();
   }

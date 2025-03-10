@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter_bunny/src/common/cli_exception.dart';
 import 'package:glob/glob.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import 'package:universal_io/io.dart';
+
+import '../common/cli_exception.dart';
 
 part 'package_runner.dart';
 
@@ -87,11 +88,18 @@ class CliRunner {
     return processResult;
   }
 
-  _validateProcessResult(
-      ProcessResult result, String command, List<String> arguments) {
+  void _validateProcessResult(
+    ProcessResult result,
+    String command,
+    List<String> arguments,
+  ) {
     if (result.exitCode != 0) {
       throw ProcessException(
-          command, arguments, result.stderr as String, result.exitCode);
+        command,
+        arguments,
+        result.stderr as String,
+        result.exitCode,
+      );
     }
   }
 
