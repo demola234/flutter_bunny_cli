@@ -1,13 +1,10 @@
 import 'package:args/command_runner.dart';
-import 'package:flutter_bunny/src/cli/cli_runner.dart';
-import 'package:flutter_bunny/src/common/cli_exception.dart';
 import 'package:mason_logger/mason_logger.dart';
+
+import '../cli/cli_runner.dart';
 
 /// Command to run the build_runner tool for code generation.
 class BuildCommand extends Command<int> {
-  /// Logger for console output.
-  final Logger _logger;
-
   /// Creates a new BuildCommand.
   ///
   /// [logger] is used for console output.
@@ -19,7 +16,6 @@ class BuildCommand extends Command<int> {
         'watch',
         abbr: 'w',
         help: 'Watch for file changes and rebuild as needed',
-        defaultsTo: false,
         negatable: false,
       )
       ..addFlag(
@@ -35,6 +31,9 @@ class BuildCommand extends Command<int> {
         defaultsTo: '.',
       );
   }
+
+  /// Logger for console output.
+  final Logger _logger;
 
   @override
   String get description => 'Run build_runner to generate code';
@@ -55,7 +54,8 @@ class BuildCommand extends Command<int> {
     final directory = argResults?['directory'] as String;
 
     _logger.info(
-        '${watch ? 'Starting' : 'Running'} code generation${watch ? ' in watch mode' : ''}...');
+      '${watch ? 'Starting' : 'Running'} code generation${watch ? ' in watch mode' : ''}...',
+    );
 
     try {
       final success = await PackageRunner.runBuildRunner(
