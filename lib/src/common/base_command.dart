@@ -49,7 +49,6 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
   /// Logger for console output.
   final Logger logger;
 
-
   /// Template manager for handling templates.
   final TemplateManager _templateManager;
 
@@ -261,8 +260,8 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
   Future<List<String>> _promptModules() async {
     final modules = [
       'Network Layer',
-      'Lolization',
-      'Push Notifications',
+      'Localization',
+      'Push Notification',
       'Theme Manager',
     ];
 

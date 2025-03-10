@@ -165,7 +165,7 @@ class SetupWizard {
       'Network Layer',
       'Local Storage',
       'Localization',
-      'Push Notifications',
+      'Push Notification',
       'Theme Manager',
     ];
 
