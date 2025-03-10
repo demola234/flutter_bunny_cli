@@ -69,7 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Process result handling in package manager
 - Boolean condition checking in CLI runner
 
-## [1.0.6-beta.4] - 2025-03-10
+## [1.0.6-beta.5] - 2025-03-10
 
 ### Added
 
