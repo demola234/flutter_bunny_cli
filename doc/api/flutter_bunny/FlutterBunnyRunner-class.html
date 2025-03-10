@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="API docs for the FlutterBunnyRunner class from the flutter_bunny library, for the Dart programming language."
+    />
+    <title>FlutterBunnyRunner class - flutter_bunny library - Dart API</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../static-assets/github.css?v1" />
+    <link rel="stylesheet" href="../static-assets/styles.css?v1" />
+    <link rel="icon" href="../static-assets/favicon.png?v1" />
+  </head>
+
+  <body data-base-href="../" data-using-base-href="false" class="light-theme">
+    <div id="overlay-under-drawer"></div>
+    <header id="title">
+      <span
+        id="sidenav-left-toggle"
+        class="material-symbols-outlined"
+        role="button"
+        tabindex="0"
+        >menu</span
+      >
+      <ol class="breadcrumbs gt-separated dark hidden-xs">
+        <li><a href="../index.html">flutter_bunny</a></li>
+        <li><a href="../flutter_bunny">flutter_bunny.dart</a></li>
+        <li class="self-crumb">FlutterBunnyRunner class</li>
+      </ol>
+      <div class="self-name">FlutterBunnyRunner</div>
+      <form class="search navbar-right" role="search">
+        <input
+          type="text"
+          id="search-box"
+          autocomplete="off"
+          disabled
+          class="form-control typeahead"
+          placeholder="Loading search..."
+        />
+      </form>
+      <div class="toggle" id="theme-button" title="Toggle brightness">
+        <label for="theme">
+          <input type="checkbox" id="theme" value="light-theme" />
+          <span id="dark-theme-button" class="material-symbols-outlined">
+            dark_mode
+          </span>
+          <span id="light-theme-button" class="material-symbols-outlined">
+            light_mode
+          </span>
+        </label>
+      </div>
+    </header>
+    <main>
+      <div
+        id="dartdoc-main-content"
+        class="main-content"
+        data-above-sidebar="flutter_bunny&#47;flutter_bunny-library-sidebar.html"
+        data-below-sidebar="flutter_bunny&#47;FlutterBunnyRunner-class-sidebar.html"
+      >
+        <div>
+          <h1><span class="kind-class">FlutterBunnyRunner</span> class</h1>
+        </div>
+
+        <section>
+          <dl class="dl-horizontal">
+            <dt>Inheritance</dt>
+            <dd>
+              <ul class="gt-separated dark clazz-relationships">
+                <li>
+                  <a
+                    href="https://api.dart.dev/stable/3.7.1/dart-core/Object-class.html"
+                    >Object</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://pub.dev/documentation/args/2.6.0/command_runner/CommandRunner-class.html"
+                    >CommandRunner</a
+                  ><span class="signature"
+                    >&lt;<wbr /><span class="type-parameter"
+                      ><a
+                        href="https://api.dart.dev/stable/3.7.1/dart-core/int-class.html"
+                        >int</a
+                      ></span
+                    >&gt;</span
+                  >
+                </li>
+                <li>
+                  <a
+                    href="https://pub.dev/documentation/cli_completion/0.5.1/cli_completion/CompletionCommandRunner-class.html"
+                    >CompletionCommandRunner</a
+                  ><span class="signature"
+                    >&lt;<wbr /><span class="type-parameter"
+                      ><a
+                        href="https://api.dart.dev/stable/3.7.1/dart-core/int-class.html"
+                        >int</a
+                      ></span
+                    >&gt;</span
+                  >
+                </li>
+                <li>FlutterBunnyRunner</li>
+              </ul>
+            </dd>
+          </dl>
+        </section>
+
+        <section class="summary offset-anchor" id="constructors">
+          <h2>Constructors</h2>
+          <dl class="constructor-summary-list">
+            <dt id="FlutterBunnyRunner" class="callable">
+              <span class="name"
+                ><a
+                  href="../flutter_bunny/FlutterBunnyRunner/FlutterBunnyRunner.html"
+                  >FlutterBunnyRunner</a
+                ></span
+              ><span class="signature"
+                >({<span class="parameter" id="-param-logger"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://pub.dev/documentation/mason_logger/0.3.3/mason_logger/Logger-class.html"
+                      >Logger</a
+                    >?</span
+                  >
+                  <span class="parameter-name">logger</span>, </span
+                ><span class="parameter" id="-param-pubUpdater"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://pub.dev/documentation/pub_updater/0.5.0/pub_updater/PubUpdater-class.html"
+                      >PubUpdater</a
+                    >?</span
+                  >
+                  <span class="parameter-name">pubUpdater</span>, </span
+                ><span class="parameter" id="-param-environment"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://api.dart.dev/stable/3.7.1/dart-core/Map-class.html"
+                      >Map</a
+                    ><span class="signature"
+                      >&lt;<wbr /><span class="type-parameter"
+                        ><a
+                          href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                          >String</a
+                        ></span
+                      >,
+                      <span class="type-parameter"
+                        ><a
+                          href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                          >String</a
+                        ></span
+                      >&gt;</span
+                    >?</span
+                  >
+                  <span class="parameter-name">environment</span></span
+                >})</span
+              >
+            </dt>
+            <dd></dd>
+          </dl>
+        </section>
+
+        <section
+          class="summary offset-anchor inherited"
+          id="instance-properties"
+        >
+          <h2>Properties</h2>
+          <dl class="properties">
+            <dt id="argParser" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/args/2.6.0/command_runner/CommandRunner/argParser.html"
+                  >argParser</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://pub.dev/documentation/args/2.6.0/args/ArgParser-class.html"
+                  >ArgParser</a
+                ></span
+              >
+            </dt>
+            <dd class="inherited">
+              The top-level argument parser.
+              <div class="features">
+                <span class="feature">no setter</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="commands" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/args/2.6.0/command_runner/CommandRunner/commands.html"
+                  >commands</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/Map-class.html"
+                  >Map</a
+                ><span class="signature"
+                  >&lt;<wbr /><span class="type-parameter"
+                    ><a
+                      href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                      >String</a
+                    ></span
+                  >,
+                  <span class="type-parameter"
+                    ><a
+                      href="https://pub.dev/documentation/args/2.6.0/command_runner/Command-class.html"
+                      >Command</a
+                    ><span class="signature"
+                      >&lt;<wbr /><span class="type-parameter"
+                        ><a
+                          href="https://api.dart.dev/stable/3.7.1/dart-core/int-class.html"
+                          >int</a
+                        ></span
+                      >&gt;</span
+                    ></span
+                  >&gt;</span
+                ></span
+              >
+            </dt>
+            <dd class="inherited">
+              An unmodifiable view of all top-level commands defined for this
+              runner.
+              <div class="features">
+                <span class="feature">no setter</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="completionInstallation" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/cli_completion/0.5.1/cli_completion/CompletionCommandRunner/completionInstallation.html"
+                  >completionInstallation</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://pub.dev/documentation/cli_completion/0.5.1/installer/CompletionInstallation-class.html"
+                  >CompletionInstallation</a
+                ></span
+              >
+            </dt>
+            <dd class="inherited">
+              The
+              <a
+                href="https://pub.dev/documentation/cli_completion/0.5.1/installer/CompletionInstallation-class.html"
+                >CompletionInstallation</a
+              >
+              used to install completion files.
+              <div class="features">
+                <span class="feature">no setter</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="completionInstallationLogger" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/cli_completion/0.5.1/cli_completion/CompletionCommandRunner/completionInstallationLogger.html"
+                  >completionInstallationLogger</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://pub.dev/documentation/mason_logger/0.3.3/mason_logger/Logger-class.html"
+                  >Logger</a
+                ></span
+              >
+            </dt>
+            <dd class="inherited">
+              The
+              <a
+                href="https://pub.dev/documentation/mason_logger/0.3.3/mason_logger/Logger-class.html"
+                >Logger</a
+              >
+              used to display messages during completion installation.
+              <div class="features">
+                <span class="feature">final</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="completionLogger" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/cli_completion/0.5.1/cli_completion/CompletionCommandRunner/completionLogger.html"
+                  >completionLogger</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://pub.dev/documentation/mason_logger/0.3.3/mason_logger/Logger-class.html"
+                  >Logger</a
+                ></span
+              >
+            </dt>
+            <dd class="inherited">
+              The
+              <a
+                href="https://pub.dev/documentation/mason_logger/0.3.3/mason_logger/Logger-class.html"
+                >Logger</a
+              >
+              used to prompt the completion suggestions.
+              <div class="features">
+                <span class="feature">final</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="description" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/args/2.6.0/command_runner/CommandRunner/description.html"
+                  >description</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                  >String</a
+                ></span
+              >
+            </dt>
+            <dd class="inherited">
+              A short description of this executable.
+              <div class="features">
+                <span class="feature">final</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="enableAutoInstall" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/cli_completion/0.5.1/cli_completion/CompletionCommandRunner/enableAutoInstall.html"
+                  >enableAutoInstall</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/bool-class.html"
+                  >bool</a
+                ></span
+              >
+            </dt>
+            <dd class="inherited">
+              Define whether the installation of the completion files should
+              done automatically upon the first command run.
+              <div class="features">
+                <span class="feature">no setter</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="environmentOverride" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/cli_completion/0.5.1/cli_completion/CompletionCommandRunner/environmentOverride.html"
+                  >environmentOverride</a
+                ></span
+              >
+              <span class="signature"
+                >&#8596;
+                <a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/Map-class.html"
+                  >Map</a
+                ><span class="signature"
+                  >&lt;<wbr /><span class="type-parameter"
+                    ><a
+                      href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                      >String</a
+                    ></span
+                  >,
+                  <span class="type-parameter"
+                    ><a
+                      href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                      >String</a
+                    ></span
+                  >&gt;</span
+                >?</span
+              >
+            </dt>
+            <dd class="inherited">
+              Environment map which can be overridden for testing purposes.
+              <div class="features">
+                <span class="feature">getter/setter pair</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="executableName" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/args/2.6.0/command_runner/CommandRunner/executableName.html"
+                  >executableName</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                  >String</a
+                ></span
+              >
+            </dt>
+            <dd class="inherited">
+              The name of the executable being run.
+              <div class="features">
+                <span class="feature">final</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="hashCode" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/Object/hashCode.html"
+                  >hashCode</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/int-class.html"
+                  >int</a
+                ></span
+              >
+            </dt>
+            <dd class="inherited">
+              The hash code for this object.
+              <div class="features">
+                <span class="feature">no setter</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="invocation" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/args/2.6.0/command_runner/CommandRunner/invocation.html"
+                  >invocation</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                  >String</a
+                ></span
+              >
+            </dt>
+            <dd class="inherited">
+              A single-line template for how to invoke this executable.
+              <div class="features">
+                <span class="feature">no setter</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="runtimeType" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/Object/runtimeType.html"
+                  >runtimeType</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/Type-class.html"
+                  >Type</a
+                ></span
+              >
+            </dt>
+            <dd class="inherited">
+              A representation of the runtime type of the object.
+              <div class="features">
+                <span class="feature">no setter</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="suggestionDistanceLimit" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/args/2.6.0/command_runner/CommandRunner/suggestionDistanceLimit.html"
+                  >suggestionDistanceLimit</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/int-class.html"
+                  >int</a
+                ></span
+              >
+            </dt>
+            <dd class="inherited">
+              The maximum edit distance allowed when suggesting possible
+              intended commands.
+              <div class="features">
+                <span class="feature">final</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="systemShell" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/cli_completion/0.5.1/cli_completion/CompletionCommandRunner/systemShell.html"
+                  >systemShell</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://pub.dev/documentation/cli_completion/0.5.1/installer/SystemShell.html"
+                  >SystemShell</a
+                >?</span
+              >
+            </dt>
+            <dd class="inherited">
+              The
+              <a
+                href="https://pub.dev/documentation/cli_completion/0.5.1/installer/SystemShell.html"
+                >SystemShell</a
+              >
+              used to determine the current shell.
+              <div class="features">
+                <span class="feature">no setter</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="usage" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/args/2.6.0/command_runner/CommandRunner/usage.html"
+                  >usage</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                  >String</a
+                ></span
+              >
+            </dt>
+            <dd class="inherited">
+              Generates a string displaying usage information for the
+              executable.
+              <div class="features">
+                <span class="feature">no setter</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+
+            <dt id="usageFooter" class="property inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/args/2.6.0/command_runner/CommandRunner/usageFooter.html"
+                  >usageFooter</a
+                ></span
+              >
+              <span class="signature"
+                >&#8594;
+                <a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                  >String</a
+                >?</span
+              >
+            </dt>
+            <dd class="inherited">
+              An optional footer for
+              <a
+                href="https://pub.dev/documentation/args/2.6.0/command_runner/CommandRunner/usage.html"
+                >usage</a
+              >.
+              <div class="features">
+                <span class="feature">no setter</span
+                ><span class="feature">inherited</span>
+              </div>
+            </dd>
+          </dl>
+        </section>
+
+        <section class="summary offset-anchor" id="instance-methods">
+          <h2>Methods</h2>
+          <dl class="callables">
+            <dt id="addCommand" class="callable inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/args/2.6.0/command_runner/CommandRunner/addCommand.html"
+                  >addCommand</a
+                ></span
+              ><span class="signature"
+                >(<wbr /><span class="parameter" id="addCommand-param-command"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://pub.dev/documentation/args/2.6.0/command_runner/Command-class.html"
+                      >Command</a
+                    ><span class="signature"
+                      >&lt;<wbr /><span class="type-parameter"
+                        ><a
+                          href="https://api.dart.dev/stable/3.7.1/dart-core/int-class.html"
+                          >int</a
+                        ></span
+                      >&gt;</span
+                    ></span
+                  >
+                  <span class="parameter-name">command</span></span
+                >)
+                <span class="returntype parameter">&#8594; void</span>
+              </span>
+            </dt>
+            <dd class="inherited">
+              Adds
+              <a
+                href="https://pub.dev/documentation/args/2.6.0/command_runner/Command-class.html"
+                >Command</a
+              >
+              as a top-level command to this runner.
+              <div class="features"><span class="feature">inherited</span></div>
+            </dd>
+
+            <dt id="noSuchMethod" class="callable inherited">
+              <span class="name"
+                ><a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/Object/noSuchMethod.html"
+                  >noSuchMethod</a
+                ></span
+              ><span class="signature"
+                >(<wbr /><span
+                  class="parameter"
+                  id="noSuchMethod-param-invocation"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://api.dart.dev/stable/3.7.1/dart-core/Invocation-class.html"
+                      >Invocation</a
+                    ></span
+                  >
+                  <span class="parameter-name">invocation</span></span
+                >)
+                <span class="returntype parameter">&#8594; dynamic</span>
+              </span>
+            </dt>
+            <dd class="inherited">
+              Invoked when a nonexistent method or property is accessed.
+              <div class="features"><span class="feature">inherited</span></div>
+            </dd>
+
+            <dt id="parse" class="callable inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/args/2.6.0/command_runner/CommandRunner/parse.html"
+                  >parse</a
+                ></span
+              ><span class="signature"
+                >(<wbr /><span class="parameter" id="parse-param-args"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://api.dart.dev/stable/3.7.1/dart-core/Iterable-class.html"
+                      >Iterable</a
+                    ><span class="signature"
+                      >&lt;<wbr /><span class="type-parameter"
+                        ><a
+                          href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                          >String</a
+                        ></span
+                      >&gt;</span
+                    ></span
+                  >
+                  <span class="parameter-name">args</span></span
+                >)
+                <span class="returntype parameter"
+                  >&#8594;
+                  <a
+                    href="https://pub.dev/documentation/args/2.6.0/args/ArgResults-class.html"
+                    >ArgResults</a
+                  ></span
+                >
+              </span>
+            </dt>
+            <dd class="inherited">
+              Parses <code>args</code> and returns the result, converting an
+              <a
+                href="https://pub.dev/documentation/args/2.6.0/args/ArgParserException-class.html"
+                >ArgParserException</a
+              >
+              to a
+              <a
+                href="https://pub.dev/documentation/args/2.6.0/command_runner/UsageException-class.html"
+                >UsageException</a
+              >.
+              <div class="features"><span class="feature">inherited</span></div>
+            </dd>
+
+            <dt id="printUsage" class="callable">
+              <span class="name"
+                ><a href="../flutter_bunny/FlutterBunnyRunner/printUsage.html"
+                  >printUsage</a
+                ></span
+              ><span class="signature"
+                >(<wbr />)
+                <span class="returntype parameter">&#8594; void</span>
+              </span>
+            </dt>
+            <dd>
+              Prints the usage information for this runner.
+              <div class="features"><span class="feature">override</span></div>
+            </dd>
+
+            <dt id="renderCompletionResult" class="callable inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/cli_completion/0.5.1/cli_completion/CompletionCommandRunner/renderCompletionResult.html"
+                  >renderCompletionResult</a
+                ></span
+              ><span class="signature"
+                >(<wbr /><span
+                  class="parameter"
+                  id="renderCompletionResult-param-completionResult"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://pub.dev/documentation/cli_completion/0.5.1/parser/CompletionResult-class.html"
+                      >CompletionResult</a
+                    ></span
+                  >
+                  <span class="parameter-name">completionResult</span></span
+                >)
+                <span class="returntype parameter">&#8594; void</span>
+              </span>
+            </dt>
+            <dd class="inherited">
+              Renders a
+              <a
+                href="https://pub.dev/documentation/cli_completion/0.5.1/parser/CompletionResult-class.html"
+                >CompletionResult</a
+              >
+              into the current system shell.
+              <div class="features"><span class="feature">inherited</span></div>
+            </dd>
+
+            <dt id="run" class="callable">
+              <span class="name"
+                ><a href="../flutter_bunny/FlutterBunnyRunner/run.html"
+                  >run</a
+                ></span
+              ><span class="signature"
+                >(<wbr /><span class="parameter" id="run-param-args"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://api.dart.dev/stable/3.7.1/dart-core/Iterable-class.html"
+                      >Iterable</a
+                    ><span class="signature"
+                      >&lt;<wbr /><span class="type-parameter"
+                        ><a
+                          href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                          >String</a
+                        ></span
+                      >&gt;</span
+                    ></span
+                  >
+                  <span class="parameter-name">args</span></span
+                >)
+                <span class="returntype parameter"
+                  >&#8594;
+                  <a
+                    href="https://api.dart.dev/stable/3.7.1/dart-core/Future-class.html"
+                    >Future</a
+                  ><span class="signature"
+                    >&lt;<wbr /><span class="type-parameter"
+                      ><a
+                        href="https://api.dart.dev/stable/3.7.1/dart-core/int-class.html"
+                        >int</a
+                      ></span
+                    >&gt;</span
+                  ></span
+                >
+              </span>
+            </dt>
+            <dd>
+              Parses <code>args</code> and invokes
+              <a
+                href="https://pub.dev/documentation/args/2.6.0/command_runner/Command/run.html"
+                >Command.run</a
+              >
+              on the chosen command.
+              <div class="features"><span class="feature">override</span></div>
+            </dd>
+
+            <dt id="runCommand" class="callable">
+              <span class="name"
+                ><a href="../flutter_bunny/FlutterBunnyRunner/runCommand.html"
+                  >runCommand</a
+                ></span
+              ><span class="signature"
+                >(<wbr /><span
+                  class="parameter"
+                  id="runCommand-param-topLevelResults"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://pub.dev/documentation/args/2.6.0/args/ArgResults-class.html"
+                      >ArgResults</a
+                    ></span
+                  >
+                  <span class="parameter-name">topLevelResults</span></span
+                >)
+                <span class="returntype parameter"
+                  >&#8594;
+                  <a
+                    href="https://api.dart.dev/stable/3.7.1/dart-core/Future-class.html"
+                    >Future</a
+                  ><span class="signature"
+                    >&lt;<wbr /><span class="type-parameter"
+                      ><a
+                        href="https://api.dart.dev/stable/3.7.1/dart-core/int-class.html"
+                        >int</a
+                      >?</span
+                    >&gt;</span
+                  ></span
+                >
+              </span>
+            </dt>
+            <dd>
+              Runs the command specified by <code>topLevelResults</code>.
+              <div class="features"><span class="feature">override</span></div>
+            </dd>
+
+            <dt id="toString" class="callable inherited">
+              <span class="name"
+                ><a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/Object/toString.html"
+                  >toString</a
+                ></span
+              ><span class="signature"
+                >(<wbr />)
+                <span class="returntype parameter"
+                  >&#8594;
+                  <a
+                    href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                    >String</a
+                  ></span
+                >
+              </span>
+            </dt>
+            <dd class="inherited">
+              A string representation of this object.
+              <div class="features"><span class="feature">inherited</span></div>
+            </dd>
+
+            <dt id="tryInstallCompletionFiles" class="callable inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/cli_completion/0.5.1/cli_completion/CompletionCommandRunner/tryInstallCompletionFiles.html"
+                  >tryInstallCompletionFiles</a
+                ></span
+              ><span class="signature"
+                >(<wbr /><span
+                  class="parameter"
+                  id="tryInstallCompletionFiles-param-level"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://pub.dev/documentation/mason_logger/0.3.3/mason_logger/Level.html"
+                      >Level</a
+                    ></span
+                  >
+                  <span class="parameter-name">level</span>, {</span
+                ><span
+                  class="parameter"
+                  id="tryInstallCompletionFiles-param-force"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://api.dart.dev/stable/3.7.1/dart-core/bool-class.html"
+                      >bool</a
+                    ></span
+                  >
+                  <span class="parameter-name">force</span> =
+                  <span class="default-value">false</span></span
+                >})
+                <span class="returntype parameter">&#8594; void</span>
+              </span>
+            </dt>
+            <dd class="inherited">
+              Tries to install completion files for the current shell.
+              <div class="features"><span class="feature">inherited</span></div>
+            </dd>
+
+            <dt id="tryUninstallCompletionFiles" class="callable inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/cli_completion/0.5.1/cli_completion/CompletionCommandRunner/tryUninstallCompletionFiles.html"
+                  >tryUninstallCompletionFiles</a
+                ></span
+              ><span class="signature"
+                >(<wbr /><span
+                  class="parameter"
+                  id="tryUninstallCompletionFiles-param-level"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://pub.dev/documentation/mason_logger/0.3.3/mason_logger/Level.html"
+                      >Level</a
+                    ></span
+                  >
+                  <span class="parameter-name">level</span></span
+                >)
+                <span class="returntype parameter">&#8594; void</span>
+              </span>
+            </dt>
+            <dd class="inherited">
+              Tries to uninstall completion files for the current shell.
+              <div class="features"><span class="feature">inherited</span></div>
+            </dd>
+
+            <dt id="usageException" class="callable inherited">
+              <span class="name"
+                ><a
+                  href="https://pub.dev/documentation/args/2.6.0/command_runner/CommandRunner/usageException.html"
+                  >usageException</a
+                ></span
+              ><span class="signature"
+                >(<wbr /><span
+                  class="parameter"
+                  id="usageException-param-message"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://api.dart.dev/stable/3.7.1/dart-core/String-class.html"
+                      >String</a
+                    ></span
+                  >
+                  <span class="parameter-name">message</span></span
+                >)
+                <span class="returntype parameter">&#8594; Never</span>
+              </span>
+            </dt>
+            <dd class="inherited">
+              Throws a
+              <a
+                href="https://pub.dev/documentation/args/2.6.0/command_runner/UsageException-class.html"
+                >UsageException</a
+              >
+              with <code>message</code>.
+              <div class="features"><span class="feature">inherited</span></div>
+            </dd>
+          </dl>
+        </section>
+
+        <section class="summary offset-anchor inherited" id="operators">
+          <h2>Operators</h2>
+          <dl class="callables">
+            <dt id="operator ==" class="callable inherited">
+              <span class="name"
+                ><a
+                  href="https://api.dart.dev/stable/3.7.1/dart-core/Object/operator_equals.html"
+                  >operator ==</a
+                ></span
+              ><span class="signature"
+                >(<wbr /><span class="parameter" id="==-param-other"
+                  ><span class="type-annotation"
+                    ><a
+                      href="https://api.dart.dev/stable/3.7.1/dart-core/Object-class.html"
+                      >Object</a
+                    ></span
+                  >
+                  <span class="parameter-name">other</span></span
+                >)
+                <span class="returntype parameter"
+                  >&#8594;
+                  <a
+                    href="https://api.dart.dev/stable/3.7.1/dart-core/bool-class.html"
+                    >bool</a
+                  ></span
+                >
+              </span>
+            </dt>
+            <dd class="inherited">
+              The equality operator.
+              <div class="features"><span class="feature">inherited</span></div>
+            </dd>
+          </dl>
+        </section>
+      </div>
+      <!-- /.main-content -->
+      <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+        <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+        <header id="header-search-sidebar" class="hidden-l">
+          <form class="search-sidebar" role="search">
+            <input
+              type="text"
+              id="search-sidebar"
+              autocomplete="off"
+              disabled
+              class="form-control typeahead"
+              placeholder="Loading search..."
+            />
+          </form>
+        </header>
+        <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+          <li><a href="../index.html">flutter_bunny</a></li>
+          <li><a href="../flutter_bunny">flutter_bunny</a></li>
+          <li class="self-crumb">FlutterBunnyRunner class</li>
+        </ol>
+
+        <h5>flutter_bunny library</h5>
+        <div id="dartdoc-sidebar-left-content"></div>
+      </div>
+      <div
+        id="dartdoc-sidebar-right"
+        class="sidebar sidebar-offcanvas-right"
+      ></div>
+      <!--/.sidebar-offcanvas-->
+    </main>
+    <footer>
+      <span class="no-break"> flutter_bunny 1.0.6-beta.3 </span>
+    </footer>
+
+    <script src="../static-assets/highlight.pack.js?v1"></script>
+    <script src="../static-assets/docs.dart.js"></script>
+  </body>
+</html>

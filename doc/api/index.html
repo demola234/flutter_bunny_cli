@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, height=device-height, initial-scale=1, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="flutter_bunny API docs, for the Dart programming language."
+    />
+    <title>flutter_bunny - Dart API docs</title>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="static-assets/github.css?v1" />
+    <link rel="stylesheet" href="static-assets/styles.css?v1" />
+    <link rel="icon" href="static-assets/favicon.png?v1" />
+  </head>
+
+  <body data-base-href="" data-using-base-href="false" class="light-theme">
+    <div id="overlay-under-drawer"></div>
+    <header id="title">
+      <span
+        id="sidenav-left-toggle"
+        class="material-symbols-outlined"
+        role="button"
+        tabindex="0"
+        >menu</span
+      >
+      <ol class="breadcrumbs gt-separated dark hidden-xs">
+        <li>
+          <a href="https://bunny.demola.dev/flutterbunnycli"
+            >flutter_bunny package</a
+          >
+        </li>
+      </ol>
+      <div class="self-name">flutter_bunny</div>
+      <form class="search navbar-right" role="search">
+        <input
+          type="text"
+          id="search-box"
+          autocomplete="off"
+          disabled
+          class="form-control typeahead"
+          placeholder="Loading search..."
+        />
+      </form>
+      <div class="toggle" id="theme-button" title="Toggle brightness">
+        <label for="theme">
+          <input type="checkbox" id="theme" value="light-theme" />
+          <span id="dark-theme-button" class="material-symbols-outlined">
+            dark_mode
+          </span>
+          <span id="light-theme-button" class="material-symbols-outlined">
+            light_mode
+          </span>
+        </label>
+      </div>
+    </header>
+    <main>
+      <div id="dartdoc-main-content" class="main-content">
+        <section class="desc markdown">
+          <h1 id="-flutter-bunny-cli-beta">🐰 Flutter Bunny CLI (BETA)</h1>
+          <p>
+            A powerful CLI tool for creating and managing Flutter applications
+            with best practices and consistent architecture.
+          </p>
+          <p>
+            <a href="https://pub.dev/packages/flutter_bunny"
+              ><img
+                src="https://img.shields.io/pub/v/flutter_bunny.svg"
+                alt="Pub Version"
+            /></a>
+            <a href="https://opensource.org/licenses/MIT"
+              ><img
+                src="https://img.shields.io/badge/License-MIT-blue.svg"
+                alt="License: MIT"
+            /></a>
+          </p>
+          <h2 id="-overview">📚 Overview</h2>
+          <p>
+            Flutter Bunny is an opinionated CLI tool that helps you create,
+            manage, and maintain Flutter applications with a focus on:
+          </p>
+          <ul>
+            <li>
+              <strong>Best practices</strong> - Follow Flutter community best
+              practices for code organization and patterns
+            </li>
+            <li>
+              <strong>Consistent architecture</strong> - Choose from popular
+              architecture patterns (Clean, MVVM, MVC)
+            </li>
+            <li>
+              <strong>Rapid development</strong> - Generate common components
+              with a single command
+            </li>
+            <li>
+              <strong>Testing</strong> - Built-in testing templates and
+              utilities
+            </li>
+            <li>
+              <strong>Project maintenance</strong> - Tools to keep your project
+              organized and up-to-date
+            </li>
+          </ul>
+          <h2 id="beta-installation">Beta Installation</h2>
+          <pre
+            class="language-bash"
+          ><code class="language-bash">dart pub global activate flutter_bunny 1.0.6-beta.3
+
+# Verify installation
+flutter_bunny --version
+</code></pre>
+          <p>Make sure the pub cache bin directory is in your PATH.</p>
+          <h2 id="-commands">🏗️ Commands</h2>
+          <h3 id="creating-a-new-flutter-project">
+            Creating a New Flutter Project
+          </h3>
+          <pre
+            class="language-bash"
+          ><code class="language-bash"># Create a new Flutter application interactively
+flutter_bunny create app
+
+# Create with specific options
+flutter_bunny create app --name my_awesome_app --architecture clean_architecture --state-management riverpod
+</code></pre>
+          <p>During creation, you'll be guided through selecting:</p>
+          <ul>
+            <li>Project name and organization</li>
+            <li>Architecture pattern (Clean Architecture, MVVM, MVC)</li>
+            <li>
+              State management solution (Provider, Riverpod, Bloc, GetX, etc.)
+            </li>
+            <li>Core features and modules to include</li>
+          </ul>
+          <h3 id="generating-components">Generating Components</h3>
+          <p>
+            Generate various application components with best practices baked
+            in:
+          </p>
+          <pre
+            class="language-bash"
+          ><code class="language-bash"># Generate a new screen
+flutter_bunny generate screen --name HomeScreen
+
+# Generate a stateful widget
+flutter_bunny generate widget --name CustomButton --stateful
+
+# Generate a data model with JSON serialization
+flutter_bunny generate model --name User --fields "id:int,name:String,email:String,createdAt:DateTime" --json
+</code></pre>
+          <p>The generate command supports the following component types:</p>
+          <ul>
+            <li><code>screen</code> - Application screens/pages</li>
+            <li><code>widget</code> - Reusable UI components</li>
+            <li>
+              <code>model</code> - Data models with optional JSON serialization
+            </li>
+          </ul>
+          <h3 id="updating-the-cli">Updating the CLI</h3>
+          <pre
+            class="language-bash"
+          ><code class="language-bash"># Update to the latest version
+flutter_bunny update
+</code></pre>
+          <h2 id="-project-structure">📋 Project Structure</h2>
+          <p>
+            Projects created with Flutter Bunny follow a consistent structure
+            based on your chosen architecture:
+          </p>
+          <h3 id="clean-architecture-structure">
+            Clean Architecture Structure
+          </h3>
+          <pre class="language-dart"><code>lib/
+├── core/
+│   ├── errors/
+│   ├── network/
+│   ├── utils/
+│   └── theme/
+├── data/
+│   ├── datasources/
+│   ├── models/
+│   └── repositories/
+├── domain/
+│   ├── entities/
+│   ├── repositories/
+│   └── usecases/
+├── presentation/
+│   ├── blocs/
+│   ├── pages/
+│   └── widgets/
+└── main.dart
+</code></pre>
+          <h3 id="mvvm-architecture-structure">MVVM Architecture Structure</h3>
+          <pre class="language-dart"><code>lib/
+├── models/
+├── services/
+├── view_models/
+├── views/
+│   ├── screens/
+│   └── widgets/
+└── main.dart
+</code></pre>
+          <h2 id="-customization">🎨 Customization</h2>
+          <h3 id="configuration">Configuration</h3>
+          <p>
+            Flutter Bunny uses a configuration file to store your preferences.
+            You can edit this file directly or use the command-line options to
+            override settings.
+          </p>
+          <pre
+            class="language-bash"
+          ><code class="language-bash"># View current configuration
+flutter_bunny config show
+
+# Set a configuration value
+flutter_bunny config set default_architecture clean_architecture
+</code></pre>
+          <h3 id="templates">Templates</h3>
+          <p>
+            Templates used by Flutter Bunny can be customized to match your
+            team's specific requirements:
+          </p>
+          <ol>
+            <li>
+              Create a custom template in the
+              <code>~/.flutter_bunny/templates/</code> directory
+            </li>
+            <li>
+              Use your custom template with the <code>--template</code> flag:
+            </li>
+          </ol>
+          <pre
+            class="language-bash"
+          ><code class="language-bash">flutter_bunny create app --template custom_template
+</code></pre>
+          <h2 id="-testing">🧪 Testing</h2>
+          <p>
+            Projects created with Flutter Bunny are set up with comprehensive
+            testing utilities:
+          </p>
+          <ul>
+            <li>
+              <strong>Unit Tests</strong> - For business logic, models, and
+              utilities
+            </li>
+            <li><strong>Widget Tests</strong> - For UI components</li>
+            <li><strong>Integration Tests</strong> - For feature workflows</li>
+          </ul>
+          <p>Run tests using the built-in commands:</p>
+          <pre class="language-bash"><code class="language-bash"># Run all tests
+flutter_bunny test
+
+# Run specific tests
+flutter_bunny test --type unit
+</code></pre>
+          <h2 id="-architecture-options">📋 Architecture Options</h2>
+          <p>Flutter Bunny supports multiple architecture patterns:</p>
+          <h3 id="clean-architecture">Clean Architecture</h3>
+          <p>
+            Separates your application into layers with clear responsibilities:
+          </p>
+          <ul>
+            <li>
+              <strong>Presentation Layer</strong> - UI components, pages and
+              state management
+            </li>
+            <li>
+              <strong>Domain Layer</strong> - Business logic, entities and use
+              cases
+            </li>
+            <li>
+              <strong>Data Layer</strong> - Data sources, repositories and
+              models
+            </li>
+          </ul>
+          <h3 id="mvvm-model-view-viewmodel">MVVM (Model-View-ViewModel)</h3>
+          <p>Separates UI logic from business logic:</p>
+          <ul>
+            <li><strong>Model</strong> - Data and business logic</li>
+            <li><strong>View</strong> - UI components with minimal logic</li>
+            <li>
+              <strong>ViewModel</strong> - Mediator between Model and View
+            </li>
+          </ul>
+          <h3 id="mvc-model-view-controller">MVC (Model-View-Controller)</h3>
+          <p>Classic pattern for separating concerns:</p>
+          <ul>
+            <li><strong>Model</strong> - Data and business logic</li>
+            <li><strong>View</strong> - UI components</li>
+            <li>
+              <strong>Controller</strong> - Handles user input and updates
+              models/views
+            </li>
+          </ul>
+          <h2 id="-state-management-options">🧩 State Management Options</h2>
+          <p>Flutter Bunny supports multiple state management solutions:</p>
+          <ul>
+            <li>
+              <strong>Provider</strong> - Simple and flexible state management
+            </li>
+            <li>
+              <strong>Riverpod</strong> - Evolution of Provider with improved
+              patterns
+            </li>
+            <li>
+              <strong>Bloc/Cubit</strong> - Predictable state management with
+              events and states
+            </li>
+            <li>
+              <strong>GetX</strong> - Lightweight state management with
+              utilities
+            </li>
+            <li><strong>MobX</strong> - Reactive state management</li>
+            <li><strong>Redux</strong> - Predictable state container</li>
+          </ul>
+          <h2 id="-common-tasks">🔧 Common Tasks</h2>
+          <h3 id="adding-dependencies">Adding Dependencies</h3>
+          <pre
+            class="language-bash"
+          ><code class="language-bash"># Add common dependencies
+flutter_bunny add package http dio shared_preferences
+</code></pre>
+          <h3 id="analyzing-code">Analyzing Code</h3>
+          <pre
+            class="language-bash"
+          ><code class="language-bash"># Run static analysis
+flutter_bunny analyze
+</code></pre>
+          <h3 id="running-doctor">Running Doctor</h3>
+          <pre
+            class="language-bash"
+          ><code class="language-bash"># Check for issues
+flutter_bunny doctor
+</code></pre>
+          <h2 id="-contributing">🤝 Contributing</h2>
+          <p>
+            Contributions are welcome! Please read our
+            <a href="CONTRIBUTING.md">contributing guidelines</a> first.
+          </p>
+          <ol>
+            <li>Fork the repository</li>
+            <li>
+              Create your feature branch (<code
+                >git checkout -b feature/amazing-feature</code
+              >)
+            </li>
+            <li>
+              Commit your changes (<code
+                >git commit -m 'Add some amazing feature'</code
+              >)
+            </li>
+            <li>
+              Push to the branch (<code
+                >git push origin feature/amazing-feature</code
+              >)
+            </li>
+            <li>Open a Pull Request</li>
+          </ol>
+          <h2 id="-license">📄 License</h2>
+          <p>
+            Flutter Bunny is available under the MIT license. See the
+            <a href="LICENSE">LICENSE</a> file for more info.
+          </p>
+          <h2 id="-support">📞 Support</h2>
+          <p>If you encounter any issues or have questions:</p>
+          <ul>
+            <li>
+              Open an
+              <a href="https://github.com/demola234/flutter_bunny/issues"
+                >issue</a
+              >
+            </li>
+            <li>
+              Check
+              <a href="https://bunny.demola.dev/flutterbunnycli"
+                >documentation</a
+              >
+            </li>
+          </ul>
+        </section>
+
+        <section class="summary">
+          <h2>Libraries</h2>
+          <dl>
+            <dt id="flutter_bunny">
+              <span class="name"
+                ><a href="flutter_bunny">flutter_bunny</a></span
+              >
+            </dt>
+            <dd>Flutter Bunny CLI 🐰</dd>
+          </dl>
+        </section>
+      </div>
+      <!-- /.main-content -->
+      <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+        <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+        <header id="header-search-sidebar" class="hidden-l">
+          <form class="search-sidebar" role="search">
+            <input
+              type="text"
+              id="search-sidebar"
+              autocomplete="off"
+              disabled
+              class="form-control typeahead"
+              placeholder="Loading search..."
+            />
+          </form>
+        </header>
+        <ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+          <li>
+            <a href="https://bunny.demola.dev/flutterbunnycli"
+              >flutter_bunny package</a
+            >
+          </li>
+        </ol>
+
+        <h5 class="hidden-xs">
+          <span class="package-name">flutter_bunny</span>
+          <span class="package-kind">package</span>
+        </h5>
+        <ol>
+          <li class="section-title">Libraries</li>
+          <li><a href="flutter_bunny">flutter_bunny</a></li>
+        </ol>
+      </div>
+      <div
+        id="dartdoc-sidebar-right"
+        class="sidebar sidebar-offcanvas-right"
+      ></div>
+    </main>
+    <footer>
+      <span class="no-break"> flutter_bunny 1.0.6-beta.3 </span>
+    </footer>
+
+    <script src="static-assets/highlight.pack.js?v1"></script>
+    <script src="static-assets/docs.dart.js"></script>
+  </body>
+</html>
