@@ -43,7 +43,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Parameter name updates for compatibility with latest pub_updater package
 - Boolean condition checking in CLI runner
 
-
 - Changelog
 
 All notable changes to Flutter Bunny CLI will be documented in this file.
@@ -54,6 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.6-beta.2] - 2025-03-10
 
 ### Added
+
 - [analyze] - Helps to run analysis on the project and helps to point out any issues
 - [config] - Helps to save settings for preferred users style for template generation
 - [doctor] - Helps to analysis problems in a project, list them out and suggest changes to it
