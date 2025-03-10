@@ -32,7 +32,6 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     ConfigManager? configManager,
   })  : _generatorFromBundle = generatorFromBundle ?? MasonGenerator.fromBundle,
         _generatorFromBrick = generatorFromBrick ?? MasonGenerator.fromBrick,
-        _configManager = configManager ?? ConfigManager(logger: logger),
         _templateManager = TemplateManager(
           logger: logger,
           configManager: configManager ?? ConfigManager(logger: logger),
@@ -50,8 +49,6 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
   /// Logger for console output.
   final Logger logger;
 
-  /// Configuration manager for user preferences.
-  final ConfigManager _configManager;
 
   /// Template manager for handling templates.
   final TemplateManager _templateManager;

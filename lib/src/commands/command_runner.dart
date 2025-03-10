@@ -6,7 +6,6 @@ import 'package:pub_updater/pub_updater.dart';
 import '../common/base.dart';
 import '../common/cli_exception.dart';
 import '../common/package_info.dart';
-import 'add_command.dart';
 import 'analyze_command.dart';
 import 'build_command.dart';
 import 'config_command.dart';

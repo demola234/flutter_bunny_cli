@@ -1,15 +1,12 @@
 import 'package:args/command_runner.dart';
-import 'package:flutter_bunny/src/cli/cli_runner.dart';
-import 'package:flutter_bunny/src/common/cli_exception.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:path/path.dart' as path;
 import 'package:universal_io/io.dart';
 
+import '../cli/cli_runner.dart';
+
 /// Command to check the health of a Flutter project.
 class DoctorCommand extends Command<int> {
-  /// Logger for console output.
-  final Logger _logger;
-
   /// Creates a new DoctorCommand.
   DoctorCommand({
     required Logger logger,
@@ -33,6 +30,9 @@ class DoctorCommand extends Command<int> {
         negatable: false,
       );
   }
+
+  /// Logger for console output.
+  final Logger _logger;
 
   @override
   String get description => 'Check the health of your Flutter project';
@@ -63,21 +63,21 @@ class DoctorCommand extends Command<int> {
 
       // Check project-specific issues
       final issues = await _checkProjectHealth(directory);
-      
+
       if (issues.isEmpty) {
         health.complete('No project issues found!');
       } else {
         health.complete('Found ${issues.length} issues with your project');
-        
+
         // Print the issues
         _logger.info('');
         _logger.info('Project Health Check Results:');
-        
+
         for (int i = 0; i < issues.length; i++) {
           final issue = issues[i];
           _logger.info('${i + 1}. ${lightRed.wrap(issue.title)}');
           _logger.info('   ${issue.description}');
-          
+
           if (issue.canFix && shouldFix) {
             final fixProgress = _logger.progress('   Fixing issue...');
             try {
@@ -91,16 +91,17 @@ class DoctorCommand extends Command<int> {
               fixProgress.fail('Error fixing issue: $e');
             }
           } else if (issue.canFix) {
-            _logger.info('   ${lightBlue.wrap('This issue can be fixed automatically with --fix')}');
+            _logger.info(
+                '   ${lightBlue.wrap('This issue can be fixed automatically with --fix')}');
           }
-          
+
           if (issue.recommendations.isNotEmpty) {
             _logger.info('   Recommendations:');
             for (final recommendation in issue.recommendations) {
               _logger.info('   - $recommendation');
             }
           }
-          
+
           if (i < issues.length - 1) {
             _logger.info('');
           }
@@ -196,7 +197,8 @@ class DoctorCommand extends Command<int> {
         issues.add(
           ProjectIssue(
             title: 'Outdated pubspec.lock',
-            description: 'pubspec.yaml has been modified after pubspec.lock was generated.',
+            description:
+                'pubspec.yaml has been modified after pubspec.lock was generated.',
             recommendations: [
               'Run "flutter pub get" to update dependencies',
             ],
@@ -219,12 +221,14 @@ class DoctorCommand extends Command<int> {
     }
 
     // Check for analysis_options.yaml
-    final analysisOptionsFile = File(path.join(directory, 'analysis_options.yaml'));
+    final analysisOptionsFile =
+        File(path.join(directory, 'analysis_options.yaml'));
     if (!await analysisOptionsFile.exists()) {
       issues.add(
         ProjectIssue(
           title: 'Missing analysis_options.yaml',
-          description: 'No analysis_options.yaml file found. This file helps maintain code quality.',
+          description:
+              'No analysis_options.yaml file found. This file helps maintain code quality.',
           recommendations: [
             'Create an analysis_options.yaml file with appropriate lints',
             'Consider using package:lints/recommended.yaml as a base',
@@ -260,7 +264,8 @@ linter:
       issues.add(
         ProjectIssue(
           title: 'Missing .gitignore',
-          description: 'No .gitignore file found. This file prevents committing generated files.',
+          description:
+              'No .gitignore file found. This file prevents committing generated files.',
           recommendations: [
             'Create a .gitignore file with Flutter-specific ignores',
           ],
@@ -342,7 +347,8 @@ app.*.map.json
       issues.add(
         ProjectIssue(
           title: 'Missing test directory',
-          description: 'No test directory found. Testing is essential for robust apps.',
+          description:
+              'No test directory found. Testing is essential for robust apps.',
           recommendations: [
             'Create a test directory and add unit, widget, and integration tests',
             'Run "flutter test" to execute your tests',
@@ -352,7 +358,7 @@ app.*.map.json
             try {
               final dir = Directory(path.join(directory, 'test'));
               await dir.create();
-              
+
               // Create a sample test file
               final testFile = File(path.join(dir.path, 'widget_test.dart'));
               await testFile.writeAsString('''
@@ -398,7 +404,8 @@ void main() {
         issues.add(
           ProjectIssue(
             title: 'Minimal lib directory structure',
-            description: 'The lib directory has minimal structure. Consider organizing your code better.',
+            description:
+                'The lib directory has minimal structure. Consider organizing your code better.',
             recommendations: [
               'Create subdirectories for different parts of your app (widgets, screens, models, etc.)',
               'Separate business logic from UI code',
@@ -414,21 +421,6 @@ void main() {
 
 /// Represents an issue found in a project.
 class ProjectIssue {
-  /// The title or name of the issue.
-  final String title;
-  
-  /// A detailed description of the issue.
-  final String description;
-  
-  /// Recommendations for resolving the issue.
-  final List<String> recommendations;
-  
-  /// Whether the issue can be fixed automatically.
-  final bool canFix;
-  
-  /// A function that attempts to fix the issue.
-  final Future<bool> Function()? fix;
-
   /// Creates a new ProjectIssue.
   ProjectIssue({
     required this.title,
@@ -436,5 +428,21 @@ class ProjectIssue {
     this.recommendations = const [],
     this.canFix = false,
     this.fix,
-  }) : assert(!canFix || fix != null, 'If canFix is true, fix must be provided');
+  }) : assert(
+            !canFix || fix != null, 'If canFix is true, fix must be provided');
+
+  /// The title or name of the issue.
+  final String title;
+
+  /// A detailed description of the issue.
+  final String description;
+
+  /// Recommendations for resolving the issue.
+  final List<String> recommendations;
+
+  /// Whether the issue can be fixed automatically.
+  final bool canFix;
+
+  /// A function that attempts to fix the issue.
+  final Future<bool> Function()? fix;
 }
