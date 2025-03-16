@@ -11,9 +11,12 @@ dependencies:
   ansicolor: ^2.0.2
   args: ^2.5.0
   cli_completion: ^0.5.0
+  cli_pkg: ^2.12.0
   collection: ^1.18.0
   crypto: ^3.0.6
   glob: ^2.1.2
+  grinder: ^0.9.5
+  jsonc: ^0.0.3
   logging: ^1.0.0
   mason: ^0.1.0-dev.53
   mason_logger: ^0.3.3
@@ -35,9 +38,9 @@ dev_dependencies:
 
 # Enable platform detection to demonstrate platform support
 platforms:
-  linux:
-  macos:
-  windows:
+  ? linux
+  ? macos
+  ? windows
 
 # Add additional information for pub.dev package page
 topics:
@@ -47,4 +50,4 @@ topics:
   - templates
 
 executables:
-  flutter_bunny:
+  ? flutter_bunny
