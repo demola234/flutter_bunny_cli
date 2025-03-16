@@ -5,7 +5,7 @@ import 'package:cli_pkg/cli_pkg.dart' as pkg;
 import 'package:grinder/grinder.dart';
 import 'package:path/path.dart' as path;
 
-import '../test/testing_helpers/prepare_test_environment.dart';
+import '../utils/http.dart';
 
 const _packageName = 'flutter_bunny';
 const owner = 'demola234';
@@ -30,7 +30,10 @@ void main(List<String> args) {
 
 @Task('Compile')
 void compile() {
-  run('dart', arguments: ['compile', 'exe', 'bin/main.dart', '-o', 'flutter_bunny']);
+  run(
+    'dart',
+    arguments: ['compile', 'exe', 'bin/main.dart', '-o', 'flutter_bunny'],
+  );
 }
 
 @Task('Get all releases')
@@ -58,16 +61,6 @@ Future<void> getReleases() async {
   file.writeAsStringSync(stringBuffer.toString());
 }
 
-@Task('Prepare test environment')
-void testSetup() {
-  final testDir = Directory(getTempTestDir());
-  if (testDir.existsSync()) {
-    testDir.deleteSync(recursive: true);
-  }
-
-  runDartScript('bin/main.dart', arguments: ['install', 'stable']);
-}
-
 @Task('Move install.sh and uninstall.sh to public directory')
 void moveScripts() {
   final installScript = File('scripts/install.sh');
@@ -87,12 +80,6 @@ void moveScripts() {
   uninstallScript.copySync(path.join(publicDir.path, 'uninstall.sh'));
 
   print('Moved install.sh and uninstall.sh to public directory');
-}
-
-@Task('Run tests')
-@Depends(testSetup)
-Future<void> test() async {
-  await runAsync('dart', arguments: ['test', '--coverage=coverage']);
 }
 
 @Task('Get coverage')
