@@ -32,17 +32,25 @@ jobs:
           mkdir -p formula
           mv flutter_bunny.rb formula/
 
-      - name: Create Pull Request to homebrew-tap
+      - name: Checkout homebrew-tap repo
+        uses: actions/checkout@v3
+        with:
+          repository: demola234/homebrew-tap
+          path: homebrew-tap
+          token: ${{ secrets.GH_PAT }}
+        
+      - name: Copy formula to homebrew-tap
+        run: cp flutter_bunny.rb homebrew-tap/
+
+      - name: Create PR in homebrew-tap
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GH_PAT }}
+          path: homebrew-tap
           commit-message: "Update formula to ${{ github.ref_name }}"
           title: "Update formula to ${{ github.ref_name }}"
           body: |
             This PR updates the Homebrew formula to version ${{ github.ref_name }}.
-            
             Created automatically by GitHub Actions.
           branch: update-formula-${{ github.ref_name }}
           base: main
-          path: ./formula
-          push-to-fork: demola234/homebrew-tap
