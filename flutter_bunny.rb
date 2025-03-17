@@ -2,7 +2,7 @@ class FlutterBunny < Formula
   desc "Flutter Bunny: A CLI tool for Flutter development"
   homepage "https://github.com/demola234/flutter_bunny_cli"
   license "MIT"
-  version "1.0.0"
+  version "1.0.1"
 
   on_macos do
     on_arm do

@@ -45,7 +45,7 @@ Future<void> runHomebrewFormula() async {
   final Map<String, dynamic> assetData = {};
 
   // Add this at the beginning of runHomebrewFormula() after the version check
-  if (versionArg == 'v1.0.0' && assets.isEmpty) {
+  if (versionArg == 'v1.0.1' && assets.isEmpty) {
     log('No assets found in GitHub release. Using local test values for development.');
 
     // Create fake asset data for testing
@@ -63,6 +63,9 @@ Future<void> runHomebrewFormula() async {
           '0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5',
     };
   }
+
+
+  
 
   for (final asset in assets) {
     final assetUrl = Uri.parse(asset['browser_download_url']);
