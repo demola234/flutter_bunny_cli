@@ -19,7 +19,7 @@ jobs:
         run: dart pub get
         
       - name: Generate Homebrew formula
-        run: dart run grinder homebrewFormula --version=${{ github.ref_name }}
+        run: dart run grinder homebrew-formula --version=${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           

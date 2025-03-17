@@ -6,10 +6,11 @@ import 'package:grinder/grinder.dart';
 import 'package:path/path.dart' as path;
 
 import '../utils/http.dart';
+import 'homebrew.dart';
 
 const _packageName = 'flutter_bunny';
 const owner = 'demola234';
-const repo = 'bunny_cli';
+const repo = 'flutter_bunny_cli';
 
 void main(List<String> args) {
   pkg.name.value = _packageName;
@@ -128,54 +129,12 @@ Future<void> coverage() async {
   );
 }
 
-@Task('Update Homebrew formula')
-Future<void> updateHomebrew() async {
-  // First check if the version is available from pkg
-  final version = pkg.version.canonicalizedVersion;
-  final args = context.invocation.arguments;
+@Task('Generate Homebrew formula')
+Future<void> homebrewFormula() async {
+  await runHomebrewFormula();
+}
 
-  log('Generating Homebrew formula for version $version');
-
-  final versionArg = args.getOption('version');
-  if (versionArg == null) {
-    throw Exception('Version is required. Use --version=X.Y.Z');
-  }
-
-  // Make sure you have the compiled binary
-  compile();
-
-  // Create a template for the Homebrew formula
-  final template = '''
-class FlutterBunny < Formula
-  desc "Flutter Bunny: A CLI tool for Flutter development"
-  homepage "https://github.com/$owner/$repo"
-  version "${versionArg.startsWith('v') ? versionArg.substring(1) : versionArg}"
-  license "MIT"
-
-  if OS.mac?
-    if Hardware::CPU.arm?
-      url "https://github.com/$owner/$repo/releases/download/v$version/flutter_bunny-$version-macos-arm64.tar.gz"
-      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
-    else
-      url "https://github.com/$owner/$repo/releases/download/v$version/flutter_bunny-$version-macos-x64.tar.gz"
-      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
-    end
-  end
-
-  def install
-    bin.install "flutter_bunny"
-  end
-
-  test do
-    system "#{bin}/flutter_bunny", "--version"
-  end
-end
-''';
-
-  // Write the formula to a file
-  final file = File('flutter_bunny.template.rb');
-  file.writeAsStringSync(template);
-
-  log('Generated Homebrew formula: ${file.absolute.path}');
-  log('You need to manually update the SHA256 hashes and submit this to your Homebrew tap repository.');
+@Task('Generate Homebrew formula for GitHub Actions')
+Future<void> homebrewDashFormula() async {
+  await runHomebrewFormula();
 }
