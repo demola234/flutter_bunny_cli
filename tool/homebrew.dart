@@ -10,7 +10,7 @@ import '../utils/http.dart';
 
 // Define your repository information here
 const owner = 'demola234';
-const repo = 'bunny_cli';
+const repo = 'flutter_bunny_cli';
 
 GrinderTask homebrewTask() => GrinderTask(
       'homebrew-formula',

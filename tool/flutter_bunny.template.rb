@@ -1,6 +1,6 @@
 class FlutterBunny < Formula
     desc "Flutter Bunny: A CLI tool for Flutter development"
-    homepage "https://github.com/demola234/bunny_cli"
+    homepage "https://github.com/demola234/flutter_bunny_cli "
     license "MIT"
     version "{{VERSION}}"
   

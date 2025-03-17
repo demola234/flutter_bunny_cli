@@ -9,7 +9,7 @@ import '../utils/http.dart';
 
 const _packageName = 'flutter_bunny';
 const owner = 'demola234';
-const repo = 'bunny_cli';
+const repo = 'flutter_bunny_cli';
 
 void main(List<String> args) {
   pkg.name.value = _packageName;
