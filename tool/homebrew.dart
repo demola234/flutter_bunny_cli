@@ -102,13 +102,16 @@ Future<void> runHomebrewFormula() async {
   final macosArm64 = assetData[macosArm64Key];
 
   if (macosX64Key.isEmpty || macosArm64Key.isEmpty) {
-    log('Missing required macOS assets, using fallback...');
+    log('Missing required macOS assets, using fallback to source tarball...');
 
     final sourceTarballUrl =
         'https://github.com/$owner/$repo/archive/refs/tags/$versionArg.tar.gz';
 
-    final templateFile = File('tool/flutter_bunny.template.rb');
+    log('Downloading source tarball to calculate hash...');
+    final sourceUri = Uri.parse(sourceTarballUrl);
+    final sha256Hash = await _downloadFile(sourceUri, 'source.tar.gz', headers);
 
+    final templateFile = File('tool/flutter_bunny.template.rb');
     if (!await templateFile.exists()) {
       throw Exception('Template file not found: ${templateFile.path}');
     }
@@ -117,16 +120,15 @@ Future<void> runHomebrewFormula() async {
     final formula = template
         .replaceAll('{{VERSION}}', versionNoPrefix)
         .replaceAll('{{MACOS_X64_URL}}', sourceTarballUrl)
-        .replaceAll('{{MACOS_X64_SHA256}}', 'UPDATE_WITH_ACTUAL_HASH')
+        .replaceAll('{{MACOS_X64_SHA256}}', sha256Hash)
         .replaceAll('{{MACOS_ARM64_URL}}', sourceTarballUrl)
-        .replaceAll('{{MACOS_ARM64_SHA256}}', 'UPDATE_WITH_ACTUAL_HASH');
+        .replaceAll('{{MACOS_ARM64_SHA256}}', sha256Hash);
 
     final outputFile = File('flutter_bunny.rb');
     await outputFile.writeAsString(formula);
-    log('Formula generated with placeholder values at: ${outputFile.absolute.path}');
+    log('Formula generated with source tarball at: ${outputFile.absolute.path}');
     return;
   }
-
   log('Generating formula with:\n  Version: $versionNoPrefix\n  x64 URL: ${macosX64['url']}\n  arm64 URL: ${macosArm64['url']}');
 
   final templateFile = File('tool/flutter_bunny.template.rb');
