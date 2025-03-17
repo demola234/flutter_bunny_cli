@@ -1,6 +1,6 @@
 name: flutter_bunny
 description: A CLI tool for creating and managing Flutter applications with best practices
-version: 1.0.6-beta.8
+version: 1.0.6-beta.9
 repository: https://github.com/demola234/bunny_cli
 homepage: https://bunny.demola.dev/flutterbunnycli
 issue_tracker: https://github.com/demola234/bunny_cli/issues
