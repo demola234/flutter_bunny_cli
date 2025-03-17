@@ -42,5 +42,5 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git tag -a ${{ env.VERSION }} -m "Release ${{ env.VERSION }}"
-          git push origin ${{ env.VERSION }}
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} ${{ env.VERSION }}
           echo "Created and pushed tag: ${{ env.VERSION }}"
