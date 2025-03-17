@@ -48,3 +48,8 @@ jobs:
             Created automatically by GitHub Actions.
           branch: update-formula-${{ github.ref_name }}
           base: main
+
+      - name: Debug info
+        run: |
+          echo "Generated formula content:"
+          cat flutter_bunny.rb
