@@ -16,6 +16,8 @@ class FlutterBunny < Formula
   end
 
   def install
+    system "dart", "pub", "get"
+    system "dart", "compile", "exe", "bin/flutter_bunny.dart", "-o", "flutter_bunny"
     bin.install "flutter_bunny"
   end
 

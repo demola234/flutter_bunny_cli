@@ -97,6 +97,10 @@ Future<void> runHomebrewFormula() async {
     orElse: () => '',
   );
 
+  // Generate the formula with real asset data
+  final macosX64 = assetData[macosX64Key];
+  final macosArm64 = assetData[macosArm64Key];
+
   if (macosX64Key.isEmpty || macosArm64Key.isEmpty) {
     log('Missing required macOS assets, using fallback...');
 
@@ -104,6 +108,7 @@ Future<void> runHomebrewFormula() async {
         'https://github.com/$owner/$repo/archive/refs/tags/$versionArg.tar.gz';
 
     final templateFile = File('tool/flutter_bunny.template.rb');
+
     if (!await templateFile.exists()) {
       throw Exception('Template file not found: ${templateFile.path}');
     }
@@ -112,19 +117,15 @@ Future<void> runHomebrewFormula() async {
     final formula = template
         .replaceAll('{{VERSION}}', versionNoPrefix)
         .replaceAll('{{MACOS_X64_URL}}', sourceTarballUrl)
-        .replaceAll('{{MACOS_X64_SHA256}}', 'UPDATE_WITH_ACTUAL_HASH')
+        .replaceAll('{{MACOS_X64_SHA256}}', macosX64['sha256'])
         .replaceAll('{{MACOS_ARM64_URL}}', sourceTarballUrl)
-        .replaceAll('{{MACOS_ARM64_SHA256}}', 'UPDATE_WITH_ACTUAL_HASH');
+        .replaceAll('{{MACOS_ARM64_SHA256}}', macosArm64['sha256']);
 
     final outputFile = File('flutter_bunny.rb');
     await outputFile.writeAsString(formula);
     log('Formula generated with placeholder values at: ${outputFile.absolute.path}');
     return;
   }
-
-  // Generate the formula with real asset data
-  final macosX64 = assetData[macosX64Key];
-  final macosArm64 = assetData[macosArm64Key];
 
   log('Generating formula with:\n  Version: $versionNoPrefix\n  x64 URL: ${macosX64['url']}\n  arm64 URL: ${macosArm64['url']}');
 
