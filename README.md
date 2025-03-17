@@ -23,6 +23,8 @@ dart pub global activate flutter_bunny 1.0.6-beta.5
 # Verify installation
 flutter_bunny --version
 ```
+Make sure the pub cache bin directory is in your PATH.
+
 ## Beta Installation on macOS with Homebrew
 
 ```bash
@@ -31,7 +33,7 @@ brew tap demola234/homebrew-tap
 brew install flutter_bunny
 ```
 
-Make sure the pub cache bin directory is in your PATH.
+
 
 ## 🏗️ Commands
 
