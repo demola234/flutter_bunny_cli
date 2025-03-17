@@ -1,65 +1,108 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
 import 'package:grinder/grinder.dart';
 import 'package:http/http.dart' as http;
-import 'package:jsonc/jsonc.dart';
 import 'package:path/path.dart' as path;
 
-import '../utils/http.dart';
-
-// Define your repository information here
+// Define your repository information
 const owner = 'demola234';
 const repo = 'flutter_bunny_cli';
 
-GrinderTask homebrewTask() => GrinderTask(
-      'homebrew-formula',
-      taskFunction: _homebrewFormula,
-    );
-
-Future<void> _homebrewFormula() async {
+Future<void> runHomebrewFormula() async {
   final githubToken = Platform.environment['GITHUB_TOKEN'] ?? '';
   final args = context.invocation.arguments;
   final versionArg = args.getOption('version');
   if (versionArg == null) {
     throw Exception('Version is required');
   }
+
+  log('Generating Homebrew formula for version: $versionArg');
+
   final url = Uri.parse(
     'https://api.github.com/repos/$owner/$repo/releases/tags/$versionArg',
   );
+
   final headers = {
     if (githubToken.isNotEmpty) 'Authorization': 'token $githubToken',
     'Accept': 'application/vnd.github.v3+json',
   };
-  final response = await fetch(url.toString(), headers: headers);
-  final Map<String, dynamic> release = jsonc.decode(response);
+
+  log('Fetching release information from GitHub...');
+  final response = await http.get(url, headers: headers);
+
+  if (response.statusCode != 200) {
+    throw Exception(
+        'Failed to fetch release: ${response.statusCode} - ${response.body}');
+  }
+
+  final Map<String, dynamic> release = jsonDecode(response.body);
   final List assets = release['assets'];
+  log('Found ${assets.length} assets in the release');
+
   final Map<String, dynamic> assetData = {};
   for (final asset in assets) {
     final assetUrl = Uri.parse(asset['browser_download_url']);
     final filename = path.basename(assetUrl.path);
+    log('Processing asset: $filename');
+
     if (!filename.contains('macos-x64') && !filename.contains('macos-arm64')) {
+      log('Skipping non-macOS asset: $filename');
       continue;
     }
+
     final sha256Hash = await _downloadFile(assetUrl, filename, headers);
     if (sha256Hash.isNotEmpty) {
       assetData[filename] = {
         'url': asset['browser_download_url'],
         'sha256': sha256Hash,
       };
+      log('Added asset data for $filename with SHA256: $sha256Hash');
     }
   }
-  final template = File('tool/flutter_bunny.template.rb').readAsStringSync();
-  final macosX64 = assetData['flutter_bunny-$versionArg-macos-x64.tar.gz'];
-  final macosArm64 = assetData['flutter_bunny-$versionArg-macos-arm64.tar.gz'];
+
+  log('Preparing to generate formula from template');
+  // Make sure this file exists
+  final templateFile = File('tool/flutter_bunny.template.rb');
+  if (!await templateFile.exists()) {
+    throw Exception('Template file not found: ${templateFile.path}');
+  }
+
+  final template = await templateFile.readAsString();
+
+  final versionNoPrefix =
+      versionArg.startsWith('v') ? versionArg.substring(1) : versionArg;
+
+  final macosX64Key = assetData.keys.firstWhere(
+    (k) => k.contains('macos-x64'),
+    orElse: () => '',
+  );
+
+  final macosArm64Key = assetData.keys.firstWhere(
+    (k) => k.contains('macos-arm64'),
+    orElse: () => '',
+  );
+
+  if (macosX64Key.isEmpty || macosArm64Key.isEmpty) {
+    throw Exception('Missing required macOS assets');
+  }
+
+  final macosX64 = assetData[macosX64Key];
+  final macosArm64 = assetData[macosArm64Key];
+
+  log('Generating formula with:\n  Version: $versionNoPrefix\n  x64 URL: ${macosX64['url']}\n  arm64 URL: ${macosArm64['url']}');
+
   final formula = template
-      .replaceAll('{{VERSION}}', versionArg)
+      .replaceAll('{{VERSION}}', versionNoPrefix)
       .replaceAll('{{MACOS_X64_URL}}', macosX64['url'])
       .replaceAll('{{MACOS_X64_SHA256}}', macosX64['sha256'])
       .replaceAll('{{MACOS_ARM64_URL}}', macosArm64['url'])
       .replaceAll('{{MACOS_ARM64_SHA256}}', macosArm64['sha256']);
-  final file = File('flutter_bunny.rb');
-  file.writeAsStringSync(formula);
+
+  final outputFile = File('flutter_bunny.rb');
+  await outputFile.writeAsString(formula);
+  log('Formula generated successfully at: ${outputFile.absolute.path}');
 }
 
 Future<String> _downloadFile(
@@ -67,16 +110,21 @@ Future<String> _downloadFile(
   String filename,
   Map<String, String> headers,
 ) async {
+  log('Downloading file: $url');
   final response = await http.get(url, headers: headers);
+
   if (response.statusCode == 200) {
     final bytes = response.bodyBytes;
     await File(filename).writeAsBytes(bytes);
-    print('Downloaded: $filename');
+    log('Downloaded: $filename (${bytes.length} bytes)');
+
     // Calculate SHA-256 hash
-    final sha256Hash = sha256.convert(bytes).toString();
-    print('SHA-256 Hash: $sha256Hash');
+    final digest = sha256.convert(bytes);
+    final sha256Hash = digest.toString();
+    log('SHA-256 Hash: $sha256Hash');
     return sha256Hash;
   }
-  print('Failed to download $filename: ${response.statusCode}');
+
+  log('Failed to download $filename: ${response.statusCode}');
   return '';
 }

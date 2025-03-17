@@ -9,7 +9,7 @@ import '../utils/http.dart';
 
 const _packageName = 'flutter_bunny';
 const owner = 'demola234';
-const repo = 'flutter_bunny_cli';
+const repo = 'bunny_cli';
 
 void main(List<String> args) {
   pkg.name.value = _packageName;
@@ -24,7 +24,6 @@ void main(List<String> args) {
   }
 
   pkg.addAllTasks();
-
   grind(args);
 }
 
@@ -32,7 +31,13 @@ void main(List<String> args) {
 void compile() {
   run(
     'dart',
-    arguments: ['compile', 'exe', 'bin/main.dart', '-o', 'flutter_bunny'],
+    arguments: [
+      'compile',
+      'exe',
+      'bin/flutter_bunny.dart',
+      '-o',
+      'flutter_bunny',
+    ],
   );
 }
 
@@ -61,6 +66,20 @@ Future<void> getReleases() async {
   file.writeAsStringSync(stringBuffer.toString());
 }
 
+String getTempTestDir() {
+  return path.join(Directory.systemTemp.path, 'flutter_bunny_test');
+}
+
+@Task('Prepare test environment')
+void testSetup() {
+  final testDir = Directory(getTempTestDir());
+  if (testDir.existsSync()) {
+    testDir.deleteSync(recursive: true);
+  }
+
+  runDartScript('bin/flutter_bunny.dart', arguments: ['install', 'stable']);
+}
+
 @Task('Move install.sh and uninstall.sh to public directory')
 void moveScripts() {
   final installScript = File('scripts/install.sh');
@@ -82,6 +101,12 @@ void moveScripts() {
   print('Moved install.sh and uninstall.sh to public directory');
 }
 
+@Task('Run tests')
+@Depends(testSetup)
+Future<void> test() async {
+  await runAsync('dart', arguments: ['test', '--coverage=coverage']);
+}
+
 @Task('Get coverage')
 Future<void> coverage() async {
   await runAsync('dart', arguments: ['pub', 'global', 'activate', 'coverage']);
@@ -101,4 +126,49 @@ Future<void> coverage() async {
       '--out=coverage/lcov.info',
     ],
   );
+}
+
+@Task('Update Homebrew formula')
+Future<void> updateHomebrew() async {
+  // First check if the version is available from pkg
+  final version = pkg.version.canonicalizedVersion;
+  log('Generating Homebrew formula for version $version');
+
+  // Make sure you have the compiled binary
+  compile();
+
+  // Create a template for the Homebrew formula
+  final template = '''
+class FlutterBunny < Formula
+  desc "Flutter Bunny: A CLI tool for Flutter development"
+  homepage "https://github.com/$owner/$repo"
+  version "$version"
+  license "MIT"
+
+  if OS.mac?
+    if Hardware::CPU.arm?
+      url "https://github.com/$owner/$repo/releases/download/v$version/flutter_bunny-$version-macos-arm64.tar.gz"
+      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+    else
+      url "https://github.com/$owner/$repo/releases/download/v$version/flutter_bunny-$version-macos-x64.tar.gz"
+      sha256 "0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5"
+    end
+  end
+
+  def install
+    bin.install "flutter_bunny"
+  end
+
+  test do
+    system "#{bin}/flutter_bunny", "--version"
+  end
+end
+''';
+
+  // Write the formula to a file
+  final file = File('flutter_bunny.rb');
+  file.writeAsStringSync(template);
+
+  log('Generated Homebrew formula: ${file.absolute.path}');
+  log('You need to manually update the SHA256 hashes and submit this to your Homebrew tap repository.');
 }
