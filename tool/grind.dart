@@ -132,7 +132,14 @@ Future<void> coverage() async {
 Future<void> updateHomebrew() async {
   // First check if the version is available from pkg
   final version = pkg.version.canonicalizedVersion;
+  final args = context.invocation.arguments;
+
   log('Generating Homebrew formula for version $version');
+
+  final versionArg = args.getOption('version');
+  if (versionArg == null) {
+    throw Exception('Version is required. Use --version=X.Y.Z');
+  }
 
   // Make sure you have the compiled binary
   compile();
@@ -142,7 +149,7 @@ Future<void> updateHomebrew() async {
 class FlutterBunny < Formula
   desc "Flutter Bunny: A CLI tool for Flutter development"
   homepage "https://github.com/$owner/$repo"
-  version "$version"
+  version "${versionArg.startsWith('v') ? versionArg.substring(1) : versionArg}"
   license "MIT"
 
   if OS.mac?
@@ -166,7 +173,7 @@ end
 ''';
 
   // Write the formula to a file
-  final file = File('flutter_bunny.rb');
+  final file = File('flutter_bunny.template.rb');
   file.writeAsStringSync(template);
 
   log('Generated Homebrew formula: ${file.absolute.path}');
