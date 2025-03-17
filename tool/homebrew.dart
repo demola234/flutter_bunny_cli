@@ -117,9 +117,9 @@ Future<void> runHomebrewFormula() async {
     final formula = template
         .replaceAll('{{VERSION}}', versionNoPrefix)
         .replaceAll('{{MACOS_X64_URL}}', sourceTarballUrl)
-        .replaceAll('{{MACOS_X64_SHA256}}', macosX64['sha256'])
+        .replaceAll('{{MACOS_X64_SHA256}}', 'UPDATE_WITH_ACTUAL_HASH')
         .replaceAll('{{MACOS_ARM64_URL}}', sourceTarballUrl)
-        .replaceAll('{{MACOS_ARM64_SHA256}}', macosArm64['sha256']);
+        .replaceAll('{{MACOS_ARM64_SHA256}}', 'UPDATE_WITH_ACTUAL_HASH');
 
     final outputFile = File('flutter_bunny.rb');
     await outputFile.writeAsString(formula);
