@@ -130,7 +130,7 @@ Future<void> coverage() async {
 }
 
 @Task('Generate Homebrew formula')
-Future<void> homebrew() async {
+Future<void> homebrewFormula() async {
   await runHomebrewFormula();
 }
 

@@ -35,5 +35,5 @@ jobs:
             Created automatically by GitHub Actions.
           branch: update-formula-${{ github.ref_name }}
           base: main
-          path: ./flutter_bunny.template.rb
+          path: ./tool/flutter_bunny.rb
           push-to-fork: demola234/homebrew-tap
