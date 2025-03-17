@@ -19,6 +19,8 @@ Future<void> runHomebrewFormula() async {
   }
 
   log('Generating Homebrew formula for version: $versionArg');
+  final versionNoPrefix =
+      versionArg.startsWith('v') ? versionArg.substring(1) : versionArg;
 
   final url = Uri.parse(
     'https://api.github.com/repos/$owner/$repo/releases/tags/$versionArg',
@@ -33,40 +35,37 @@ Future<void> runHomebrewFormula() async {
   final response = await http.get(url, headers: headers);
 
   if (response.statusCode != 200) {
-    throw Exception(
-      'Failed to fetch release: ${response.statusCode} - ${response.body}',
-    );
+    log('Failed to fetch release: ${response.statusCode} - ${response.body}');
+    log('Generating formula with placeholder values...');
+
+    final sourceTarballUrl =
+        'https://github.com/$owner/$repo/archive/refs/tags/$versionArg.tar.gz';
+
+    final templateFile = File('tool/flutter_bunny.template.rb');
+    if (!await templateFile.exists()) {
+      throw Exception('Template file not found: ${templateFile.path}');
+    }
+
+    final template = await templateFile.readAsString();
+    final formula = template
+        .replaceAll('{{VERSION}}', versionNoPrefix)
+        .replaceAll('{{MACOS_X64_URL}}', sourceTarballUrl)
+        .replaceAll('{{MACOS_X64_SHA256}}', 'UPDATE_WITH_ACTUAL_HASH')
+        .replaceAll('{{MACOS_ARM64_URL}}', sourceTarballUrl)
+        .replaceAll('{{MACOS_ARM64_SHA256}}', 'UPDATE_WITH_ACTUAL_HASH');
+
+    final outputFile = File('flutter_bunny.rb');
+    await outputFile.writeAsString(formula);
+    log('Formula generated with placeholder values at: ${outputFile.absolute.path}');
+    return;
   }
 
+  // Process release assets
   final Map<String, dynamic> release = jsonDecode(response.body);
   final List assets = release['assets'];
   log('Found ${assets.length} assets in the release');
 
   final Map<String, dynamic> assetData = {};
-
-  // Add this at the beginning of runHomebrewFormula() after the version check
-  if (versionArg == 'v1.0.1' && assets.isEmpty) {
-    log('No assets found in GitHub release. Using local test values for development.');
-
-    // Create fake asset data for testing
-    assetData['flutter_bunny-v1.0.0-macos-x64.tar.gz'] = {
-      'url':
-          'https://github.com/$owner/$repo/releases/download/v1.0.0/flutter_bunny-v1.0.0-macos-x64.tar.gz',
-      'sha256':
-          '0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5',
-    };
-
-    assetData['flutter_bunny-v1.0.0-macos-arm64.tar.gz'] = {
-      'url':
-          'https://github.com/$owner/$repo/releases/download/v1.0.0/flutter_bunny-v1.0.0-macos-arm64.tar.gz',
-      'sha256':
-          '0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5',
-    };
-  }
-
-
-  
-
   for (final asset in assets) {
     final assetUrl = Uri.parse(asset['browser_download_url']);
     final filename = path.basename(assetUrl.path);
@@ -87,18 +86,7 @@ Future<void> runHomebrewFormula() async {
     }
   }
 
-  log('Preparing to generate formula from template');
-  // Make sure this file exists
-  final templateFile = File('tool/flutter_bunny.template.rb');
-  if (!await templateFile.exists()) {
-    throw Exception('Template file not found: ${templateFile.path}');
-  }
-
-  final template = await templateFile.readAsString();
-
-  final versionNoPrefix =
-      versionArg.startsWith('v') ? versionArg.substring(1) : versionArg;
-
+  // Check if we found the required assets
   final macosX64Key = assetData.keys.firstWhere(
     (k) => k.contains('macos-x64'),
     orElse: () => '',
@@ -110,14 +98,42 @@ Future<void> runHomebrewFormula() async {
   );
 
   if (macosX64Key.isEmpty || macosArm64Key.isEmpty) {
-    throw Exception('Missing required macOS assets');
+    log('Missing required macOS assets, using fallback...');
+
+    final sourceTarballUrl =
+        'https://github.com/$owner/$repo/archive/refs/tags/$versionArg.tar.gz';
+
+    final templateFile = File('tool/flutter_bunny.template.rb');
+    if (!await templateFile.exists()) {
+      throw Exception('Template file not found: ${templateFile.path}');
+    }
+
+    final template = await templateFile.readAsString();
+    final formula = template
+        .replaceAll('{{VERSION}}', versionNoPrefix)
+        .replaceAll('{{MACOS_X64_URL}}', sourceTarballUrl)
+        .replaceAll('{{MACOS_X64_SHA256}}', 'UPDATE_WITH_ACTUAL_HASH')
+        .replaceAll('{{MACOS_ARM64_URL}}', sourceTarballUrl)
+        .replaceAll('{{MACOS_ARM64_SHA256}}', 'UPDATE_WITH_ACTUAL_HASH');
+
+    final outputFile = File('flutter_bunny.rb');
+    await outputFile.writeAsString(formula);
+    log('Formula generated with placeholder values at: ${outputFile.absolute.path}');
+    return;
   }
 
+  // Generate the formula with real asset data
   final macosX64 = assetData[macosX64Key];
   final macosArm64 = assetData[macosArm64Key];
 
   log('Generating formula with:\n  Version: $versionNoPrefix\n  x64 URL: ${macosX64['url']}\n  arm64 URL: ${macosArm64['url']}');
 
+  final templateFile = File('tool/flutter_bunny.template.rb');
+  if (!await templateFile.exists()) {
+    throw Exception('Template file not found: ${templateFile.path}');
+  }
+
+  final template = await templateFile.readAsString();
   final formula = template
       .replaceAll('{{VERSION}}', versionNoPrefix)
       .replaceAll('{{MACOS_X64_URL}}', macosX64['url'])
