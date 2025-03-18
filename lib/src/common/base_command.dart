@@ -236,6 +236,9 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
 
   /// Prompts the user for features to include.
   Future<List<String>> _promptFeatures() async {
+    // Save cursor position
+    stdout.write('\x1B[s');
+
     final features = [
       'Authentication',
       'User Profile',
@@ -243,10 +246,14 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
       'Dashboard',
     ];
 
+    // Run your prompt
     final selectedFeatures = logger.chooseAny(
       'Select features to include (Space to select, Enter to confirm):',
       choices: features,
     );
+
+    // Restore cursor position and clear below
+    stdout.write('\x1B[u\x1B[J');
 
     if (selectedFeatures.isEmpty) {
       logger.warn('No features selected. Please select at least one feature.');
@@ -446,3 +453,5 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     }
   }
 }
+
+
