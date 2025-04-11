@@ -12,7 +12,6 @@ import 'config_command.dart';
 import 'create_app_command.dart';
 import 'doctor_command.dart';
 import 'generate_command.dart';
-import 'open_widget_book.dart';
 import 'update_app_command.dart';
 
 class FlutterBunnyRunner extends CompletionCommandRunner<int> {
@@ -31,7 +30,6 @@ class FlutterBunnyRunner extends CompletionCommandRunner<int> {
         ) {
     _setupArgParser();
     addCommand(CreateAppCommand(logger: _base.logger));
-    addCommand(OpenWidgetbookCommand(logger: _base.logger));
     addCommand(UpdateCommand(_base.logger));
     addCommand(BuildCommand(logger: _base.logger));
     addCommand(GenerateCommand(logger: _base.logger));
