@@ -1,10 +1,10 @@
-import 'package:flutter_bunny/src/templates/bunny_template_bundle.dart';
-import 'package:flutter_bunny/src/templates/template.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as path;
 import 'package:universal_io/io.dart';
 
+import 'bunny_template_bundle.dart';
 import 'post_gen.dart';
+import 'template.dart';
 
 /// A template generator for Flutter Bunny applications.
 /// Handles project scaffolding, dependency installation, and post-generation tasks.
