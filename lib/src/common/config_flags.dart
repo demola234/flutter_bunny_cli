@@ -1,5 +1,6 @@
 import 'package:args/args.dart';
-import 'package:flutter_bunny/src/common/config_manager.dart';
+
+import 'config_manager.dart';
 
 /// Default description for new Flutter projects.
 const _defaultDescription =
@@ -26,28 +27,40 @@ mixin ArgParserConfiguration {
   }) {
     // If we have a config manager, use it to get default values
     final config = configManager;
-    
+
     // Get defaults from config or use provided defaults
     final defaultArchitecture = config?.getValue<String>(
-      'defaults.architecture',
-      defaultValue: architecture ?? 'clean_architecture',
-    ) ?? architecture ?? 'clean_architecture';
-    
+          'defaults.architecture',
+          defaultValue: architecture ?? 'clean_architecture',
+        ) ??
+        architecture ??
+        'clean_architecture';
+
     final defaultStateManagement = config?.getValue<String>(
-      'defaults.state_management',
-      defaultValue: stateManagement ?? 'provider',
-    ) ?? stateManagement ?? 'provider';
-    
-    final defaultFeatures = config?.getValue<List<dynamic>>(
-      'defaults.features',
-      defaultValue: features?.cast<dynamic>() ?? ['authentication'],
-    )?.cast<String>() ?? features ?? ['authentication'];
-    
-    final defaultModules = config?.getValue<List<dynamic>>(
-      'defaults.modules',
-      defaultValue: modules?.cast<dynamic>() ?? ['network_layer'],
-    )?.cast<String>() ?? modules ?? ['network_layer'];
-    
+          'defaults.state_management',
+          defaultValue: stateManagement ?? 'provider',
+        ) ??
+        stateManagement ??
+        'provider';
+
+    final defaultFeatures = config
+            ?.getValue<List<dynamic>>(
+              'defaults.features',
+              defaultValue: features?.cast<dynamic>() ?? ['authentication'],
+            )
+            ?.cast<String>() ??
+        features ??
+        ['authentication'];
+
+    final defaultModules = config
+            ?.getValue<List<dynamic>>(
+              'defaults.modules',
+              defaultValue: modules?.cast<dynamic>() ?? ['network_layer'],
+            )
+            ?.cast<String>() ??
+        modules ??
+        ['network_layer'];
+
     // Configure the argument parser with the resolved default values
     argParser
       // Project configuration options
@@ -67,7 +80,7 @@ mixin ArgParserConfiguration {
         help: 'The name of the Flutter project (in snake_case).',
         defaultsTo: projectName ?? 'my_flutter_app',
       )
-      
+
       // Architecture and structure options
       ..addOption(
         'architecture',
@@ -93,7 +106,7 @@ mixin ArgParserConfiguration {
         ],
         defaultsTo: defaultStateManagement,
       )
-      
+
       // Feature and module options
       ..addMultiOption(
         'features',
@@ -102,7 +115,7 @@ mixin ArgParserConfiguration {
           'authentication',
           'user_profile',
           'settings',
-          'dashboard'
+          'dashboard',
         ],
         defaultsTo: defaultFeatures,
       )
@@ -117,17 +130,17 @@ mixin ArgParserConfiguration {
         ],
         defaultsTo: defaultModules,
       )
-      
+
       // Mode options
       ..addFlag(
         'interactive',
         abbr: 'i',
         help: 'Run in interactive mode to configure the project.',
-        negatable: true,
         defaultsTo: config?.getValue<bool>(
-          'generation.interactive',
-          defaultValue: true,
-        ) ?? true,
+              'generation.interactive',
+              defaultValue: true,
+            ) ??
+            true,
       )
       ..addFlag(
         'verbose',

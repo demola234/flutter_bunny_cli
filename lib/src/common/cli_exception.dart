@@ -1,9 +1,8 @@
 class CliException implements Exception {
+  CliException(this.message, [this.cause]);
   final String message;
   final dynamic cause;
   StackTrace? _stackTrace;
-
-  CliException(this.message, [this.cause]);
 
   /// Get the stack trace
   StackTrace? get stackTrace => _stackTrace;
@@ -28,7 +27,10 @@ class CliException implements Exception {
 
 extension CliExceptionUtils on CliException {
   static CliException withTrace(
-      String message, dynamic cause, StackTrace stackTrace) {
+    String message,
+    dynamic cause,
+    StackTrace stackTrace,
+  ) {
     final exception = CliException(message, cause);
     exception.setStackTrace(stackTrace);
     return exception;
@@ -39,7 +41,10 @@ class CommandException extends CliException {
   CommandException(super.message, [super.cause]);
 
   static CommandException withTrace(
-      String message, dynamic cause, StackTrace stackTrace) {
+    String message,
+    dynamic cause,
+    StackTrace stackTrace,
+  ) {
     final exception = CommandException(message, cause);
     exception.setStackTrace(stackTrace);
     return exception;

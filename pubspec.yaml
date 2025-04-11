@@ -27,6 +27,8 @@ dependencies:
   sprintf: ^7.0.0
   universal_io: ^2.2.2
   win32: ^5.6.0
+  flutter:
+    sdk: flutter
 
 dev_dependencies:
   build_runner: ^2.4.9
