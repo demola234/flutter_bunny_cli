@@ -8,10 +8,12 @@ import '../common/base_command.dart';
 
 class OpenWidgetbookCommand extends Command<int> {
   OpenWidgetbookCommand({
-    required Logger logger,
+    required this.logger,
     @visibleForTesting MasonGeneratorFromBundle? generatorFromBundle,
     @visibleForTesting MasonGeneratorFromBrick? generatorFromBrick,
   });
+
+  final Logger logger;
 
   @override
   String get description => 'Open Widgetbook for your Flutter application';
@@ -21,19 +23,19 @@ class OpenWidgetbookCommand extends Command<int> {
 
   @override
   Future<int> run() async {
-    print('📦 Launching Widgetbook...');
+    logger.info('📦 Launching Widgetbook on desktop...');
+
     try {
-      final result = await Process.run(
-        'flutter',
-        ['run', '-d', 'chrome', '-t', 'lib/widgetbook.dart'],
+      final result = await Process.start(
+        '/usr/bin/env',
+        ['flutter', 'run', '-d', 'macos', '-t', 'lib/widgetbook.dart'],
+        mode: ProcessStartMode.inheritStdio,
       );
-
-      stdout.write(result.stdout);
-      stderr.write(result.stderr);
-
-      return ExitCode.success.code;
-    } catch (e) {
-      print('❌ Failed to launch Widgetbook: $e');
+      final exitCode = await result.exitCode;
+      return exitCode;
+    } catch (e, stack) {
+      logger.err('❌ Failed to launch Widgetbook: $e');
+      logger.detail('Stack trace:\n$stack');
       return ExitCode.osError.code;
     }
   }
