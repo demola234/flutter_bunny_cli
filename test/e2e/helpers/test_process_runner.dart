@@ -2,15 +2,14 @@ import 'dart:io';
 
 /// Result of running a command in a subprocess.
 class CommandResult {
-  final int exitCode;
-  final String stdout;
-  final String stderr;
-
   CommandResult({
     required this.exitCode,
     required this.stdout,
     required this.stderr,
   });
+  final int exitCode;
+  final String stdout;
+  final String stderr;
 
   @override
   String toString() => '''
@@ -36,7 +35,7 @@ Future<CommandResult> runCommand(
 
   // Run the command
   print('Running: $cliPath ${args.join(' ')}');
-  
+
   final process = await Process.start(
     isWindows ? 'dart' : 'dart',
     [cliPath, ...args],
@@ -72,9 +71,8 @@ Future<CommandResult> runCommand(
 /// Gets the path to the CLI executable.
 String _getCliExecutablePath(bool isWindows) {
   // In a development environment, we use the bin script directly
-  final binScript = isWindows 
-      ? 'bin\\flutter_bunny.dart'
-      : 'bin/flutter_bunny.dart';
+  final binScript =
+      isWindows ? 'bin\\flutter_bunny.dart' : 'bin/flutter_bunny.dart';
 
   // Check if we're running in the package directory (development mode)
   if (FileSystemEntity.isFileSync(binScript)) {
@@ -82,16 +80,13 @@ String _getCliExecutablePath(bool isWindows) {
   }
 
   // Otherwise, assume we're running in the test directory
-  final relativeScript = isWindows
-      ? '..\\bin\\flutter_bunny.dart'
-      : '../bin/flutter_bunny.dart';
+  final relativeScript =
+      isWindows ? '..\\bin\\flutter_bunny.dart' : '../bin/flutter_bunny.dart';
 
   if (FileSystemEntity.isFileSync(relativeScript)) {
     return relativeScript;
   }
 
   // If all else fails, rely on the pub cache
-  return isWindows
-      ? 'bin\\flutter_bunny.dart'
-      : 'bin/flutter_bunny.dart';
+  return isWindows ? 'bin\\flutter_bunny.dart' : 'bin/flutter_bunny.dart';
 }

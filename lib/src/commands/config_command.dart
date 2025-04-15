@@ -10,15 +10,17 @@ class ConfigCommand extends Command<int> {
   /// [logger] is used for console output.
   ConfigCommand({
     required Logger logger,
-  })  : _configManager = ConfigManager(logger: logger) {
+  }) : _configManager = ConfigManager(logger: logger) {
     addSubcommand(
-        ConfigShowCommand(logger: logger, configManager: _configManager));
+      ConfigShowCommand(logger: logger, configManager: _configManager),
+    );
     addSubcommand(
-        ConfigSetCommand(logger: logger, configManager: _configManager));
+      ConfigSetCommand(logger: logger, configManager: _configManager),
+    );
     addSubcommand(
-        ConfigResetCommand(logger: logger, configManager: _configManager));
+      ConfigResetCommand(logger: logger, configManager: _configManager),
+    );
   }
-
 
   /// The configuration manager.
   final ConfigManager _configManager;

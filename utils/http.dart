@@ -22,7 +22,7 @@ Future<String> fetch(String url, {Map<String, String>? headers}) async {
     throw HttpException(response.reasonPhrase);
   }
 
-  final stream = response.transform(Utf8Decoder());
+  final stream = response.transform(const Utf8Decoder());
 
   var res = '';
   await for (final data in stream) {

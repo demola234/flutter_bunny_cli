@@ -42,7 +42,7 @@ Future<bool> directoryHasFiles(String path) async {
   if (!await dir.exists()) {
     return false;
   }
-  
+
   final entities = await dir.list().toList();
   return entities.isNotEmpty;
 }
@@ -62,13 +62,13 @@ Future<bool> waitForCondition(
   Duration pollInterval = const Duration(milliseconds: 500),
 }) async {
   final stopwatch = Stopwatch()..start();
-  
+
   while (stopwatch.elapsed < timeout) {
     if (await condition()) {
       return true;
     }
     await Future.delayed(pollInterval);
   }
-  
+
   return false;
 }

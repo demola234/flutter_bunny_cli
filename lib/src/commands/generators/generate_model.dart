@@ -98,7 +98,8 @@ class GenerateModelCommand extends Command<int> {
 
     _logger.info('');
     _logger.info(
-        '${lightGreen.wrap('✓')} Successfully generated $modelName model!');
+      '${lightGreen.wrap('✓')} Successfully generated $modelName model!',
+    );
 
     if (useJson) {
       _logger.info('''
@@ -166,7 +167,8 @@ class GenerateModelCommand extends Command<int> {
       final libDir = _findLibDirectory();
       if (libDir == null) {
         progress.fail(
-            'Could not find lib/ directory. Are you in a Flutter project?');
+          'Could not find lib/ directory. Are you in a Flutter project?',
+        );
         return false;
       }
 
@@ -218,7 +220,8 @@ class GenerateModelCommand extends Command<int> {
       final testDir = _findTestDirectory();
       if (testDir == null) {
         progress.fail(
-            'Could not find test/ directory. Are you in a Flutter project?');
+          'Could not find test/ directory. Are you in a Flutter project?',
+        );
         return false;
       }
 
@@ -247,7 +250,8 @@ class GenerateModelCommand extends Command<int> {
 
       await file.writeAsString(content);
       progress.complete(
-          'Created test for $modelName model at ${path.relative(filePath)}');
+        'Created test for $modelName model at ${path.relative(filePath)}',
+      );
 
       return true;
     } catch (e) {
@@ -348,162 +352,165 @@ class GenerateModelCommand extends Command<int> {
   }
 
   /// Generates content for a model class.
- /// Generates content for a model class.
-String _generateModelContent({
-  required String modelName,
-  required Map<String, String> fields,
-  required bool useJson,
-  required bool useEquatable,
-}) {
-  final buffer = StringBuffer();
+  /// Generates content for a model class.
+  String _generateModelContent({
+    required String modelName,
+    required Map<String, String> fields,
+    required bool useJson,
+    required bool useEquatable,
+  }) {
+    final buffer = StringBuffer();
 
-  // Add imports
-  buffer.writeln("import 'package:flutter/foundation.dart';");
+    // Add imports
+    buffer.writeln("import 'package:flutter/foundation.dart';");
 
-  if (useJson) {
-    buffer.writeln("import 'package:json_annotation/json_annotation.dart';");
-  }
+    if (useJson) {
+      buffer.writeln("import 'package:json_annotation/json_annotation.dart';");
+    }
 
-  if (useEquatable) {
-    buffer.writeln("import 'package:equatable/equatable.dart';");
-  }
+    if (useEquatable) {
+      buffer.writeln("import 'package:equatable/equatable.dart';");
+    }
 
-  if (useJson) {
-    buffer.writeln();
-    buffer.writeln("part '${_toSnakeCase(modelName)}.g.dart';");
-  }
-
-  buffer.writeln();
-
-  // Add class annotation for JSON serialization
-  if (useJson) {
-    buffer.writeln('@JsonSerializable()');
-  }
-
-  // Begin class definition
-  buffer.write('class $modelName');
-
-  if (useEquatable) {
-    buffer.write(' extends Equatable');
-  }
-
-  buffer.writeln(' {');
-
-  // Add fields
-  for (final entry in fields.entries) {
-    buffer.writeln('  final ${entry.value} ${entry.key};');
-  }
-
-  buffer.writeln();
-
-  // Add constructor
-  buffer.writeln('  const $modelName({');
-  for (final entry in fields.entries) {
-    buffer.writeln('    required this.${entry.key},');
-  }
-  buffer.writeln('  });');
-
-  // Add fromJson factory if needed
-  if (useJson) {
-    buffer.writeln();
-    buffer.writeln('  /// Creates a [$modelName] from JSON map.');
-    buffer.writeln(
-        '  factory $modelName.fromJson(Map<String, dynamic> json) => ');
-    buffer.writeln('      _\$${modelName}FromJson(json);');
+    if (useJson) {
+      buffer.writeln();
+      buffer.writeln("part '${_toSnakeCase(modelName)}.g.dart';");
+    }
 
     buffer.writeln();
-    buffer.writeln('  /// Converts this [$modelName] into a JSON map.');
-    buffer.writeln(
-        '  Map<String, dynamic> toJson() => _\$${modelName}ToJson(this);');
-  }
 
-  // Add copyWith method
-  buffer.writeln();
-  buffer.writeln(
-      '  /// Creates a copy of this [$modelName] with specified attributes replaced with new values.');
-  buffer.writeln('  $modelName copyWith({');
-  for (final entry in fields.entries) {
-    buffer.writeln('    ${entry.value}? ${entry.key},');
-  }
-  buffer.writeln('  }) {');
-  buffer.writeln('    return $modelName(');
-  for (final entry in fields.entries) {
-    buffer.writeln('      ${entry.key}: ${entry.key} ?? this.${entry.key},');
-  }
-  buffer.writeln('    );');
-  buffer.writeln('  }');
+    // Add class annotation for JSON serialization
+    if (useJson) {
+      buffer.writeln('@JsonSerializable()');
+    }
 
-  // Add Equatable properties
-  if (useEquatable) {
-    buffer.writeln();
-    buffer.writeln('  @override');
-    buffer.writeln('  List<Object?> get props => [');
+    // Begin class definition
+    buffer.write('class $modelName');
+
+    if (useEquatable) {
+      buffer.write(' extends Equatable');
+    }
+
+    buffer.writeln(' {');
+
+    // Add fields
     for (final entry in fields.entries) {
-      buffer.writeln('    ${entry.key},');
+      buffer.writeln('  final ${entry.value} ${entry.key};');
     }
-    buffer.writeln('  ];');
-  } else {
-    // Add equals and hashCode
+
     buffer.writeln();
-    buffer.writeln('  @override');
-    buffer.writeln('  bool operator ==(Object other) {');
-    buffer.writeln('    if (identical(this, other)) return true;');
-    buffer.writeln('    return other is $modelName &&');
 
-    final fieldsList = fields.keys.toList();
-    for (var i = 0; i < fieldsList.length; i++) {
-      final field = fieldsList[i];
-      buffer.write('        other.$field == $field');
-      if (i < fieldsList.length - 1) {
-        buffer.writeln(' &&');
-      } else {
-        buffer.writeln(';');
-      }
+    // Add constructor
+    buffer.writeln('  const $modelName({');
+    for (final entry in fields.entries) {
+      buffer.writeln('    required this.${entry.key},');
+    }
+    buffer.writeln('  });');
+
+    // Add fromJson factory if needed
+    if (useJson) {
+      buffer.writeln();
+      buffer.writeln('  /// Creates a [$modelName] from JSON map.');
+      buffer.writeln(
+        '  factory $modelName.fromJson(Map<String, dynamic> json) => ',
+      );
+      buffer.writeln('      _\$${modelName}FromJson(json);');
+
+      buffer.writeln();
+      buffer.writeln('  /// Converts this [$modelName] into a JSON map.');
+      buffer.writeln(
+        '  Map<String, dynamic> toJson() => _\$${modelName}ToJson(this);',
+      );
     }
 
+    // Add copyWith method
+    buffer.writeln();
+    buffer.writeln(
+      '  /// Creates a copy of this [$modelName] with specified attributes replaced with new values.',
+    );
+    buffer.writeln('  $modelName copyWith({');
+    for (final entry in fields.entries) {
+      buffer.writeln('    ${entry.value}? ${entry.key},');
+    }
+    buffer.writeln('  }) {');
+    buffer.writeln('    return $modelName(');
+    for (final entry in fields.entries) {
+      buffer.writeln('      ${entry.key}: ${entry.key} ?? this.${entry.key},');
+    }
+    buffer.writeln('    );');
     buffer.writeln('  }');
 
-    // FIXED: Improved hashCode implementation
+    // Add Equatable properties
+    if (useEquatable) {
+      buffer.writeln();
+      buffer.writeln('  @override');
+      buffer.writeln('  List<Object?> get props => [');
+      for (final entry in fields.entries) {
+        buffer.writeln('    ${entry.key},');
+      }
+      buffer.writeln('  ];');
+    } else {
+      // Add equals and hashCode
+      buffer.writeln();
+      buffer.writeln('  @override');
+      buffer.writeln('  bool operator ==(Object other) {');
+      buffer.writeln('    if (identical(this, other)) return true;');
+      buffer.writeln('    return other is $modelName &&');
+
+      final fieldsList = fields.keys.toList();
+      for (var i = 0; i < fieldsList.length; i++) {
+        final field = fieldsList[i];
+        buffer.write('        other.$field == $field');
+        if (i < fieldsList.length - 1) {
+          buffer.writeln(' &&');
+        } else {
+          buffer.writeln(';');
+        }
+      }
+
+      buffer.writeln('  }');
+
+      // FIXED: Improved hashCode implementation
+      buffer.writeln();
+      buffer.writeln('  @override');
+      buffer.writeln('  int get hashCode =>');
+
+      // Use the same fieldsList from above instead of declaring a new one
+      String hashCodeExpression = '';
+      for (var i = 0; i < fieldsList.length; i++) {
+        final field = fieldsList[i];
+        if (i == 0) {
+          hashCodeExpression += '$field.hashCode';
+        } else {
+          hashCodeExpression += ' ^ $field.hashCode';
+        }
+      }
+      buffer.writeln('      $hashCodeExpression;');
+    }
+
+    // Add toString method
     buffer.writeln();
     buffer.writeln('  @override');
-    buffer.writeln('  int get hashCode =>');
-    
-    // Use the same fieldsList from above instead of declaring a new one
-    String hashCodeExpression = '';
-    for (var i = 0; i < fieldsList.length; i++) {
-      final field = fieldsList[i];
-      if (i == 0) {
-        hashCodeExpression += '$field.hashCode';
-      } else {
-        hashCodeExpression += ' ^ $field.hashCode';
+    buffer.writeln('  String toString() {');
+    buffer.write('    return \'$modelName{');
+
+    final fieldKeys = fields.keys.toList();
+    for (var i = 0; i < fieldKeys.length; i++) {
+      final field = fieldKeys[i];
+      buffer.write('$field: \$$field');
+      if (i < fieldKeys.length - 1) {
+        buffer.write(', ');
       }
     }
-    buffer.writeln('      $hashCodeExpression;');
+
+    buffer.writeln('}\';');
+    buffer.writeln('  }');
+
+    // End class
+    buffer.writeln('}');
+
+    return buffer.toString();
   }
-
-  // Add toString method
-  buffer.writeln();
-  buffer.writeln('  @override');
-  buffer.writeln('  String toString() {');
-  buffer.write('    return \'$modelName{');
-
-  final fieldKeys = fields.keys.toList();
-  for (var i = 0; i < fieldKeys.length; i++) {
-    final field = fieldKeys[i];
-    buffer.write('$field: \$$field');
-    if (i < fieldKeys.length - 1) {
-      buffer.write(', ');
-    }
-  }
-
-  buffer.writeln('}\';');
-  buffer.writeln('  }');
-
-  // End class
-  buffer.writeln('}');
-
-  return buffer.toString();
-}
 
   /// Generates content for a model test.
   String _generateTestContent({
@@ -517,7 +524,8 @@ String _generateModelContent({
     // Add imports
     buffer.writeln("import 'package:flutter_test/flutter_test.dart';");
     buffer.writeln(
-        "import 'package:${_getPackageName()}/$outputDir/${_toSnakeCase(modelName)}.dart';");
+      "import 'package:${_getPackageName()}/$outputDir/${_toSnakeCase(modelName)}.dart';",
+    );
     buffer.writeln();
 
     buffer.writeln('void main() {');

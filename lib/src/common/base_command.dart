@@ -453,5 +453,3 @@ abstract class BaseCommand extends Command<int> with ArgParserConfiguration {
     }
   }
 }
-
-
