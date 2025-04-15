@@ -74,3 +74,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - [docs] - Added Documentation for the CLI
+
+## [1.0.7-beta.2] - 2025-04-15
+
+### Added 
+- [docs] - Check docs for updates
