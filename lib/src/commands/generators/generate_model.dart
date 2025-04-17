@@ -1,13 +1,19 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:args/command_runner.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:path/path.dart' as path;
-import 'package:universal_io/io.dart';
 
-/// Command to generate a new data model in a Flutter application.
+import '../../common/generator/equatable_generator.dart';
+import '../../common/generator/freezed_generator..dart';
+import '../../common/generator/json_serializable_model.dart';
+import '../../common/generator/manual_generator.dart';
+import '../../common/json_utils.dart';
+import '../../common/string_utils.dart';
+
+/// Command to generate model classes with different serialization options.
 class GenerateModelCommand extends Command<int> {
-  /// Creates a new GenerateModelCommand.
-  ///
-  /// [logger] is used for console output.
   GenerateModelCommand({
     required Logger logger,
   }) : _logger = logger {
@@ -15,34 +21,30 @@ class GenerateModelCommand extends Command<int> {
       ..addOption(
         'name',
         abbr: 'n',
-        help: 'Name of the model to generate',
-        mandatory: true,
+        help: 'Name of the model class',
       )
       ..addOption(
-        'output',
-        abbr: 'o',
-        help: 'Output directory relative to lib/',
-        defaultsTo: 'models',
+        'directory',
+        abbr: 'd',
+        help: 'Directory to create the model in',
+        defaultsTo: 'lib/models',
       )
-      ..addMultiOption(
-        'fields',
-        abbr: 'f',
-        help: 'Fields in format name:type (e.g. id:int,name:String)',
-        defaultsTo: [],
+      ..addOption(
+        'serializer',
+        abbr: 's',
+        help: 'JSON serialization method to use',
+        allowed: ['freezed', 'json_serializable', 'manual', 'equatable'],
+        defaultsTo: 'json_serializable',
       )
       ..addFlag(
+        'interactive',
+        abbr: 'i',
+        help: 'Use interactive mode to configure model',
+        defaultsTo: true,
+      )
+      ..addOption(
         'json',
-        help: 'Add JSON serialization/deserialization',
-        defaultsTo: true,
-      )
-      ..addFlag(
-        'equatable',
-        help: 'Make model extend Equatable',
-      )
-      ..addFlag(
-        'with-test',
-        help: 'Generate a corresponding test file',
-        defaultsTo: true,
+        help: 'JSON sample to generate model from',
       );
   }
 
@@ -50,627 +52,413 @@ class GenerateModelCommand extends Command<int> {
   final Logger _logger;
 
   @override
-  String get description => 'Generate a new data model';
+  String get description => 'Generate model classes with serialization options';
 
   @override
   String get name => 'model';
 
   @override
+  List<String> get aliases => ['m'];
+
+  @override
+  String get summary => 'Creates model classes with JSON serialization support';
+
+  @override
   Future<int> run() async {
-    final modelName = argResults?['name'] as String;
-    final outputDir = argResults?['output'] as String;
-    final fieldsInput = argResults?['fields'] as List<String>;
-    final useJson = argResults?['json'] as bool;
-    final useEquatable = argResults?['equatable'] as bool;
-    final withTest = argResults?['with-test'] as bool;
+    final args = argResults!;
+    final interactive = args['interactive'] as bool;
 
-    // Parse fields
-    final fields = _parseFields(fieldsInput);
-
-    // Validate model name
-    if (!_isValidName(modelName)) {
-      _logger.err('Invalid model name. Please use PascalCase (e.g. User).');
-      return ExitCode.usage.code;
+    // Model name
+    String? modelName = args['name'] as String?;
+    if (modelName == null || modelName.isEmpty) {
+      if (interactive) {
+        modelName = _logger.prompt('Enter model name (e.g., User):');
+      } else {
+        _logger.err('Model name is required');
+        return ExitCode.usage.code;
+      }
     }
 
-    // Create model file
-    final result = await _createModelFile(
+    // Convert to PascalCase
+    modelName = StringUtils.toPascalCase(modelName);
+
+    // Directory
+    String directory = args['directory'] as String;
+
+    // Serialization method
+    String serializationMethod = args['serializer'] as String;
+    if (interactive) {
+      final serializerChoices = [
+        'freezed',
+        'json_serializable',
+        'manual',
+        'equatable'
+      ];
+      final serializerDescriptions = [
+        'Freezed - Code generation for immutable classes with unions/pattern-matching',
+        'json_serializable - Simple JSON serialization',
+        'Manual - Custom toJson/fromJson methods',
+        'Equatable - Simple classes with value equality',
+      ];
+
+      _logger.info('Select JSON serialization method:');
+      for (var i = 0; i < serializerChoices.length; i++) {
+        _logger.info('${i + 1}. ${serializerDescriptions[i]}');
+      }
+
+      final choice = _logger.prompt(
+        'Enter your choice (1-${serializerChoices.length}):',
+        defaultValue: '2',
+      );
+
+      try {
+        final index = int.parse(choice) - 1;
+        if (index >= 0 && index < serializerChoices.length) {
+          serializationMethod = serializerChoices[index];
+        }
+      } catch (_) {
+        // Fallback to default if invalid input
+      }
+    }
+
+    // JSON sample
+    String? jsonSample = args['json'] as String?;
+    Map<String, dynamic>? jsonMap;
+
+    if (interactive && (jsonSample == null || jsonSample.isEmpty)) {
+      final useJson = _logger.confirm(
+          'Do you want to provide a JSON sample to generate the model?');
+
+      if (useJson) {
+        // Check if a file was provided
+        final useFile =
+            _logger.confirm('Do you want to load JSON from a file?');
+
+        if (useFile) {
+          final filePath = _logger.prompt('Enter file path:');
+          try {
+            final file = File(filePath);
+            if (await file.exists()) {
+              jsonSample = await file.readAsString();
+            } else {
+              _logger.err('File not found: $filePath');
+              return ExitCode.ioError.code;
+            }
+          } catch (e) {
+            _logger.err('Error reading file: $e');
+            return ExitCode.ioError.code;
+          }
+        } else {
+          _logger
+              .info('Enter/paste JSON sample (press Enter twice when done):');
+          final lines = <String>[];
+          String? line;
+
+          while ((line = stdin.readLineSync()) != null && line!.isNotEmpty) {
+            lines.add(line);
+          }
+
+          if (lines.isNotEmpty) {
+            jsonSample = lines.join('\n');
+          }
+        }
+      }
+    }
+
+    if (jsonSample != null && jsonSample.isNotEmpty) {
+      try {
+        jsonMap = json.decode(jsonSample) as Map<String, dynamic>;
+        _logger.info(
+            'Successfully parsed JSON with ${jsonMap.length} top-level keys.');
+
+        // If there's a complex nested structure, ask if user wants to generate multiple files
+        final nestedStructure = JsonUtils.identifyNestedStructure(jsonMap);
+        if (nestedStructure.isNotEmpty && interactive) {
+          _logger.info(
+              '\nDetected complex nested structure with these potential models:');
+          for (final entry in nestedStructure.entries) {
+            _logger.info('- ${entry.key} (${entry.value})');
+          }
+
+          final generateMultiple = _logger.confirm(
+              'Would you like to generate separate model files for these nested objects?');
+
+          if (generateMultiple) {
+            return await _generateMultipleModels(
+              mainModelName: modelName,
+              directory: directory,
+              serializationMethod: serializationMethod,
+              jsonMap: jsonMap,
+            );
+          }
+        }
+      } catch (e) {
+        _logger.err('Invalid JSON format: $e');
+        if (interactive) {
+          if (!_logger.confirm('Continue without JSON sample?')) {
+            return ExitCode.usage.code;
+          }
+        } else {
+          return ExitCode.usage.code;
+        }
+      }
+    }
+
+    // Generate single model file
+    final result = await _generateSingleModel(
       modelName: modelName,
-      outputDir: outputDir,
-      fields: fields,
-      useJson: useJson,
-      useEquatable: useEquatable,
+      directory: directory,
+      serializationMethod: serializationMethod,
+      jsonMap: jsonMap,
     );
 
-    if (!result) {
+    return result ? ExitCode.success.code : ExitCode.software.code;
+  }
+
+  Future<bool> _generateSingleModel({
+    required String modelName,
+    required String directory,
+    required String serializationMethod,
+    Map<String, dynamic>? jsonMap,
+  }) async {
+    final progress = _logger.progress('Generating $modelName model');
+
+    try {
+      // Create directory if it doesn't exist
+      final dir = Directory(directory);
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+
+      // Generate file name (snake_case)
+      final fileName = StringUtils.toSnakeCase(modelName);
+      final filePath = path.join(directory, '${fileName}.dart');
+
+      // Generate model content
+      final modelContent = _generateModelClass(
+        modelName: modelName,
+        serializationMethod: serializationMethod,
+        jsonMap: jsonMap,
+        fileName: fileName,
+      );
+
+      // Write to file
+      final file = File(filePath);
+      await file.writeAsString(modelContent);
+
+      progress.complete('Generated $modelName model at $filePath');
+
+      // Suggest dependency additions if needed
+      _suggestDependencies(serializationMethod);
+
+      return true;
+    } catch (e) {
+      progress.fail('Failed to generate model: $e');
+      return false;
+    }
+  }
+
+  Future<int> _generateMultipleModels({
+    required String mainModelName,
+    required String directory,
+    required String serializationMethod,
+    required Map<String, dynamic> jsonMap,
+  }) async {
+    final progress =
+        _logger.progress('Generating $mainModelName and related models');
+
+    try {
+      // Create directory if it doesn't exist
+      final dir = Directory(directory);
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+
+      // Extract nested models
+      final nestedModels = JsonUtils.extractNestedModels(jsonMap);
+
+      // Generate main model file
+      final fileName = StringUtils.toSnakeCase(mainModelName);
+      final filePath = path.join(directory, '${fileName}.dart');
+
+      // Create imports for nested models
+      String imports = '';
+      if (nestedModels.isNotEmpty) {
+        for (final nestedModelName in nestedModels.keys) {
+          final nestedFileName = StringUtils.toSnakeCase(nestedModelName);
+          imports += 'import \'${nestedFileName}.dart\';\n';
+        }
+        imports += '\n';
+      }
+
+      // Generate main model content with imports
+      String modelContent = _getFileHeader(
+        serializationMethod: serializationMethod,
+        fileName: fileName,
+        additionalImports: imports,
+      );
+
+      // Add model class
+      modelContent += _generateModelClass(
+        modelName: mainModelName,
+        serializationMethod: serializationMethod,
+        jsonMap: jsonMap,
+        fileName: fileName,
+        skipHeader: true,
+      );
+
+      // Write main model to file
+      final file = File(filePath);
+      await file.writeAsString(modelContent);
+
+      // Generate nested model files
+      for (final entry in nestedModels.entries) {
+        final nestedClassName = entry.key;
+        final nestedJsonMap = entry.value;
+        final nestedFileName = StringUtils.toSnakeCase(nestedClassName);
+        final nestedFilePath = path.join(directory, '${nestedFileName}.dart');
+
+        // Generate nested model header with standard imports
+        String nestedModelContent = _getFileHeader(
+          serializationMethod: serializationMethod,
+          fileName: nestedFileName,
+        );
+
+        // Generate nested model class
+        nestedModelContent += _generateModelClass(
+          modelName: nestedClassName,
+          serializationMethod: serializationMethod,
+          jsonMap: nestedJsonMap,
+          fileName: nestedFileName,
+          skipHeader: true,
+        );
+
+        // Write nested model to file
+        final nestedFile = File(nestedFilePath);
+        await nestedFile.writeAsString(nestedModelContent);
+
+        _logger
+            .detail('Generated ${nestedClassName} model at ${nestedFilePath}');
+      }
+
+      progress.complete(
+          'Generated $mainModelName model and ${nestedModels.length} related models at $directory');
+
+      // Suggest dependency additions if needed
+      _suggestDependencies(serializationMethod);
+
+      return ExitCode.success.code;
+    } catch (e) {
+      progress.fail('Failed to generate models: $e');
       return ExitCode.software.code;
     }
-
-    // Create test file if requested
-    if (withTest) {
-      await _createTestFile(
-        modelName: modelName,
-        outputDir: outputDir,
-        fields: fields,
-        useJson: useJson,
-      );
-    }
-
-    _logger.info('');
-    _logger.info(
-      '${lightGreen.wrap('✓')} Successfully generated $modelName model!',
-    );
-
-    if (useJson) {
-      _logger.info('''
-🔸 Don't forget to run build_runner to generate JSON serialization code:
-  flutter pub run build_runner build --delete-conflicting-outputs
-''');
-    }
-
-    return ExitCode.success.code;
   }
 
-  /// Parses field definitions from command line input.
-  Map<String, String> _parseFields(List<String> fieldsInput) {
-    final fields = <String, String>{};
-
-    if (fieldsInput.isEmpty) {
-      // Add some default fields if none specified
-      fields['id'] = 'int';
-      fields['name'] = 'String';
-      fields['createdAt'] = 'DateTime';
-      return fields;
-    }
-
-    for (final field in fieldsInput) {
-      final parts = field.split(':');
-      if (parts.length != 2) {
-        _logger.warn(
-          'Invalid field format: "$field". Expected "name:type". Skipping.',
-        );
-        continue;
-      }
-
-      final name = parts[0].trim();
-      final type = parts[1].trim();
-
-      if (name.isEmpty || type.isEmpty) {
-        _logger.warn('Field name or type is empty in "$field". Skipping.');
-        continue;
-      }
-
-      fields[name] = type;
-    }
-
-    return fields;
-  }
-
-  /// Validates the model name format.
-  bool _isValidName(String name) {
-    // Check if name is PascalCase
-    return RegExp(r'^[A-Z][a-zA-Z0-9]*$').hasMatch(name);
-  }
-
-  /// Creates the model file.
-  Future<bool> _createModelFile({
-    required String modelName,
-    required String outputDir,
-    required Map<String, String> fields,
-    required bool useJson,
-    required bool useEquatable,
-  }) async {
-    final progress = _logger.progress('Creating $modelName model...');
-
-    try {
-      // Ensure output directory exists
-      final libDir = _findLibDirectory();
-      if (libDir == null) {
-        progress.fail(
-          'Could not find lib/ directory. Are you in a Flutter project?',
-        );
-        return false;
-      }
-
-      final modelDir = Directory(path.join(libDir.path, outputDir));
-      if (!await modelDir.exists()) {
-        await modelDir.create(recursive: true);
-      }
-
-      // Create the file
-      final fileName = _getFileName(modelName);
-      final filePath = path.join(modelDir.path, fileName);
-      final file = File(filePath);
-
-      if (await file.exists()) {
-        progress.fail('$modelName model already exists at $filePath');
-        return false;
-      }
-
-      // Generate content based on template
-      final content = _generateModelContent(
-        modelName: modelName,
-        fields: fields,
-        useJson: useJson,
-        useEquatable: useEquatable,
-      );
-
-      await file.writeAsString(content);
-      progress
-          .complete('Created $modelName model at ${path.relative(filePath)}');
-
-      return true;
-    } catch (e) {
-      progress.fail('Failed to create model: $e');
-      return false;
-    }
-  }
-
-  /// Creates the test file for the model.
-  Future<bool> _createTestFile({
-    required String modelName,
-    required String outputDir,
-    required Map<String, String> fields,
-    required bool useJson,
-  }) async {
-    final progress = _logger.progress('Creating test for $modelName model...');
-
-    try {
-      // Ensure test directory exists
-      final testDir = _findTestDirectory();
-      if (testDir == null) {
-        progress.fail(
-          'Could not find test/ directory. Are you in a Flutter project?',
-        );
-        return false;
-      }
-
-      final modelTestDir = Directory(path.join(testDir.path, outputDir));
-      if (!await modelTestDir.exists()) {
-        await modelTestDir.create(recursive: true);
-      }
-
-      // Create the file
-      final fileName = _getTestFileName(modelName);
-      final filePath = path.join(modelTestDir.path, fileName);
-      final file = File(filePath);
-
-      if (await file.exists()) {
-        progress.fail('Test for $modelName model already exists at $filePath');
-        return false;
-      }
-
-      // Generate content based on template
-      final content = _generateTestContent(
-        modelName: modelName,
-        outputDir: outputDir,
-        fields: fields,
-        useJson: useJson,
-      );
-
-      await file.writeAsString(content);
-      progress.complete(
-        'Created test for $modelName model at ${path.relative(filePath)}',
-      );
-
-      return true;
-    } catch (e) {
-      progress.fail('Failed to create test: $e');
-      return false;
-    }
-  }
-
-  /// Finds the lib directory in the current project.
-  Directory? _findLibDirectory() {
-    // Start from current directory and look for lib/
-    Directory current = Directory.current;
-    final libDir = Directory(path.join(current.path, 'lib'));
-
-    if (libDir.existsSync()) {
-      return libDir;
-    }
-
-    // If not found, look in parent directories (up to 3 levels)
-    for (var i = 0; i < 3; i++) {
-      final parent = current.parent;
-      if (parent.path == current.path) break; // We're at the root
-
-      current = parent;
-      final parentLibDir = Directory(path.join(current.path, 'lib'));
-
-      if (parentLibDir.existsSync()) {
-        return parentLibDir;
-      }
-    }
-
-    return null;
-  }
-
-  /// Finds the test directory in the current project.
-  Directory? _findTestDirectory() {
-    // Start from current directory and look for test/
-    Directory current = Directory.current;
-    final testDir = Directory(path.join(current.path, 'test'));
-
-    if (testDir.existsSync()) {
-      return testDir;
-    }
-
-    // If not found, look in parent directories (up to 3 levels)
-    for (var i = 0; i < 3; i++) {
-      final parent = current.parent;
-      if (parent.path == current.path) break; // We're at the root
-
-      current = parent;
-      final parentTestDir = Directory(path.join(current.path, 'test'));
-
-      if (parentTestDir.existsSync()) {
-        return parentTestDir;
-      }
-    }
-
-    return null;
-  }
-
-  /// Gets the package name from pubspec.yaml.
-  String _getPackageName() {
-    try {
-      final pubspecFile =
-          File(path.join(Directory.current.path, 'pubspec.yaml'));
-      if (pubspecFile.existsSync()) {
-        final content = pubspecFile.readAsStringSync();
-        final nameMatch = RegExp(r'name:\s*([^\s]+)').firstMatch(content);
-        if (nameMatch != null && nameMatch.groupCount >= 1) {
-          return nameMatch.group(1)!;
-        }
-      }
-    } catch (_) {}
-
-    return 'your_app_package';
-  }
-
-  /// Gets the file name for the model.
-  String _getFileName(String modelName) {
-    final snakeCase = _toSnakeCase(modelName);
-    return '$snakeCase.dart';
-  }
-
-  /// Gets the file name for the test.
-  String _getTestFileName(String modelName) {
-    final snakeCase = _toSnakeCase(modelName);
-    return '${snakeCase}_test.dart';
-  }
-
-  /// Converts PascalCase to snake_case.
-  String _toSnakeCase(String pascalCase) {
-    return pascalCase.replaceAllMapped(
-      RegExp(r'[A-Z]'),
-      (match) => match.start == 0
-          ? match.group(0)!.toLowerCase()
-          : '_${match.group(0)!.toLowerCase()}',
-    );
-  }
-
-  /// Generates content for a model class.
-  /// Generates content for a model class.
-  String _generateModelContent({
-    required String modelName,
-    required Map<String, String> fields,
-    required bool useJson,
-    required bool useEquatable,
+  String _getFileHeader({
+    required String serializationMethod,
+    required String fileName,
+    String additionalImports = '',
   }) {
-    final buffer = StringBuffer();
-
-    // Add imports
-    buffer.writeln("import 'package:flutter/foundation.dart';");
-
-    if (useJson) {
-      buffer.writeln("import 'package:json_annotation/json_annotation.dart';");
+    switch (serializationMethod) {
+      case 'freezed':
+        return '// ignore_for_file: invalid_annotation_target\n\n' +
+            'import \'package:freezed_annotation/freezed_annotation.dart\';\n' +
+            additionalImports +
+            '\npart \'${fileName}.freezed.dart\';\n' +
+            'part \'${fileName}.g.dart\';\n\n';
+      case 'json_serializable':
+        return 'import \'package:json_annotation/json_annotation.dart\';\n' +
+            additionalImports +
+            '\npart \'${fileName}.g.dart\';\n\n';
+      case 'equatable':
+        return 'import \'package:equatable/equatable.dart\';\n' +
+            additionalImports +
+            '\n';
+      default:
+        return additionalImports;
     }
-
-    if (useEquatable) {
-      buffer.writeln("import 'package:equatable/equatable.dart';");
-    }
-
-    if (useJson) {
-      buffer.writeln();
-      buffer.writeln("part '${_toSnakeCase(modelName)}.g.dart';");
-    }
-
-    buffer.writeln();
-
-    // Add class annotation for JSON serialization
-    if (useJson) {
-      buffer.writeln('@JsonSerializable()');
-    }
-
-    // Begin class definition
-    buffer.write('class $modelName');
-
-    if (useEquatable) {
-      buffer.write(' extends Equatable');
-    }
-
-    buffer.writeln(' {');
-
-    // Add fields
-    for (final entry in fields.entries) {
-      buffer.writeln('  final ${entry.value} ${entry.key};');
-    }
-
-    buffer.writeln();
-
-    // Add constructor
-    buffer.writeln('  const $modelName({');
-    for (final entry in fields.entries) {
-      buffer.writeln('    required this.${entry.key},');
-    }
-    buffer.writeln('  });');
-
-    // Add fromJson factory if needed
-    if (useJson) {
-      buffer.writeln();
-      buffer.writeln('  /// Creates a [$modelName] from JSON map.');
-      buffer.writeln(
-        '  factory $modelName.fromJson(Map<String, dynamic> json) => ',
-      );
-      buffer.writeln('      _\$${modelName}FromJson(json);');
-
-      buffer.writeln();
-      buffer.writeln('  /// Converts this [$modelName] into a JSON map.');
-      buffer.writeln(
-        '  Map<String, dynamic> toJson() => _\$${modelName}ToJson(this);',
-      );
-    }
-
-    // Add copyWith method
-    buffer.writeln();
-    buffer.writeln(
-      '  /// Creates a copy of this [$modelName] with specified attributes replaced with new values.',
-    );
-    buffer.writeln('  $modelName copyWith({');
-    for (final entry in fields.entries) {
-      buffer.writeln('    ${entry.value}? ${entry.key},');
-    }
-    buffer.writeln('  }) {');
-    buffer.writeln('    return $modelName(');
-    for (final entry in fields.entries) {
-      buffer.writeln('      ${entry.key}: ${entry.key} ?? this.${entry.key},');
-    }
-    buffer.writeln('    );');
-    buffer.writeln('  }');
-
-    // Add Equatable properties
-    if (useEquatable) {
-      buffer.writeln();
-      buffer.writeln('  @override');
-      buffer.writeln('  List<Object?> get props => [');
-      for (final entry in fields.entries) {
-        buffer.writeln('    ${entry.key},');
-      }
-      buffer.writeln('  ];');
-    } else {
-      // Add equals and hashCode
-      buffer.writeln();
-      buffer.writeln('  @override');
-      buffer.writeln('  bool operator ==(Object other) {');
-      buffer.writeln('    if (identical(this, other)) return true;');
-      buffer.writeln('    return other is $modelName &&');
-
-      final fieldsList = fields.keys.toList();
-      for (var i = 0; i < fieldsList.length; i++) {
-        final field = fieldsList[i];
-        buffer.write('        other.$field == $field');
-        if (i < fieldsList.length - 1) {
-          buffer.writeln(' &&');
-        } else {
-          buffer.writeln(';');
-        }
-      }
-
-      buffer.writeln('  }');
-
-      // FIXED: Improved hashCode implementation
-      buffer.writeln();
-      buffer.writeln('  @override');
-      buffer.writeln('  int get hashCode =>');
-
-      // Use the same fieldsList from above instead of declaring a new one
-      String hashCodeExpression = '';
-      for (var i = 0; i < fieldsList.length; i++) {
-        final field = fieldsList[i];
-        if (i == 0) {
-          hashCodeExpression += '$field.hashCode';
-        } else {
-          hashCodeExpression += ' ^ $field.hashCode';
-        }
-      }
-      buffer.writeln('      $hashCodeExpression;');
-    }
-
-    // Add toString method
-    buffer.writeln();
-    buffer.writeln('  @override');
-    buffer.writeln('  String toString() {');
-    buffer.write('    return \'$modelName{');
-
-    final fieldKeys = fields.keys.toList();
-    for (var i = 0; i < fieldKeys.length; i++) {
-      final field = fieldKeys[i];
-      buffer.write('$field: \$$field');
-      if (i < fieldKeys.length - 1) {
-        buffer.write(', ');
-      }
-    }
-
-    buffer.writeln('}\';');
-    buffer.writeln('  }');
-
-    // End class
-    buffer.writeln('}');
-
-    return buffer.toString();
   }
 
-  /// Generates content for a model test.
-  String _generateTestContent({
+  String _generateModelClass({
     required String modelName,
-    required String outputDir,
-    required Map<String, String> fields,
-    required bool useJson,
+    required String serializationMethod,
+    Map<String, dynamic>? jsonMap,
+    required String fileName,
+    bool skipHeader = false,
   }) {
-    final buffer = StringBuffer();
+    final fields = JsonUtils.getFieldsFromJson(jsonMap);
 
-    // Add imports
-    buffer.writeln("import 'package:flutter_test/flutter_test.dart';");
-    buffer.writeln(
-      "import 'package:${_getPackageName()}/$outputDir/${_toSnakeCase(modelName)}.dart';",
-    );
-    buffer.writeln();
-
-    buffer.writeln('void main() {');
-    buffer.writeln('  group(\'$modelName\', () {');
-
-    // Test instance creation
-    buffer.writeln('    test(\'can be instantiated\', () {');
-    buffer.writeln('      final model = $modelName(');
-
-    // Add field values for constructor
-    for (final entry in fields.entries) {
-      final fieldName = entry.key;
-      final fieldType = entry.value;
-
-      // Generate an appropriate test value based on the type
-      final testValue = _getTestValueForType(fieldType, fieldName);
-      buffer.writeln('        $fieldName: $testValue,');
-    }
-
-    buffer.writeln('      );');
-    buffer.writeln();
-
-    // Test field values
-    for (final entry in fields.entries) {
-      final fieldName = entry.key;
-      final fieldType = entry.value;
-      final testValue = _getTestValueForType(fieldType, fieldName);
-
-      buffer.writeln('      expect(model.$fieldName, $testValue);');
-    }
-
-    buffer.writeln('    });');
-    buffer.writeln();
-
-    // Test copyWith
-    buffer.writeln('    test(\'copyWith works correctly\', () {');
-    buffer.writeln('      final model = $modelName(');
-
-    for (final entry in fields.entries) {
-      final fieldName = entry.key;
-      final fieldType = entry.value;
-      final testValue = _getTestValueForType(fieldType, fieldName);
-      buffer.writeln('        $fieldName: $testValue,');
-    }
-
-    buffer.writeln('      );');
-    buffer.writeln();
-
-    // Choose first field for copyWith test
-    final firstField = fields.entries.first;
-    final newTestValue = _getAlternateTestValueForType(
-      firstField.value,
-      firstField.key,
-    );
-
-    buffer.writeln('      final updated = model.copyWith(');
-    buffer.writeln('        ${firstField.key}: $newTestValue,');
-    buffer.writeln('      );');
-    buffer.writeln();
-    buffer.writeln('      expect(updated.${firstField.key}, $newTestValue);');
-
-    // Test that other fields remain unchanged
-    for (final entry in fields.entries.skip(1)) {
-      buffer.writeln('      expect(updated.${entry.key}, model.${entry.key});');
-    }
-
-    buffer.writeln('    });');
-
-    // Test JSON serialization if enabled
-    if (useJson) {
-      buffer.writeln();
-      buffer.writeln('    test(\'can be serialized and deserialized\', () {');
-      buffer.writeln('      final model = $modelName(');
-
-      for (final entry in fields.entries) {
-        final testValue = _getTestValueForType(entry.value, entry.key);
-        buffer.writeln('        ${entry.key}: $testValue,');
-      }
-
-      buffer.writeln('      );');
-      buffer.writeln();
-      buffer.writeln('      final json = model.toJson();');
-      buffer.writeln('      final fromJson = $modelName.fromJson(json);');
-      buffer.writeln();
-      buffer.writeln('      expect(fromJson, equals(model));');
-      buffer.writeln('    });');
-    }
-
-    buffer.writeln('  });');
-    buffer.writeln('}');
-
-    return buffer.toString();
-  }
-
-  /// Gets a test value for a given type.
-  String _getTestValueForType(String type, String fieldName) {
-    switch (type) {
-      case 'int':
-        return '42';
-      case 'double':
-        return '42.0';
-      case 'String':
-        return '\'Test $fieldName\'';
-      case 'bool':
-        return 'true';
-      case 'DateTime':
-        return 'DateTime(2023, 1, 1)';
-      case 'List<String>':
-        return '[\'Item 1\', \'Item 2\']';
-      case 'Map<String, dynamic>':
-        return '{\'key\': \'value\'}';
+    switch (serializationMethod) {
+      case 'freezed':
+        return FreezedGenerator.generate(
+          modelName: modelName,
+          fields: fields,
+          skipHeader: skipHeader,
+        );
+      case 'json_serializable':
+        return JsonSerializableGenerator.generate(
+          modelName: modelName,
+          fields: fields,
+          skipHeader: skipHeader,
+        );
+      case 'equatable':
+        return EquatableGenerator.generate(
+          modelName: modelName,
+          fields: fields,
+          skipHeader: skipHeader,
+        );
       default:
-        if (type.startsWith('List<')) {
-          return '[]';
-        } else if (type.startsWith('Map<')) {
-          return '{}';
-        }
-        return 'null';
+        return ManualGenerator.generate(
+          modelName: modelName,
+          fields: fields,
+          skipHeader: skipHeader,
+        );
     }
   }
 
-  /// Gets an alternate test value for a given type (for testing copyWith).
-  String _getAlternateTestValueForType(String type, String fieldName) {
-    switch (type) {
-      case 'int':
-        return '100';
-      case 'double':
-        return '100.0';
-      case 'String':
-        return '\'Updated $fieldName\'';
-      case 'bool':
-        return 'false';
-      case 'DateTime':
-        return 'DateTime(2023, 12, 31)';
-      case 'List<String>':
-        return '[\'Updated Item\']';
-      case 'Map<String, dynamic>':
-        return '{\'updated\': \'value\'}';
+  void _suggestDependencies(String serializationMethod) {
+    switch (serializationMethod) {
+      case 'freezed':
+        _logger.info(
+            '\nℹ️  Don\'t forget to add these dependencies to your pubspec.yaml:');
+        _logger.info('''
+dependencies:
+  freezed_annotation: ^2.4.1
+
+dev_dependencies:
+  build_runner: ^2.4.6
+  freezed: ^2.4.5
+  json_serializable: ^6.7.1''');
+        _logger.info(
+            '\nRun the following command to generate the required files:');
+        _logger.info(
+            'flutter pub run build_runner build --delete-conflicting-outputs');
+        break;
+      case 'json_serializable':
+        _logger.info(
+            '\nℹ️  Don\'t forget to add these dependencies to your pubspec.yaml:');
+        _logger.info('''
+dependencies:
+  json_annotation: ^4.8.1
+
+dev_dependencies:
+  build_runner: ^2.4.6
+  json_serializable: ^6.7.1''');
+        _logger.info(
+            '\nRun the following command to generate the required files:');
+        _logger.info(
+            'flutter pub run build_runner build --delete-conflicting-outputs');
+        break;
+      case 'equatable':
+        _logger.info(
+            '\nℹ️  Don\'t forget to add this dependency to your pubspec.yaml:');
+        _logger.info('''
+dependencies:
+  equatable: ^2.0.5''');
+        break;
       default:
-        if (type.startsWith('List<')) {
-          return '[]';
-        } else if (type.startsWith('Map<')) {
-          return '{}';
-        }
-        return 'null';
+        // No additional dependencies needed for manual serialization
+        break;
     }
   }
 }
