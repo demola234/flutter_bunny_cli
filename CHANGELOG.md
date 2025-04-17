@@ -79,3 +79,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added 
 - [docs] - Check docs for updates
+
+
+## [1.0.7-beta.4] - 2025-04-15
+
+### Added
+- [generate] - Improvedd the generate command to support more options and features, Allow users to generate model or entity classes with JSON serialization support with Freezed, JsonnSerializable, or custom serialization options.
