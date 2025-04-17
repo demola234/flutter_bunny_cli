@@ -50,7 +50,7 @@ All notable changes to Flutter Bunny CLI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.6-beta.3] - 2025-03-10
+## [1.0.6-beta.5] - 2025-03-10
 
 ### Added
 
@@ -81,7 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [docs] - Check docs for updates
 
 
-## [1.0.7-beta.4] - 2025-04-15
+## [1.0.7-beta.5] - 2025-04-15
 
 ### Added
 - [generate] - Improvedd the generate command to support more options and features, Allow users to generate model or entity classes with JSON serialization support with Freezed, JsonnSerializable, or custom serialization options.
