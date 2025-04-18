@@ -22,6 +22,8 @@ class ConfigCommand extends Command<int> {
     );
   }
 
+  
+
   /// The configuration manager.
   final ConfigManager _configManager;
 
