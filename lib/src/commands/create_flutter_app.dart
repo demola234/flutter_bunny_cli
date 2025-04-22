@@ -87,6 +87,7 @@ class CreateFlutterApp extends BaseCommand {
     String projectPath,
     MasonTemplate template,
   ) {
+    // Call the parent method to display the standard next steps
     super.displayNextSteps(projectName, projectPath, template);
 
     final hasPushNotification =
@@ -95,20 +96,20 @@ class CreateFlutterApp extends BaseCommand {
     if (hasPushNotification) {
       logger.info('''
 🔥 Firebase Setup for Push Notifications:
-  1. Install Firebase CLI if not already installed:
-     curl -sL https://firebase.tools | bash
-  2. Run "firebase login" to authenticate
-  3. Inside your project directory, run:
-     firebase init
-  4. Select the Firebase Cloud Messaging service
-  5. Configure your app for Firebase:
-     - For Android: Add google-services.json to android/app/
-     - For iOS: Add GoogleService-Info.plist to ios/Runner/
+  1. Install the FlutterFire CLI:
+     dart pub global activate flutterfire_cli
+  2. Run the following command in your project directory:
+     flutterfire configure
+  3. Follow the interactive setup to select your Firebase project and platforms
+  4. The CLI will automatically add the necessary configuration files for Android and iOS
 
 📚 Documentation:
   For detailed setup instructions, visit:
-  https://www.flutterbunny.xyz/set-up-guide
+  https://www.flutterbunny.xyz/guide/firebase-setup
       ''');
     }
+
+    // Add the happy coding message at the end
+    logger.info('🚀 Happy coding with Flutter Bunny! 🐰');
   }
 }

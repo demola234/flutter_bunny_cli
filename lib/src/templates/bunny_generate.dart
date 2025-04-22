@@ -215,8 +215,8 @@ coverage/
   
 🔧 Need help? Check out:
   • https://flutter.dev/docs
-  • https://pub.dev
-  • https://flutter.dev/community
+  • https://github.com/demola234/flutter_bunny_cli/issues
+  • https://flutterbunny.xyz
 ''';
 
     logger
