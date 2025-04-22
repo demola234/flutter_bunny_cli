@@ -89,3 +89,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.7-beta.6] - 2025-04-22
 - [fixes] -  Fixed the issue with the generate command not working correctly for some users.
+
+## [1.0.7-beta.7] - 2025-04-22
+- [docs] - Updated the documentation for the generate command to provide more detailed instructions and examples.
