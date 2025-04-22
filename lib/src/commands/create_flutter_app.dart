@@ -8,6 +8,7 @@ class CreateFlutterApp extends BaseCommand {
     super.generatorFromBundle,
     super.generatorFromBrick,
   });
+
   // Store the template vars for later use
   Map<String, dynamic>? _templateVars;
 
@@ -20,8 +21,7 @@ class CreateFlutterApp extends BaseCommand {
   @override
   Future<int> run() async {
     logger.info('''
-🐰 Welcome to Flutter Bunny CLI!
-Let's create an awesome Flutter project together.
+🐰 Welcome to Flutter Bunny CLI! Let's create an awesome Flutter project together.
     ''');
     return super.run();
   }
@@ -48,43 +48,6 @@ Let's create an awesome Flutter project together.
     return 'com.example.$appName';
   }
 
-  // Future<Map<String, bool>> _promptDependencies() async {
-  //   final dependencies = [
-  //     'dio',
-  //     'shared_preferences',
-  //     'hive',
-  //     'get_it',
-  //     'flutter_secure_storage',
-  //     'firebase_core',
-  //     'firebase_Localization',
-  //   ];
-
-  //   final selectedDeps = logger.chooseAny(
-  //     'Select dependencies to include:',
-  //     choices: dependencies,
-  //   );
-
-  //   return {
-  //     for (var dep in dependencies) dep.toString(): selectedDeps.contains(dep)
-  //   };
-  // }
-
-  // Future<bool> _promptFirebaseSetup(Map<String, bool> dependencies) async {
-  //   // Only prompt for Firebase setup if any Firebase-related dependencies are selected
-  //   final hasFirebaseDeps = dependencies.entries
-  //       .where((entry) => entry.key.startsWith('firebase_') && entry.value)
-  //       .isNotEmpty;
-
-  //   if (!hasFirebaseDeps) {
-  //     return false;
-  //   }
-
-  //   return logger.confirm(
-  //     'Would you like to set up Firebase in your project?',
-  //     defaultValue: false,
-  //   );
-  // }
-
   @override
   Future<Map<String, dynamic>> getMasonTemplateVars({
     String? projectName,
@@ -102,12 +65,14 @@ Let's create an awesome Flutter project together.
     );
 
     final bundleIdentifier = _generateBundleIdentifier(projectName ?? '');
-    // final dependencies = await _promptDependencies();
-    // final setupFirebase = await _promptFirebaseSetup(dependencies);
+
+    // Check if push notification is selected
+    final hasPushNotification = modules?.contains('Push Notification') ?? false;
 
     _templateVars = {
       ...vars,
       'bundle_identifier': bundleIdentifier,
+      'setup_firebase': hasPushNotification,
     };
 
     return _templateVars!;
@@ -124,16 +89,25 @@ Let's create an awesome Flutter project together.
   ) {
     super.displayNextSteps(projectName, projectPath, template);
 
-    final setupFirebase = _templateVars?['setup_firebase'] as bool? ?? false;
-    if (setupFirebase) {
+    final hasPushNotification =
+        _templateVars?['modules']?.contains('Push Notification') ?? false;
+
+    if (hasPushNotification) {
       logger.info('''
-🔥 Firebase Setup:
+🔥 Firebase Setup for Push Notifications:
   1. Install Firebase CLI if not already installed:
      curl -sL https://firebase.tools | bash
   2. Run "firebase login" to authenticate
   3. Inside your project directory, run:
      firebase init
-  4. Select the Firebase services you want to use
+  4. Select the Firebase Cloud Messaging service
+  5. Configure your app for Firebase:
+     - For Android: Add google-services.json to android/app/
+     - For iOS: Add GoogleService-Info.plist to ios/Runner/
+
+📚 Documentation:
+  For detailed setup instructions, visit:
+  https://www.flutterbunny.xyz/set-up-guide
       ''');
     }
   }
