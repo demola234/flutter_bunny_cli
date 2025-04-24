@@ -1,15 +1,48 @@
-## 1.0.4
+## [1.0.7-beta.8] - 2025-04-24
+- [fixes] - Fixed android build issue 
 
-- Initial version.
+## [1.0.7-beta.7] - 2025-04-22
+- [docs] - Updated the documentation for the generate command to provide more detailed instructions and examples.
 
-## 1.0.5-beta
+## [1.0.7-beta.6] - 2025-04-22
+- [fixes] -  Fixed the issue with the generate command not working correctly for some users.
 
-- Changelog
 
-All notable changes to Flutter Bunny CLI will be documented in this file.
+## [1.0.7-beta.5] - 2025-04-15
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### Added
+- [generate] - Improvedd the generate command to support more options and features, Allow users to generate model or entity classes with JSON serialization support with Freezed, JsonnSerializable, or custom serialization options.
+
+## [1.0.6-beta.2x] - 2025-03-10
+
+### Added
+
+- [docs] - Added Documentation for the CLI
+
+## [1.0.7-beta.3] - 2025-04-15
+
+### Added 
+- [docs] - Check docs for updates
+
+
+## [1.0.6-beta.5] - 2025-03-10
+
+### Added
+
+- [analyze] - Helps to run analysis on the project and helps to point out any issues
+- [config] - Helps to save settings for preferred users style for template generation
+- [doctor] - Helps to analysis problems in a project, list them out and suggest changes to it
+
+### Changed
+
+- Refactored command structure for better extensibility
+- Enhanced error handling and user feedback
+- Improved template generation with consistent structure
+
+### Fixed
+
+- Process result handling in package manager
+- Boolean condition checking in CLI runner
 
 ## [1.0.6-beta.1] - 2025-03-09
 
@@ -50,45 +83,15 @@ All notable changes to Flutter Bunny CLI will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.6-beta.5] - 2025-03-10
+## 1.0.5-beta
 
-### Added
+- Changelog
 
-- [analyze] - Helps to run analysis on the project and helps to point out any issues
-- [config] - Helps to save settings for preferred users style for template generation
-- [doctor] - Helps to analysis problems in a project, list them out and suggest changes to it
+All notable changes to Flutter Bunny CLI will be documented in this file.
 
-### Changed
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-- Refactored command structure for better extensibility
-- Enhanced error handling and user feedback
-- Improved template generation with consistent structure
+## 1.0.4
 
-### Fixed
-
-- Process result handling in package manager
-- Boolean condition checking in CLI runner
-
-## [1.0.6-beta.2x] - 2025-03-10
-
-### Added
-
-- [docs] - Added Documentation for the CLI
-
-## [1.0.7-beta.3] - 2025-04-15
-
-### Added 
-- [docs] - Check docs for updates
-
-
-## [1.0.7-beta.5] - 2025-04-15
-
-### Added
-- [generate] - Improvedd the generate command to support more options and features, Allow users to generate model or entity classes with JSON serialization support with Freezed, JsonnSerializable, or custom serialization options.
-
-
-## [1.0.7-beta.6] - 2025-04-22
-- [fixes] -  Fixed the issue with the generate command not working correctly for some users.
-
-## [1.0.7-beta.7] - 2025-04-22
-- [docs] - Updated the documentation for the generate command to provide more detailed instructions and examples.
+- Initial version.

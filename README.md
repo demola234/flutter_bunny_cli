@@ -18,7 +18,7 @@ Flutter Bunny is an opinionated CLI tool that helps you create, manage, and main
 ## Beta Installation
 
 ```bash
-dart pub global activate flutter_bunny 1.0.7-beta.7
+dart pub global activate flutter_bunny 1.0.7-beta.8
 
 # Verify installation
 flutter_bunny --version

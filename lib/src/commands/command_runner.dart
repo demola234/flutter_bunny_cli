@@ -34,7 +34,6 @@ class FlutterBunnyRunner extends CompletionCommandRunner<int> {
     addCommand(BuildCommand(logger: _base.logger));
     addCommand(GenerateCommand(logger: _base.logger));
     addCommand(ConfigCommand(logger: _base.logger));
-    // addCommand(AddCommand(logger: _base.logger));
     addCommand(AnalyzeCommand(logger: _base.logger));
     addCommand(DoctorCommand(logger: _base.logger));
   }
