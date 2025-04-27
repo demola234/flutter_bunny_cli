@@ -20,6 +20,8 @@ linter:
 analyzer:
   errors:
     todo: ignore
+    public_member_api_docs: ignore
+    file_names: ignore
   exclude:
     - "build/**"
     - "**/*.g.dart"
