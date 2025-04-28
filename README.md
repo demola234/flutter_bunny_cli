@@ -303,5 +303,3 @@ Licensed under the [MIT License](LICENSE).
 
 - Open an [Issue](https://github.com/demola234/flutter_bunny/issues)
 - View the [Official Documentation](https://www.flutterbunny.xyz/)
-
----
