@@ -1,4 +1,4 @@
-## [1.0.7-beta.9] - 2025-04-28
+## [1.0.7-beta.10] - 2025-04-28
 - [docs] - Update the documentation to add more details about the commands and args
 
 ## [1.0.7-beta.8] - 2025-04-24
