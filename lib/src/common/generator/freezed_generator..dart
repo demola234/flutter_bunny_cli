@@ -1,4 +1,4 @@
-/// Generator for Freezed models.
+// Generator for Freezed models.
 class FreezedGenerator {
   /// Generates a Freezed model class with the given name and fields.
   ///
