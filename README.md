@@ -6,7 +6,7 @@ A powerful CLI tool for creating and managing Flutter applications with best pra
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Docs](https://img.shields.io/badge/docs-available-blue.svg)](https://www.flutterbunny.xyz/)
 
-![Example](https://github.com/demola234/flutter_bunny_cli/blob/main/doc/flutter_bunny.png?raw=true)
+![Example](doc/flutter_bunny.png)
 
 ---
 
