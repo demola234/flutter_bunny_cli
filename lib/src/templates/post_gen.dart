@@ -1,6 +1,7 @@
-import 'package:flutter_bunny/src/cli/cli_runner.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:universal_io/io.dart';
+
+import '../cli/cli_runner.dart';
 
 /// Runs `flutter pub get` in the [outputDir].
 ///

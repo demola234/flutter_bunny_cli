@@ -56,7 +56,8 @@ class GenerateWidgetCommand extends Command<int> {
     // Validate widget name
     if (!_isValidName(widgetName)) {
       _logger.err(
-          'Invalid widget name. Please use PascalCase (e.g. CustomButton).');
+        'Invalid widget name. Please use PascalCase (e.g. CustomButton).',
+      );
       return ExitCode.usage.code;
     }
 
@@ -113,7 +114,8 @@ $widgetName(),
       final libDir = _findLibDirectory();
       if (libDir == null) {
         progress.fail(
-            'Could not find lib/ directory. Are you in a Flutter project?');
+          'Could not find lib/ directory. Are you in a Flutter project?',
+        );
         return false;
       }
 
@@ -160,7 +162,8 @@ $widgetName(),
       final testDir = _findTestDirectory();
       if (testDir == null) {
         progress.fail(
-            'Could not find test/ directory. Are you in a Flutter project?');
+          'Could not find test/ directory. Are you in a Flutter project?',
+        );
         return false;
       }
 
@@ -184,7 +187,8 @@ $widgetName(),
 
       await file.writeAsString(content);
       progress.complete(
-          'Created test for $widgetName at ${path.relative(filePath)}');
+        'Created test for $widgetName at ${path.relative(filePath)}',
+      );
 
       return true;
     } catch (e) {
@@ -349,7 +353,10 @@ class _${widgetName}State extends State<$widgetName> {
 
   /// Generates content for a widget test.
   String _generateTestContent(
-      String widgetName, String outputDir, bool isStateful) {
+    String widgetName,
+    String outputDir,
+    bool isStateful,
+  ) {
     return '''
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

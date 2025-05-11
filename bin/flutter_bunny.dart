@@ -16,7 +16,7 @@
 /// # Update the CLI to the latest version
 /// flutter_bunny update
 /// ```
-library flutter_bunny;
+library;
 
 import 'dart:io';
 

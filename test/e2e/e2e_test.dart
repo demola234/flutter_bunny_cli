@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_bunny/flutter_bunny.dart';
@@ -13,14 +14,14 @@ void main() {
   setUp(() async {
     // Create a temporary directory for tests
     tempDir = await Directory.systemTemp.createTemp('flutter_bunny_e2e_');
-    print('Created temporary directory: ${tempDir.path}');
+    log('Created temporary directory: ${tempDir.path}');
   });
 
   tearDown(() async {
     // Clean up the temporary directory
     if (await tempDir.exists()) {
       await tempDir.delete(recursive: true);
-      print('Deleted temporary directory: ${tempDir.path}');
+      log('Deleted temporary directory: ${tempDir.path}');
     }
   });
 
@@ -46,7 +47,7 @@ void main() {
       () async {
         // Skip this test if Flutter SDK is not installed
         if (!await isFlutterInstalled()) {
-          print('Skipping test: Flutter SDK not installed');
+          log('Skipping test: Flutter SDK not installed');
           return;
         }
 
@@ -67,26 +68,49 @@ void main() {
           '--no-interactive',
         ]);
 
-        expect(result.exitCode, equals(0),
-            reason: 'Error output: ${result.stderr}');
+        expect(
+          result.exitCode,
+          equals(0),
+          reason: 'Error output: ${result.stderr}',
+        );
 
         // Verify the project was created successfully
-        final pubspecFile = File(path.join(projectDir, 'pubspec.yaml'));
-        expect(await pubspecFile.exists(), isTrue,
-            reason: 'pubspec.yaml not found');
+        final pubspecFile = File(
+          path.join(
+            projectDir,
+            'pubspec.yaml',
+          ),
+        );
+        expect(
+          await pubspecFile.exists(),
+          isTrue,
+          reason: 'pubspec.yaml not found',
+        );
 
-        final mainFile = File(path.join(projectDir, 'lib', 'main.dart'));
+        final mainFile = File(
+          path.join(
+            projectDir,
+            'lib',
+            'main.dart',
+          ),
+        );
         expect(await mainFile.exists(), isTrue, reason: 'main.dart not found');
 
         // Verify the project contains expected architecture folders
         final domainDir = Directory(path.join(projectDir, 'lib', 'domain'));
-        expect(await domainDir.exists(), isTrue,
-            reason: 'domain directory not found');
+        expect(
+          await domainDir.exists(),
+          isTrue,
+          reason: 'domain directory not found',
+        );
 
         // Verify the project contains Riverpod as dependency
         final pubspecContent = await pubspecFile.readAsString();
-        expect(pubspecContent, contains('riverpod'),
-            reason: 'Riverpod dependency not found');
+        expect(
+          pubspecContent,
+          contains('riverpod'),
+          reason: 'Riverpod dependency not found',
+        );
       },
       timeout: const Timeout(Duration(minutes: 3)),
     );
@@ -96,7 +120,7 @@ void main() {
       () async {
         // Skip this test if Flutter SDK is not installed
         if (!await isFlutterInstalled()) {
-          print('Skipping test: Flutter SDK not installed');
+          log('Skipping test: Flutter SDK not installed');
           return;
         }
 
@@ -128,14 +152,20 @@ void main() {
           workingDirectory: projectDir,
         );
 
-        expect(genResult.exitCode, equals(0),
-            reason: 'Error output: ${genResult.stderr}');
+        expect(
+          genResult.exitCode,
+          equals(0),
+          reason: 'Error output: ${genResult.stderr}',
+        );
 
         // Verify the screen was created
         final screenFile =
             File(path.join(projectDir, 'lib', 'screens', 'home_screen.dart'));
-        expect(await screenFile.exists(), isTrue,
-            reason: 'HomeScreen not generated');
+        expect(
+          await screenFile.exists(),
+          isTrue,
+          reason: 'HomeScreen not generated',
+        );
 
         // Verify content of the screen
         final screenContent = await screenFile.readAsString();
@@ -149,7 +179,7 @@ void main() {
       () async {
         // Skip this test if Flutter SDK is not installed
         if (!await isFlutterInstalled()) {
-          print('Skipping test: Flutter SDK not installed');
+          log('Skipping test: Flutter SDK not installed');
           return;
         }
 
@@ -182,14 +212,20 @@ void main() {
           workingDirectory: projectDir,
         );
 
-        expect(genResult.exitCode, equals(0),
-            reason: 'Error output: ${genResult.stderr}');
+        expect(
+          genResult.exitCode,
+          equals(0),
+          reason: 'Error output: ${genResult.stderr}',
+        );
 
         // Verify the model was created
         final modelFile =
             File(path.join(projectDir, 'lib', 'models', 'user.dart'));
-        expect(await modelFile.exists(), isTrue,
-            reason: 'User model not generated');
+        expect(
+          await modelFile.exists(),
+          isTrue,
+          reason: 'User model not generated',
+        );
 
         // Verify content of the model
         final modelContent = await modelFile.readAsString();
@@ -207,7 +243,7 @@ void main() {
       () async {
         // Skip this test if Flutter SDK is not installed
         if (!await isFlutterInstalled()) {
-          print('Skipping test: Flutter SDK not installed');
+          log('Skipping test: Flutter SDK not installed');
           return;
         }
 
@@ -268,15 +304,17 @@ void main() {
         // This test might be flaky as it depends on build_runner completing successfully
         // Consider allowing non-zero exit codes if needed
         if (buildResult.exitCode != 0) {
-          print(
-              'Warning: build command exited with non-zero code. This may or may not be an error.');
-          print('stdout: ${buildResult.stdout}');
-          print('stderr: ${buildResult.stderr}');
+          log(
+            'Warning: build command exited with non-zero code. This may or may not be an error.',
+          );
+          log('stdout: ${buildResult.stdout}');
+          log('stderr: ${buildResult.stderr}');
         }
 
         // Check if the generated file exists
         await Future.delayed(
-            const Duration(seconds: 2)); // Give some time for file generation
+          const Duration(seconds: 2),
+        ); // Give some time for file generation
         final generatedFile =
             File(path.join(projectDir, 'lib', 'models', 'product.g.dart'));
 
@@ -287,8 +325,9 @@ void main() {
           expect(generatedContent, contains('_\$ProductFromJson'));
           expect(generatedContent, contains('_\$ProductToJson'));
         } else {
-          print(
-              'Warning: Generated file not found. This may be due to build_runner issues.');
+          log(
+            'Warning: Generated file not found. This may be due to build_runner issues.',
+          );
         }
       },
       timeout: const Timeout(Duration(minutes: 5)),

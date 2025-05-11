@@ -58,7 +58,7 @@ Future<void> getReleases() async {
   for (var release in releases) {
     String tagName = release['tag_name'];
     String date = release['published_at'];
-    print('Release: $tagName, Date: $date');
+    log('Release: $tagName, Date: $date');
     stringBuffer.writeln('Release: $tagName, Date: $date');
   }
 
@@ -99,7 +99,7 @@ void moveScripts() {
   installScript.copySync(path.join(publicDir.path, 'install.sh'));
   uninstallScript.copySync(path.join(publicDir.path, 'uninstall.sh'));
 
-  print('Moved install.sh and uninstall.sh to public directory');
+  log('Moved install.sh and uninstall.sh to public directory');
 }
 
 @Task('Run tests')

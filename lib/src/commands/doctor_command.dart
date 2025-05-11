@@ -92,7 +92,8 @@ class DoctorCommand extends Command<int> {
             }
           } else if (issue.canFix) {
             _logger.info(
-                '   ${lightBlue.wrap('This issue can be fixed automatically with --fix')}');
+              "${lightBlue.wrap('This issue can be fixed automatically with --fix')}",
+            );
           }
 
           if (issue.recommendations.isNotEmpty) {
@@ -429,7 +430,9 @@ class ProjectIssue {
     this.canFix = false,
     this.fix,
   }) : assert(
-            !canFix || fix != null, 'If canFix is true, fix must be provided');
+          !canFix || fix != null,
+          'If canFix is true, fix must be provided',
+        );
 
   /// The title or name of the issue.
   final String title;

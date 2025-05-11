@@ -1,18 +1,15 @@
 import 'package:args/command_runner.dart';
-import 'package:flutter_bunny/src/common/cli_exception.dart';
-import 'package:flutter_bunny/src/common/package_info.dart';
-import 'package:flutter_bunny/src/common/pub_updater_fix.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
+
+import '../common/cli_exception.dart';
+import '../common/package_info.dart';
+import '../common/pub_updater_fix.dart';
 
 /// Command to update the Flutter Bunny CLI.
 ///
 /// This command checks for updates to the CLI and installs them if available.
 class UpdateCommand extends Command<int> {
-  /// The pub updater used to check for and install updates.
-  final PubUpdater _pubUpdater;
-  final Logger logger;
-
   /// Creates a new UpdateCommand.
   ///
   /// [logger] is used for console output.
@@ -28,6 +25,10 @@ class UpdateCommand extends Command<int> {
       negatable: false,
     );
   }
+
+  /// The pub updater used to check for and install updates.
+  final PubUpdater _pubUpdater;
+  final Logger logger;
 
   @override
   String get description => 'Update the CLI tool to the latest version';
@@ -48,7 +49,8 @@ class UpdateCommand extends Command<int> {
 
       if (isUpToDate) {
         logger.info(
-            'Flutter Bunny is already at the latest version: $cliVersion');
+          'Flutter Bunny is already at the latest version: $cliVersion',
+        );
         return ExitCode.success.code;
       }
     }

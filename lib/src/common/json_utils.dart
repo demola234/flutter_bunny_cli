@@ -5,7 +5,8 @@ class JsonUtils {
   /// Identifies the nested structure of a JSON object, returning a map of
   /// potential model class names and their types.
   static Map<String, String> identifyNestedStructure(
-      Map<String, dynamic> jsonMap) {
+    Map<String, dynamic> jsonMap,
+  ) {
     final nestedStructure = <String, String>{};
 
     void processMap(Map<String, dynamic> map, String prefix) {
@@ -20,7 +21,8 @@ class JsonUtils {
               ? key.substring(0, key.length - 1)
               : key;
           final modelName = StringUtils.toPascalCase(
-              prefix.isEmpty ? singularKey : '${prefix}_$singularKey');
+            prefix.isEmpty ? singularKey : '${prefix}_$singularKey',
+          );
           nestedStructure[modelName] = 'List Item';
           if (value.first is Map<String, dynamic>) {
             processMap(value.first as Map<String, dynamic>, modelName);
@@ -37,7 +39,8 @@ class JsonUtils {
   /// - Keys are the model class names (in PascalCase)
   /// - Values are the corresponding JSON objects for those models
   static Map<String, Map<String, dynamic>> extractNestedModels(
-      Map<String, dynamic> jsonMap) {
+    Map<String, dynamic> jsonMap,
+  ) {
     final nestedModels = <String, Map<String, dynamic>>{};
 
     void extractFromObject(Map<String, dynamic> map, String baseName) {
@@ -62,7 +65,8 @@ class JsonUtils {
             className = className.substring(0, className.length - 1);
           }
           className = StringUtils.safeDartModelName(
-              StringUtils.toPascalCase(className));
+            StringUtils.toPascalCase(className),
+          );
 
           // Add to our nested models collection
           nestedModels[className] = itemMap;
@@ -73,7 +77,7 @@ class JsonUtils {
       });
     }
 
-    extractFromObject(jsonMap, "");
+    extractFromObject(jsonMap, '');
     return nestedModels;
   }
 
@@ -142,7 +146,8 @@ class JsonUtils {
             singularName = singularName.substring(0, singularName.length - 1);
           }
           final nestedClassName = StringUtils.safeDartModelName(
-              StringUtils.toPascalCase(singularName));
+            StringUtils.toPascalCase(singularName),
+          );
           return 'List<$nestedClassName>';
         } else {
           return 'List<dynamic>';

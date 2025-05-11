@@ -105,7 +105,8 @@ class GenerateScreenCommand extends Command<int> {
       final libDir = _findLibDirectory();
       if (libDir == null) {
         progress.fail(
-            'Could not find lib/ directory. Are you in a Flutter project?');
+          'Could not find lib/ directory. Are you in a Flutter project?',
+        );
         return false;
       }
 
@@ -152,7 +153,8 @@ class GenerateScreenCommand extends Command<int> {
       final testDir = _findTestDirectory();
       if (testDir == null) {
         progress.fail(
-            'Could not find test/ directory. Are you in a Flutter project?');
+          'Could not find test/ directory. Are you in a Flutter project?',
+        );
         return false;
       }
 
@@ -176,7 +178,8 @@ class GenerateScreenCommand extends Command<int> {
 
       await file.writeAsString(content);
       progress.complete(
-          'Created test for $screenName at ${path.relative(filePath)}');
+        'Created test for $screenName at ${path.relative(filePath)}',
+      );
 
       return true;
     } catch (e) {

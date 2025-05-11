@@ -68,7 +68,9 @@ void main() {
 
       expect(argParser.options['watch']!.abbr, equals('w'));
       expect(
-          argParser.options['delete-conflicting-outputs']!.abbr, equals('d'));
+        argParser.options['delete-conflicting-outputs']!.abbr,
+        equals('d'),
+      );
       expect(argParser.options['directory']!.abbr, equals('C'));
     });
 

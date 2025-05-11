@@ -92,7 +92,7 @@ class GenerateModelCommand extends Command<int> {
         'freezed',
         'json_serializable',
         'manual',
-        'equatable'
+        'equatable',
       ];
       final serializerDescriptions = [
         'Freezed - Code generation for immutable classes with unions/pattern-matching',
@@ -127,7 +127,8 @@ class GenerateModelCommand extends Command<int> {
 
     if (interactive && (jsonSample == null || jsonSample.isEmpty)) {
       final useJson = _logger.confirm(
-          'Do you want to provide a JSON sample to generate the model?');
+        'Do you want to provide a JSON sample to generate the model?',
+      );
 
       if (useJson) {
         // Check if a file was provided
@@ -169,19 +170,22 @@ class GenerateModelCommand extends Command<int> {
       try {
         jsonMap = json.decode(jsonSample) as Map<String, dynamic>;
         _logger.info(
-            'Successfully parsed JSON with ${jsonMap.length} top-level keys.');
+          'Successfully parsed JSON with ${jsonMap.length} top-level keys.',
+        );
 
         // If there's a complex nested structure, ask if user wants to generate multiple files
         final nestedStructure = JsonUtils.identifyNestedStructure(jsonMap);
         if (nestedStructure.isNotEmpty && interactive) {
           _logger.info(
-              '\nDetected complex nested structure with these potential models:');
+            '\nDetected complex nested structure with these potential models:',
+          );
           for (final entry in nestedStructure.entries) {
             _logger.info('- ${entry.key} (${entry.value})');
           }
 
           final generateMultiple = _logger.confirm(
-              'Would you like to generate separate model files for these nested objects?');
+            'Would you like to generate separate model files for these nested objects?',
+          );
 
           if (generateMultiple) {
             return await _generateMultipleModels(
@@ -232,7 +236,7 @@ class GenerateModelCommand extends Command<int> {
 
       // Generate file name (snake_case)
       final fileName = StringUtils.toSnakeCase(modelName);
-      final filePath = path.join(directory, '${fileName}.dart');
+      final filePath = path.join(directory, '$fileName.dart');
 
       // Generate model content
       final modelContent = _generateModelClass(
@@ -279,14 +283,14 @@ class GenerateModelCommand extends Command<int> {
 
       // Generate main model file
       final fileName = StringUtils.toSnakeCase(mainModelName);
-      final filePath = path.join(directory, '${fileName}.dart');
+      final filePath = path.join(directory, '$fileName.dart');
 
       // Create imports for nested models
       String imports = '';
       if (nestedModels.isNotEmpty) {
         for (final nestedModelName in nestedModels.keys) {
           final nestedFileName = StringUtils.toSnakeCase(nestedModelName);
-          imports += 'import \'${nestedFileName}.dart\';\n';
+          imports += 'import \'$nestedFileName.dart\';\n';
         }
         imports += '\n';
       }
@@ -316,7 +320,7 @@ class GenerateModelCommand extends Command<int> {
         final nestedClassName = entry.key;
         final nestedJsonMap = entry.value;
         final nestedFileName = StringUtils.toSnakeCase(nestedClassName);
-        final nestedFilePath = path.join(directory, '${nestedFileName}.dart');
+        final nestedFilePath = path.join(directory, '$nestedFileName.dart');
 
         // Generate nested model header with standard imports
         String nestedModelContent = _getFileHeader(
@@ -337,12 +341,12 @@ class GenerateModelCommand extends Command<int> {
         final nestedFile = File(nestedFilePath);
         await nestedFile.writeAsString(nestedModelContent);
 
-        _logger
-            .detail('Generated ${nestedClassName} model at ${nestedFilePath}');
+        _logger.detail('Generated $nestedClassName model at $nestedFilePath');
       }
 
       progress.complete(
-          'Generated $mainModelName model and ${nestedModels.length} related models at $directory');
+        'Generated $mainModelName model and ${nestedModels.length} related models at $directory',
+      );
 
       // Suggest dependency additions if needed
       _suggestDependencies(serializationMethod);
@@ -361,19 +365,11 @@ class GenerateModelCommand extends Command<int> {
   }) {
     switch (serializationMethod) {
       case 'freezed':
-        return '// ignore_for_file: invalid_annotation_target\n\n' +
-            'import \'package:freezed_annotation/freezed_annotation.dart\';\n' +
-            additionalImports +
-            '\npart \'${fileName}.freezed.dart\';\n' +
-            'part \'${fileName}.g.dart\';\n\n';
+        return '// ignore_for_file: invalid_annotation_target\n\nimport \'package:freezed_annotation/freezed_annotation.dart\';\n$additionalImports\npart \'$fileName.freezed.dart\';\npart \'$fileName.g.dart\';\n\n';
       case 'json_serializable':
-        return 'import \'package:json_annotation/json_annotation.dart\';\n' +
-            additionalImports +
-            '\npart \'${fileName}.g.dart\';\n\n';
+        return 'import \'package:json_annotation/json_annotation.dart\';\n$additionalImports\npart \'$fileName.g.dart\';\n\n';
       case 'equatable':
-        return 'import \'package:equatable/equatable.dart\';\n' +
-            additionalImports +
-            '\n';
+        return 'import \'package:equatable/equatable.dart\';\n$additionalImports\n';
       default:
         return additionalImports;
     }
@@ -420,7 +416,8 @@ class GenerateModelCommand extends Command<int> {
     switch (serializationMethod) {
       case 'freezed':
         _logger.info(
-            '\nℹ️  Don\'t forget to add these dependencies to your pubspec.yaml:');
+          '\nℹ️  Don\'t forget to add these dependencies to your pubspec.yaml:',
+        );
         _logger.info('''
 dependencies:
   freezed_annotation: ^2.4.1
@@ -430,13 +427,16 @@ dev_dependencies:
   freezed: ^2.4.5
   json_serializable: ^6.7.1''');
         _logger.info(
-            '\nRun the following command to generate the required files:');
+          '\nRun the following command to generate the required files:',
+        );
         _logger.info(
-            'flutter pub run build_runner build --delete-conflicting-outputs');
+          'flutter pub run build_runner build --delete-conflicting-outputs',
+        );
         break;
       case 'json_serializable':
         _logger.info(
-            '\nℹ️  Don\'t forget to add these dependencies to your pubspec.yaml:');
+          '\nℹ️  Don\'t forget to add these dependencies to your pubspec.yaml:',
+        );
         _logger.info('''
 dependencies:
   json_annotation: ^4.8.1
@@ -445,13 +445,16 @@ dev_dependencies:
   build_runner: ^2.4.6
   json_serializable: ^6.7.1''');
         _logger.info(
-            '\nRun the following command to generate the required files:');
+          '\nRun the following command to generate the required files:',
+        );
         _logger.info(
-            'flutter pub run build_runner build --delete-conflicting-outputs');
+          'flutter pub run build_runner build --delete-conflicting-outputs',
+        );
         break;
       case 'equatable':
         _logger.info(
-            '\nℹ️  Don\'t forget to add this dependency to your pubspec.yaml:');
+          '\nℹ️  Don\'t forget to add this dependency to your pubspec.yaml:',
+        );
         _logger.info('''
 dependencies:
   equatable: ^2.0.5''');

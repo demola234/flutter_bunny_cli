@@ -1,8 +1,9 @@
 import 'package:args/command_runner.dart';
-import 'package:flutter_bunny/src/commands/create_flutter_app.dart';
-import 'package:flutter_bunny/src/common/base_command.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:meta/meta.dart';
+
+import '../common/base_command.dart';
+import 'create_flutter_app.dart';
 
 class CreateAppCommand extends Command<int> {
   CreateAppCommand({

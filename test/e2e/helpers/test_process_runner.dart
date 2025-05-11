@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:grinder/grinder.dart';
+
 /// Result of running a command in a subprocess.
 class CommandResult {
   CommandResult({
@@ -34,7 +36,7 @@ Future<CommandResult> runCommand(
   final cliPath = _getCliExecutablePath(isWindows);
 
   // Run the command
-  print('Running: $cliPath ${args.join(' ')}');
+  log('Running: $cliPath ${args.join(' ')}');
 
   final process = await Process.start(
     isWindows ? 'dart' : 'dart',
@@ -50,12 +52,12 @@ Future<CommandResult> runCommand(
 
   process.stdout.transform(const SystemEncoding().decoder).listen((data) {
     stdoutBuffer.write(data);
-    print(data); // Echo to test output for debugging
+    log(data); // Echo to test output for debugging
   });
 
   process.stderr.transform(const SystemEncoding().decoder).listen((data) {
     stderrBuffer.write(data);
-    print('STDERR: $data'); // Echo to test output for debugging
+    log('STDERR: $data'); // Echo to test output for debugging
   });
 
   // Wait for the process to complete

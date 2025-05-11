@@ -1,21 +1,15 @@
 import 'package:args/args.dart';
-import 'package:flutter_bunny/src/common/package_info.dart';
 import 'package:mason_logger/mason_logger.dart';
 import 'package:pub_updater/pub_updater.dart';
 import 'package:universal_io/io.dart';
+
+import 'package_info.dart';
 
 /// Base class providing shared utilities for the CLI.
 ///
 /// This class handles common operations like logging, environment checks,
 /// and update verification.
 class Base {
-  final Logger _logger;
-  final PubUpdater _pubUpdater;
-  final Map<String, String> _environment;
-
-  /// Timeout for update checks.
-  static const timeout = Duration(milliseconds: 1000);
-
   /// Creates a new Base instance.
   ///
   /// [logger] is used for console output.
@@ -28,6 +22,12 @@ class Base {
   })  : _logger = logger ?? Logger(),
         _pubUpdater = pubUpdater ?? PubUpdater(),
         _environment = environment ?? Platform.environment;
+  final Logger _logger;
+  final PubUpdater _pubUpdater;
+  final Map<String, String> _environment;
+
+  /// Timeout for update checks.
+  static const timeout = Duration(milliseconds: 1000);
 
   /// Gets the environment variables.
   Map<String, String> get environment => _environment;
