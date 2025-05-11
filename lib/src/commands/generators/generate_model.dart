@@ -6,7 +6,7 @@ import 'package:mason_logger/mason_logger.dart';
 import 'package:path/path.dart' as path;
 
 import '../../common/generator/equatable_generator.dart';
-import '../../common/generator/freezed_generator..dart';
+import '../../common/generator/freezed_generator.dart';
 import '../../common/generator/json_serializable_model.dart';
 import '../../common/generator/manual_generator.dart';
 import '../../common/json_utils.dart';
